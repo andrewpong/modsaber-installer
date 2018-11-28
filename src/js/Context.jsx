@@ -15,6 +15,7 @@ export class ControllerProvider extends Component {
     super(props)
 
     this.state = {
+      status: 'Idle',
       install: { path: null, platform: 'unknown' },
     }
 
@@ -32,7 +33,10 @@ export class ControllerProvider extends Component {
   render () {
     return (
       <Provider value={{
+        status: this.state.status,
         install: this.state.install,
+
+        setStatus: status => this.setState({ status }),
       }}>
         { this.props.children }
       </Provider>

@@ -14,10 +14,13 @@ let window
 app.on('ready', () => {
   if (!isDev) autoUpdater.checkForUpdates()
 
+  const width = 700
   const height = 500
   window = new BrowserWindow({
-    width: 700,
+    width: width,
     height: isDev ? height + 20 : height,
+    minWidth: width,
+    minHeight: isDev ? height + 20 : height,
     show: false,
   })
 
