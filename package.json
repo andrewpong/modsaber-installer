@@ -2,17 +2,23 @@
   "name": "modsaber-installer",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "react": "^16.6.3",
-    "react-dom": "^16.6.3",
-    "react-scripts": "2.1.1"
-  },
+  "dependencies": {},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lolPants/modsaber-installer.git"
+  },
+  "author": "Jack Baron <jackmbaron@gmail.com> (https://www.jackbaron.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lolPants/modsaber-installer/issues"
+  },
+  "homepage": "https://github.com/lolPants/modsaber-installer/issues#readme",
   "eslintConfig": {
     "extends": "react-app"
   },
