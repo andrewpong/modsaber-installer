@@ -2,7 +2,18 @@
   "name": "modsaber-installer",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "electron-is-dev": "^1.0.1",
+    "electron-updater": "^4.0.4",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-scripts": "^2.1.1"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "electron": "^3.0.10",
+    "electron-builder": "^20.38.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
