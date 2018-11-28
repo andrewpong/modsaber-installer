@@ -1,7 +1,13 @@
 const { ipcMain } = require('electron')
-const { findPath } = require('../logic/pathFinder.js')
+const { findPath, testPath } = require('../logic/pathFinder.js')
 
-ipcMain.on('get-install', async event => {
+ipcMain.on('get-install', async ({ sender }) => {
   const path = await findPath()
-  event.sender.send('set-install', path)
+  sender.send('set-install', path)
+})
+
+ipcMain.on('set-install', async ({ sender }, installDir) => {
+  const test = await testPath(installDir)
+  if (test.valid) return sender.send('set-install', test)
+  else return sender.send('invalid-install')
 })

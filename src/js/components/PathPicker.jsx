@@ -1,8 +1,36 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
+/**
+ * @type {Electron}
+ */
+const electron = window.require('electron')
+const { ipcRenderer } = electron
+const { dialog } = electron.remote
+
 class PathPicker extends Component {
   static contextType = Context
+
+  componentDidMount () {
+    ipcRenderer.on('invalid-install', () => {
+      dialog.showMessageBox({
+        title: 'Invalid Path',
+        type: 'error',
+        message: "The directory you selected doesn't contain Beat Saber.exe!\nPlease try again.",
+      }, () => { this.openDialog() })
+    })
+  }
+
+  openDialog () {
+    dialog.showOpenDialog({
+      properties: ['openDirectory'],
+      defaultPath: this.context.install.path || undefined,
+    }, paths => {
+      if (paths === undefined) return
+      const [path] = paths
+      ipcRenderer.send('set-install', path)
+    })
+  }
 
   render () {
     return (
@@ -22,7 +50,7 @@ class PathPicker extends Component {
           </div>
 
           <div className='control'>
-            <button className='button'>
+            <button className='button' onClick={ () => { this.openDialog() }}>
               ..
             </button>
           </div>

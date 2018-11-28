@@ -9,6 +9,10 @@ const fse = {
 }
 
 /**
+ * @typedef {('steam'|'oculus'|'unknown')} Platform
+ */
+
+/**
  * @returns {Promise.<string[]>}
  */
 const findSteamLibraries = () => new Promise((resolve, reject) => {
@@ -64,23 +68,26 @@ const findSteam = async appID => {
 /**
  * Tests an install directory for the Beat Saber Executable
  * @param {string} installDir Install Directory
- * @returns {Promise.<boolean>}
+ * @returns {Promise.<{ path: string, valid: boolean, platform: Platform }>}
  */
 const testPath = async installDir => {
   const executable = 'Beat Saber.exe'
-  const test = await fse.exists(path.join(installDir, executable))
+  const valid = await fse.exists(path.join(installDir, executable))
 
-  return test
+  const lower = installDir.toLowerCase()
+  const oculus = lower.includes('oculus') || lower.includes('hyperbolic-magnetism-beat-saber')
+
+  return { path: installDir, valid, platform: oculus ? 'oculus' : 'steam' }
 }
 
 /**
- * @returns {Promise.<{path: string, platform: ('steam'|'oculus'|'unknown')}>}
+ * @returns {Promise.<{path: string, platform: Platform}>}
  */
 const findPath = async () => {
   const steamPath = await findSteam('620980')
   if (steamPath) {
     const pathTest = await testPath(steamPath)
-    if (pathTest) return { path: steamPath, platform: 'steam' }
+    if (pathTest.valid) return pathTest
   }
 
   return { path: null, platform: 'unknown' }
