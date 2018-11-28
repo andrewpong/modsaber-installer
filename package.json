@@ -49,6 +49,7 @@
     },
     "win": {
       "target": ["nsis"],
+      "requestedExecutionLevel": "requireAdministrator",
       "publish": [{
         "provider": "github",
         "releaseType": "release"

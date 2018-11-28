@@ -22,6 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# VSCode
+.vscode
+
 # Electron Builds
 .release/
 dist/
