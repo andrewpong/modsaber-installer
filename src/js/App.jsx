@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import Context from './Context.jsx'
 import PathPicker from './components/PathPicker.jsx'
+import MainTabs from './components/MainTabs.jsx'
 import BottomBar from './components/BottomBar.jsx'
 
 class App extends Component {
@@ -14,7 +15,9 @@ class App extends Component {
           <PathPicker />
         </div>
 
-        <div className='layout-item main'></div>
+        <div className='layout-item main'>
+          <MainTabs />
+        </div>
 
         <div className='layout-item bottom'>
           <BottomBar />

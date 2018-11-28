@@ -14,8 +14,8 @@ let window
 app.on('ready', () => {
   if (!isDev) autoUpdater.checkForUpdates()
 
-  const width = 700
-  const height = 500
+  const width = 800
+  const height = 580
   window = new BrowserWindow({
     width: width,
     height: isDev ? height + 20 : height,
@@ -23,6 +23,11 @@ app.on('ready', () => {
     minHeight: isDev ? height + 20 : height,
     show: false,
   })
+
+  if (isDev) {
+    const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
+    installExtension(REACT_DEVELOPER_TOOLS)
+  }
 
   const menu = !isDev ? null : new Menu.buildFromTemplate([ // eslint-disable-line
     {
