@@ -2,7 +2,9 @@ const path = require('path')
 const { app, BrowserWindow, dialog, Menu } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
-const { findPath } = require('./src/pathFinder.js')
+
+// Event Handlers
+require('./src/events/install.js')
 
 /**
  * @type {BrowserWindow}
