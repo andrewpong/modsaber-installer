@@ -15,11 +15,25 @@ export class ControllerProvider extends Component {
     super(props)
 
     this.state = {
-      status: 'Idle',
+      statusText: 'Idle',
       install: { path: null, platform: 'unknown' },
+      status: 'loading',
+
+      mods: [],
+      gameVersions: [],
     }
 
     ipcRenderer.on('set-install', (_, install) => this.setState({ install }))
+    ipcRenderer.on('set-remote', (_, { status, mods, gameVersions }) => {
+      if (status === 'error') return this.setState({ statusText: 'Could not connect to ModSaber', status: 'offline' })
+
+      this.setState({
+        statusText: 'Mod list loaded',
+        status: 'loaded',
+        mods,
+        gameVersions,
+      })
+    })
   }
 
   static propTypes = {
@@ -28,15 +42,17 @@ export class ControllerProvider extends Component {
 
   componentDidMount () {
     ipcRenderer.send('get-install')
+    ipcRenderer.send('get-remote')
   }
 
   render () {
     return (
       <Provider value={{
-        status: this.state.status,
+        statusText: this.state.statusText,
         install: this.state.install,
+        status: this.state.status,
 
-        setStatus: status => this.setState({ status }),
+        setStatusText: statusText => this.setState({ statusText }),
       }}>
         { this.props.children }
       </Provider>

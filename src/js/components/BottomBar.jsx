@@ -7,7 +7,7 @@ class BottomBar extends Component {
   render () {
     return (
       <>
-        <span className='status'>Status: { this.context.status }</span>
+        <span className='status'>Status: { this.context.statusText }</span>
 
         <button className='button'>View Selected Mod Info</button>
         <button className='button'>Install / Update</button>
