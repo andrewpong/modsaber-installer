@@ -10,7 +10,8 @@
     "electron-updater": "^4.0.4",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-scripts": "^2.1.1"
+    "react-scripts": "^2.1.1",
+    "winreg": "^1.2.4"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
@@ -20,14 +21,11 @@
   "scripts": {
     "electron": "electron .",
     "dev": "electron . --debug",
-
     "start-client": "react-scripts start",
     "build-client": "react-scripts build",
-
     "pack-electron": "electron-builder -c.extraMetadata.main=build/electron.js --dir",
     "build-electron": "electron-builder -c.extraMetadata.main=build/electron.js --win",
     "ship-electron": "electron-builder -c.extraMetadata.main=build/electron.js --win -p always",
-
     "pack": "npm run build-client && npm run pack-electron",
     "build": "npm run build-client && npm run build-electron",
     "ship": "npm run build-client && npm run ship-electron"
@@ -40,7 +38,7 @@
       "build/**/*",
       "node_modules/**/*"
     ],
-    "directories":{
+    "directories": {
       "buildResources": "assets"
     },
     "nsis": {
@@ -48,12 +46,16 @@
       "allowToChangeInstallationDirectory": true
     },
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "requestedExecutionLevel": "requireAdministrator",
-      "publish": [{
-        "provider": "github",
-        "releaseType": "release"
-      }]
+      "publish": [
+        {
+          "provider": "github",
+          "releaseType": "release"
+        }
+      ]
     }
   },
   "repository": {
