@@ -1,7 +1,10 @@
 {
   "name": "modsaber-installer",
   "version": "0.1.0",
+  "description": "Beat Saber Mod Installer - Powered by Electron",
   "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "electron-is-dev": "^1.0.1",
     "electron-updater": "^4.0.4",
@@ -15,10 +18,42 @@
     "electron-builder": "^20.38.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "electron": "electron .",
+    "dev": "electron . --debug",
+
+    "start-client": "react-scripts start",
+    "build-client": "react-scripts build",
+
+    "pack-electron": "electron-builder -c.extraMetadata.main=build/electron.js --dir",
+    "build-electron": "electron-builder -c.extraMetadata.main=build/electron.js --win",
+    "ship-electron": "electron-builder -c.extraMetadata.main=build/electron.js --win -p always",
+
+    "pack": "npm run build-client && npm run pack-electron",
+    "build": "npm run build-client && npm run build-electron",
+    "ship": "npm run build-client && npm run ship-electron"
+  },
+  "build": {
+    "appId": "com.jackbaron.modsaber-installer",
+    "productName": "ModSaber Installer",
+    "copyright": "Copyright © 2018 ${author}",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories":{
+      "buildResources": "assets"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "win": {
+      "target": ["nsis"],
+      "publish": [{
+        "provider": "github",
+        "releaseType": "release"
+      }]
+    }
   },
   "repository": {
     "type": "git",
@@ -29,7 +64,6 @@
   "bugs": {
     "url": "https://github.com/lolPants/modsaber-installer/issues"
   },
-  "homepage": "https://github.com/lolPants/modsaber-installer/issues#readme",
   "eslintConfig": {
     "extends": "react-app"
   },
