@@ -12,7 +12,7 @@ class PathPicker extends Component {
   static contextType = Context
 
   componentDidMount () {
-    ipcRenderer.on('invalid-install', () => {
+    ipcRenderer.on('invalid-path', () => {
       dialog.showMessageBox({
         title: 'Invalid Path',
         type: 'error',
@@ -28,7 +28,7 @@ class PathPicker extends Component {
     }, paths => {
       if (paths === undefined) return
       const [path] = paths
-      ipcRenderer.send('set-install', path)
+      ipcRenderer.send('set-path', path)
     })
   }
 

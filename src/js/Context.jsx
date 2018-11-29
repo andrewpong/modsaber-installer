@@ -30,7 +30,7 @@ export class ControllerProvider extends Component {
       selected: null,
     }
 
-    ipcRenderer.on('set-install', (_, install) => this.setState({ install }))
+    ipcRenderer.on('set-path', (_, install) => this.setState({ install }))
     ipcRenderer.on('set-remote', (_, { status, mods, gameVersions }) => {
       if (status === 'error') return this.setState({ statusText: c.STATUS_TEXT_OFFLINE, status: c.STATUS_OFFLINE })
 
@@ -48,7 +48,7 @@ export class ControllerProvider extends Component {
   }
 
   componentDidMount () {
-    ipcRenderer.send('get-install')
+    ipcRenderer.send('get-path')
     ipcRenderer.send('get-remote')
   }
 
