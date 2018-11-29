@@ -26,11 +26,6 @@ app.on('ready', () => {
     show: false,
   })
 
-  if (isDev) {
-    const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
-    installExtension(REACT_DEVELOPER_TOOLS)
-  }
-
   const menu = !isDev ? null : new Menu.buildFromTemplate([ // eslint-disable-line
     {
       label: 'Dev',

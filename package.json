@@ -6,27 +6,25 @@
   "main": "public/electron.js",
   "homepage": "./",
   "dependencies": {
+    "adm-zip": "^0.4.13",
+    "electron-is-dev": "^1.0.1",
+    "electron-updater": "^4.0.5",
+    "mkdirp": "^0.5.1",
+    "snekfetch": "^4.0.4",
+    "winreg": "^1.2.4"
+  },
+  "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
     "@lolpants/bulma": "^0.7.2",
-    "adm-zip": "^0.4.13",
-    "bulma-checkradio": "^2.1.0",
-    "electron-is-dev": "^1.0.1",
-    "electron-updater": "^4.0.4",
-    "mkdirp": "^0.5.1",
+    "cross-env": "^5.2.0",
+    "electron": "^3.0.10",
+    "electron-builder": "^20.38.2",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-helmet": "^5.2.0",
     "react-scripts": "^2.1.1",
-    "semver": "^5.6.0",
-    "snekfetch": "^4.0.4",
-    "winreg": "^1.2.4"
-  },
-  "devDependencies": {
-    "cross-env": "^5.2.0",
-    "electron": "^3.0.10",
-    "electron-builder": "^20.38.0",
-    "electron-devtools-installer": "^2.2.4"
+    "semver": "^5.6.0"
   },
   "scripts": {
     "electron": "electron .",
