@@ -106,7 +106,6 @@ export class ControllerProvider extends Component {
 
       conflict.install.conflictsWith = [...conflict.install.conflictsWith, this.modKey(mod)]
 
-      console.log(conflictKey)
       const selected = conflict.install.selected || conflict.install.requiredBy.length > 0 || false
       if (!selected) continue
 

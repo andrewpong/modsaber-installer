@@ -61,24 +61,6 @@ div.box#main {
   align-items: center;
 }
 
-.is-checkradio[type=checkbox]+label::before,
-.is-checkradio[type=checkbox]+label:before {
-  width: 1.2rem;
-  height: 1.2rem;
-}
-
-.is-checkradio[type=checkbox]+label::after,
-.is-checkradio[type=checkbox]+label:after {
-  top: 0.25rem;
-  left: 0.45rem;
-}
-
-.is-checkradio[type=checkbox]+label {
-  padding-left: 0;
-  font-size: 0px;
-  padding-top: 8px;
-}
-
 /* Bottom Bar */
 div.layout-item.bottom {
   display: flex;
