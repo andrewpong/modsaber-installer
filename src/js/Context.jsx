@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import * as c from './constants.js'
+
 /**
  * @type {Electron}
  */
@@ -15,9 +17,9 @@ export class ControllerProvider extends Component {
     super(props)
 
     this.state = {
-      statusText: 'Idle',
+      statusText: c.STATUS_TEXT_IDLE,
       install: { path: null, platform: 'unknown' },
-      status: 'loading',
+      status: c.STATUS_LOADING,
 
       mods: [],
       gameVersions: [],
@@ -28,11 +30,11 @@ export class ControllerProvider extends Component {
 
     ipcRenderer.on('set-install', (_, install) => this.setState({ install }))
     ipcRenderer.on('set-remote', (_, { status, mods, gameVersions }) => {
-      if (status === 'error') return this.setState({ statusText: 'Could not connect to ModSaber', status: 'offline' })
+      if (status === 'error') return this.setState({ statusText: c.STATUS_TEXT_OFFLINE, status: c.STATUS_OFFLINE })
 
       this.setState({
-        statusText: 'Mod list loaded',
-        status: 'loaded',
+        statusText: c.STATUS_TEXT_LOADED,
+        status: c.STATUS_LOADED,
         mods,
         gameVersions,
       }, () => { this.filterMods() })
@@ -56,7 +58,15 @@ export class ControllerProvider extends Component {
       .filter(mod => mod !== null)
       .filter(mod => mod.gameVersion.manifest === gameVersion.manifest)
       .map(mod => {
-        mod.meta.category = mod.meta.category || 'Other'
+        mod.meta.category = mod.meta.category || c.CATEGORY_DEFAULT
+        return mod
+      })
+      .map(mod => {
+        mod.install = {
+          selected: c.MODS_REQUIRED.includes(mod.name) || c.MODS_DEFAULT.includes(mod.name),
+          locked: c.MODS_REQUIRED.includes(mod.name),
+        }
+
         return mod
       })
 

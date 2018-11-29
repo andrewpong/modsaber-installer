@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
+import { BASE_URL } from '../constants.js'
+
 /**
  * @type {Electron}
  */
@@ -12,7 +14,7 @@ class BottomBar extends Component {
 
   render () {
     const mod = this.context.filteredMods[this.context.selected]
-    const modInfo = mod && `https://www.modsaber.org/mod/${mod.name}/${mod.version}`
+    const modInfo = mod && `${BASE_URL}/mod/${mod.name}/${mod.version}`
 
     return (
       <>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
+import * as c from '../constants.js'
+
 import Mods from './tabs/Mods.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
@@ -9,7 +11,7 @@ class MainLoader extends Component {
   static contextType = Context
 
   render () {
-    if (this.context.status === 'loading') {
+    if (this.context.status === c.STATUS_LOADING) {
       return (
         <>
           <i className='fas fa-spin fa-cog fa-2x'></i>
@@ -18,7 +20,7 @@ class MainLoader extends Component {
       )
     }
 
-    if (this.context.status === 'offline') {
+    if (this.context.status === c.STATUS_OFFLINE) {
       return (
         <>
           <i className='fas fa-exclamation-triangle fa-2x'></i>
