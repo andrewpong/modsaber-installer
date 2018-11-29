@@ -84,19 +84,18 @@ class Mods extends Component {
                     onClick={ e => { if (e.target.type !== 'i') this.context.setSelected(mod.index) } }
                   >
                     <td
-                      className='icon'
-                      style={ !locked ? undefined : { opacity: 0.7 } }
+                      className={ `icon${!locked ? '' : ' disabled'}` }
                       onClick={ () => { this.context.toggleMod(mod.index) } }
                     >
                       <i className={ `far fa-${mod.install.selected || mod.install.requiredBy.length > 0 || false ? 'check-square' : 'square'}` }></i>
                     </td>
 
-                    <td className='icon locked' title={
+                    <td className={ `icon locked${!locked ? ' hidden' : ''}` } title={
                       !locked ? undefined : mod.install.selected || mod.install.requiredBy.length > 0 ?
                         'This mod is required!' :
                         'CONFLICT'
                     }>
-                      <i className={ `fas fa-lock${!locked ? ' hidden' : ''}` }></i>
+                      <i className={ `fas fa-lock` }></i>
                     </td>
 
                     <td className='monospaced'>{ mod.details.title }</td>

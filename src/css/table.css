@@ -55,12 +55,18 @@ td.icon i {
   font-size: 1.2rem;
   line-height: 0;
   margin-top: 4px;
-  transition: opacity 0.1s;
+  transition: color 0.1s;
 }
 
 td.icon.locked i {
   font-size: 0.9rem;
-  line-height: 0;
   margin-top: 3px;
-  transition: opacity 0.1s;
+}
+
+td.icon.disabled i {
+  color: #868686;
+}
+
+td.icon.hidden i {
+  color: transparent;
 }

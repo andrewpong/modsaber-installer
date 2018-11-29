@@ -16,10 +16,6 @@ html, body {
   height: 100%;
 }
 
-.hidden {
-  opacity: 0;
-}
-
 .is-fullwidth {
   width: 100%;
 }
