@@ -48,7 +48,7 @@ class Mods extends Component {
 
         <table className='table is-narrow is-fullwidth'>
           <thead>
-            <div className='header'></div>
+            <div onClick={ () => { this.context.setSelected(null) } } className='header'></div>
             <tr>
               <th>-<div></div></th>
               <th>Name<div>Name</div></th>
@@ -59,7 +59,7 @@ class Mods extends Component {
 
           <tbody>{ categories.map(({ name, mods }, i) =>
             <Fragment key={ i }>
-              <tr>
+              <tr onClick={ () => { this.context.setSelected(null) } }>
                 <td colSpan={ 4 }>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <b style={{ marginRight: '12px' }}>{ name }</b>
@@ -75,8 +75,8 @@ class Mods extends Component {
               { mods.map((mod, j) =>
                 <tr
                   key={ j }
-                  style={{ backgroundColor: !mod.selected ? null : 'rgba(50, 115, 220, 0.1)' }}
-                  onClick={ e => { if (e.target.type !== 'checkbox') console.log(filteredMods[mod.index]) } }
+                  style={{ backgroundColor: !(mod.index === this.context.selected) ? null : 'rgba(50, 115, 220, 0.1)' }}
+                  onClick={ e => { if (e.target.type !== 'checkbox') this.context.setSelected(mod.index) } }
                 >
                   <td style={{ padding: 0, paddingLeft: '0.5em' }}>
                     <div className="field">

@@ -22,6 +22,8 @@ export class ControllerProvider extends Component {
       mods: [],
       gameVersions: [],
       filteredMods: [],
+
+      selected: null,
     }
 
     ipcRenderer.on('set-install', (_, install) => this.setState({ install }))
@@ -58,7 +60,7 @@ export class ControllerProvider extends Component {
         return mod
       })
 
-    this.setState({ filteredMods })
+    this.setState({ filteredMods, selected: null })
   }
 
   render () {
@@ -73,6 +75,9 @@ export class ControllerProvider extends Component {
         mods: this.state.mods,
         gameVersions: this.state.gameVersions,
         filteredMods: this.state.filteredMods,
+
+        selected: this.state.selected,
+        setSelected: selected => this.setState({ selected }),
       }}>
         { this.props.children }
       </Provider>
