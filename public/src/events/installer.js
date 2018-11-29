@@ -1,5 +1,6 @@
 const { join, parse } = require('path')
-const { ipcMain } = require('electron')
+const { exec } = require('child_process')
+const { ipcMain, dialog } = require('electron')
 const { get } = require('snekfetch')
 const AdmZip = require('adm-zip')
 const fse = require('../logic/file.js')
@@ -39,7 +40,33 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
     await Promise.all(jobs) // eslint-disable-line
   }
 
-  sender.send('set-status', { text: 'Finished installing!', status: 'complete' })
+  const exePath = join(install.path, 'Beat Saber.exe')
+  const ipaPath = join(install.path, 'IPA.exe')
+  const canPatch = await fse.exists(exePath) && await fse.exists(ipaPath)
+
+  if (!canPatch) {
+    sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+    return dialog.showMessageBox({
+      title: 'IPA Error',
+      type: 'error',
+      message: 'Could not patch Beat Saber (IPA Missing)',
+    })
+  }
+
+  sender.send('set-status', { text: 'Patching game...' })
+
+  exec(`"${ipaPath}" "${exePath}"`, err => {
+    if (err) {
+      sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+      return dialog.showMessageBox({
+        title: 'IPA Error',
+        type: 'error',
+        message: 'Could not patch Beat Saber (IPA Error!)',
+      })
+    }
+
+    sender.send('set-status', { text: 'Install complete!', status: 'complete' })
+  })
 })
 
 /**
