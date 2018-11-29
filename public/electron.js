@@ -6,6 +6,7 @@ const isDev = require('electron-is-dev')
 // Event Handlers
 require('./src/events/path.js')
 require('./src/events/remote.js')
+require('./src/events/installer.js')
 
 /**
  * @type {BrowserWindow}

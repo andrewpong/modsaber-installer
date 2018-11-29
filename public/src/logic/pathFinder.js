@@ -1,12 +1,6 @@
-const fs = require('fs')
 const path = require('path')
-const { promisify } = require('util')
 const Registry = require('winreg')
-
-const fse = {
-  readFile: promisify(fs.readFile),
-  exists: promisify(fs.exists),
-}
+const fse = require('./file.js')
 
 /**
  * @typedef {('steam'|'oculus'|'unknown')} Platform
