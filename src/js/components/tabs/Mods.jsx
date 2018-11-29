@@ -61,7 +61,7 @@ class Mods extends Component {
             <Fragment key={ i }>
               <tr onClick={ () => { this.context.setSelected(null) } }>
                 <td colSpan={ 4 }>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginTop: i === 0 ? '30px' : undefined }}>
                     <b style={{ marginRight: '12px' }}>{ name }</b>
                     <div style={{
                       flexGrow: 1,

@@ -36,3 +36,7 @@
   width: calc(100% - 61px);
   border-bottom: 2px solid #dbdbdb;
 }
+
+.table tr {
+  transition: background-color 0.15s ease-in-out;
+}
