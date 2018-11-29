@@ -73,6 +73,17 @@ export class ControllerProvider extends Component {
     this.setState({ filteredMods, selected: null })
   }
 
+  toggleMod (index) {
+    const mods = [...this.state.filteredMods]
+    const mod = JSON.parse(JSON.stringify(mods[index]))
+
+    if (mod.install.locked) return undefined
+    mod.install.selected = !mod.install.selected
+
+    mods[index] = mod
+    this.setState({ filteredMods: mods })
+  }
+
   render () {
     return (
       <Provider value={{
@@ -85,6 +96,7 @@ export class ControllerProvider extends Component {
         mods: this.state.mods,
         gameVersions: this.state.gameVersions,
         filteredMods: this.state.filteredMods,
+        toggleMod: index => { this.toggleMod(index) },
 
         selected: this.state.selected,
         setSelected: selected => this.setState({ selected }),

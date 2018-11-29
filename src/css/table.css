@@ -40,3 +40,27 @@
 .table tr {
   transition: background-color 0.15s ease-in-out;
 }
+
+td.icon {
+  padding: 0 !important;
+  padding-left: 12px !important;
+  margin-right: 10px;
+}
+
+td.icon.locked {
+  padding: 0 !important;
+}
+
+td.icon i {
+  font-size: 1.2rem;
+  line-height: 0;
+  margin-top: 4px;
+  transition: opacity 0.1s;
+}
+
+td.icon.locked i {
+  font-size: 0.9rem;
+  line-height: 0;
+  margin-top: 2px;
+  transition: opacity 0.1s;
+}

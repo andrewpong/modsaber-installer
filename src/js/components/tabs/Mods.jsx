@@ -62,7 +62,7 @@ class Mods extends Component {
           <tbody>{ categories.map(({ name, mods }, i) =>
             <Fragment key={ i }>
               <tr onClick={ () => { this.context.setSelected(null) } }>
-                <td colSpan={ 4 }>
+                <td colSpan={ 5 }>
                   <div style={{ display: 'flex', alignItems: 'center', marginTop: i === 0 ? '30px' : undefined }}>
                     <b style={{ marginRight: '12px' }}>{ name }</b>
                     <div style={{
@@ -77,17 +77,24 @@ class Mods extends Component {
               { mods.map((mod, j) =>
                 <tr
                   key={ j }
-                  style={{ backgroundColor: !(mod.index === this.context.selected) ? null : 'rgba(50, 115, 220, 0.1)' }}
-                  onClick={ e => { if (e.target.type !== 'checkbox') this.context.setSelected(mod.index) } }
+                  style={ !(mod.index === this.context.selected) ? undefined : { backgroundColor: 'rgba(50, 115, 220, 0.1)' } }
+                  onClick={ e => { if (e.target.type !== 'i') this.context.setSelected(mod.index) } }
                 >
-                  <td style={{ padding: 0, paddingLeft: '0.5em' }}>
-                    <div className="field">
-                      <input
-                        type='checkbox'
-                      />
-                      <label></label>
-                    </div>
+                  <td
+                    className='icon'
+                    style={ !mod.install.locked ? undefined : { opacity: 0.7 } }
+                    onClick={ () => { this.context.toggleMod(mod.index) } }
+                  >
+                    <i className={ `far fa-${mod.install.selected ? 'check-square' : 'square'}` }></i>
                   </td>
+                  <td className='icon locked' title={ !mod.install.locked ? undefined :
+                    mod.install.selected ?
+                      'This mod is required by another mod.' :
+                      'This mod conflicts with another mod.'
+                  }>
+                    <i className={ `fas fa-exclamation${!mod.install.locked ? ' hidden' : ''}` }></i>
+                  </td>
+
                   <td className='monospaced'>{ mod.name }</td>
                   <td className='monospaced'>{ mod.details.author.name }</td>
                   <td className='monospaced'>{ mod.version }</td>
