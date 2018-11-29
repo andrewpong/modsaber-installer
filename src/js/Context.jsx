@@ -30,6 +30,11 @@ export class ControllerProvider extends Component {
       selected: null,
     }
 
+    ipcRenderer.on('set-status', (_, { text, status }) => {
+      if (text) this.setState({ statusText: text })
+      if (status) this.setState({ status })
+    })
+
     ipcRenderer.on('set-path', (_, install) => this.setState({ install }))
     ipcRenderer.on('set-remote', (_, { status, mods, gameVersions }) => {
       if (status === 'error') return this.setState({ statusText: c.STATUS_TEXT_OFFLINE, status: c.STATUS_OFFLINE })
@@ -50,6 +55,8 @@ export class ControllerProvider extends Component {
   componentDidMount () {
     ipcRenderer.send('get-path')
     ipcRenderer.send('get-remote')
+
+    this.setState({ statusText: 'Loading mods...' })
   }
 
   filterMods (index = 0) {
@@ -208,7 +215,7 @@ export class ControllerProvider extends Component {
   installMods () {
     const mods = [...this.state.filteredMods]
     const toInstall = mods.filter(mod => mod.install.selected || mod.install.requiredBy.length > 0 || false)
-    console.log(toInstall.map(mod => `${mod.name}@${mod.version} // ${mod.details.author.name}`))
+    ipcRenderer.send('install-mods', { mods: toInstall, install: this.state.install })
   }
 
   render () {

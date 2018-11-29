@@ -11,11 +11,11 @@ class MainLoader extends Component {
   static contextType = Context
 
   render () {
-    if (this.context.status === c.STATUS_LOADING) {
+    if (this.context.status === c.STATUS_LOADING || this.context.status === c.STATUS_WORKING) {
       return (
         <>
           <i className='fas fa-spin fa-cog fa-2x'></i>
-          <span style={{ marginTop: '5px' }}>Loading...</span>
+          <span style={{ marginTop: '5px' }}>{this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working' }...</span>
         </>
       )
     }

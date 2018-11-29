@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
-import { BASE_URL } from '../constants.js'
+import { BASE_URL, STATUS_WORKING, STATUS_LOADING } from '../constants.js'
 
 /**
  * @type {Electron}
@@ -30,7 +30,14 @@ class BottomBar extends Component {
         >
           View Selected Mod Info
         </button>
-        <button className='button' onClick={ () => { this.context.installMods() } }>Install / Update</button>
+
+        <button
+          className='button'
+          disabled={ this.context.status === STATUS_WORKING || this.context.status === STATUS_LOADING }
+          onClick={ () => { this.context.installMods() } }
+        >
+          Install / Update
+        </button>
       </>
     )
   }
