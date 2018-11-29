@@ -82,20 +82,16 @@ class Mods extends Component {
                 >
                   <td
                     className='icon'
-                    style={ !mod.install.locked ? undefined : { opacity: 0.7 } }
+                    style={ mod.install.requiredBy.length === 0 ? undefined : { opacity: 0.7 } }
                     onClick={ () => { this.context.toggleMod(mod.index) } }
                   >
-                    <i className={ `far fa-${mod.install.selected ? 'check-square' : 'square'}` }></i>
+                    <i className={ `far fa-${mod.install.selected || mod.install.requiredBy.length > 0 || false ? 'check-square' : 'square'}` }></i>
                   </td>
-                  <td className='icon locked' title={ !mod.install.locked ? undefined :
-                    mod.install.selected ?
-                      'This mod is required by another mod.' :
-                      'This mod conflicts with another mod.'
-                  }>
-                    <i className={ `fas fa-exclamation${!mod.install.locked ? ' hidden' : ''}` }></i>
+                  <td className='icon locked' title={ mod.install.requiredBy.length === 0 ? undefined : 'This mod is required!' }>
+                    <i className={ `fas fa-exclamation${mod.install.requiredBy.length === 0 ? ' hidden' : ''}` }></i>
                   </td>
 
-                  <td className='monospaced'>{ mod.name }</td>
+                  <td className='monospaced'>{ mod.details.title }</td>
                   <td className='monospaced'>{ mod.details.author.name }</td>
                   <td className='monospaced'>{ mod.version }</td>
                 </tr>

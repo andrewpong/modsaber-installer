@@ -16,6 +16,7 @@
     "react-dom": "^16.6.3",
     "react-helmet": "^5.2.0",
     "react-scripts": "^2.1.1",
+    "semver": "^5.6.0",
     "snekfetch": "^4.0.4",
     "winreg": "^1.2.4"
   },

@@ -30,7 +30,7 @@ class BottomBar extends Component {
         >
           View Selected Mod Info
         </button>
-        <button className='button'>Install / Update</button>
+        <button className='button' onClick={ () => { this.context.installMods() } }>Install / Update</button>
       </>
     )
   }

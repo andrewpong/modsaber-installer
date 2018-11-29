@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import semver from 'semver'
 import PropTypes from 'prop-types'
 
 import * as c from './constants.js'
@@ -63,8 +64,8 @@ export class ControllerProvider extends Component {
       })
       .map(mod => {
         mod.install = {
-          selected: c.MODS_REQUIRED.includes(mod.name) || c.MODS_DEFAULT.includes(mod.name),
-          locked: c.MODS_REQUIRED.includes(mod.name),
+          selected: c.MODS_DEFAULT.includes(mod.name),
+          requiredBy: c.MODS_REQUIRED.includes(mod.name) ? ['global'] : [],
         }
 
         return mod
@@ -74,14 +75,93 @@ export class ControllerProvider extends Component {
   }
 
   toggleMod (index) {
-    const mods = [...this.state.filteredMods]
-    const mod = JSON.parse(JSON.stringify(mods[index]))
+    // Deep clone
+    const mods = JSON.parse(JSON.stringify(this.state.filteredMods))
+    const mod = mods[index]
 
-    if (mod.install.locked) return undefined
+    if (mod.install.requiredBy.length > 0) return undefined
     mod.install.selected = !mod.install.selected
+
+    if (mod.install.selected) this.checkMod(mod, mods)
+    else this.uncheckMod(mod, mods)
 
     mods[index] = mod
     this.setState({ filteredMods: mods })
+  }
+
+  checkMod (mod, mods) {
+    const linkKeys = this.findLinks(mod, mods, true)
+    for (const key of linkKeys) {
+      const [name, version] = key.split('@')
+      const i = mods.findIndex(x => x.name === name && x.version === version)
+      const depMod = mods[i]
+
+      depMod.install.requiredBy = [...depMod.install.requiredBy, this.modKey(mod)]
+
+      mods[i] = depMod
+    }
+
+    return mods
+  }
+
+  uncheckMod (mod, mods) {
+    const key = this.modKey(mod)
+    const otherMods = mods.filter(x => x.install.requiredBy.includes(key))
+
+    for (const otherModIdx in otherMods) {
+      otherMods[otherModIdx].install.requiredBy =
+        otherMods[otherModIdx].install.requiredBy.filter(x => x !== key)
+    }
+
+    return mods
+  }
+
+  modKey (mod) {
+    return `${mod.name}@${mod.version}`
+  }
+
+  findLinks (mod, mods, keys = false) {
+    const modsClone = JSON.parse(JSON.stringify(mods))
+    const recursiveSearch = this.findLinksR(mod.links.dependencies, modsClone)
+      .filter(x => x !== this.modKey(mod))
+
+    if (keys) return recursiveSearch
+    return recursiveSearch.map(key => {
+      const [name, version] = key.split('@')
+      return modsClone.find(x => x.name === name && x.version === version)
+    })
+  }
+
+  findLinksR (dependencies, mods, li, ch) {
+    const links = !li ? [] : [...li]
+    const checked = !ch ? [] : [...ch]
+
+    for (const link of dependencies) {
+      const [name, range] = link.split('@')
+      const search = mods.find(x => x.name === name && semver.satisfies(x.version, range))
+
+      // Not satisfied
+      if (!search) throw new Error()
+
+      links.push(this.modKey(search))
+      checked.push(link)
+
+      const nestedDeps = search.links.dependencies.filter(x => !checked.includes(x))
+      if (nestedDeps.length > 0) {
+        const nested = this.findLinksR(nestedDeps, mods, links, checked)
+        for (const n of nested) {
+          if (!links.includes(n)) links.push(n)
+        }
+      }
+    }
+
+    return links
+  }
+
+  installMods () {
+    const mods = [...this.state.filteredMods]
+    const toInstall = mods.filter(mod => mod.install.selected || mod.install.requiredBy.length > 0 || false)
+    console.log(toInstall.map(mod => `${mod.name}@${mod.version} // ${mod.details.author.name}`))
   }
 
   render () {
@@ -97,6 +177,7 @@ export class ControllerProvider extends Component {
         gameVersions: this.state.gameVersions,
         filteredMods: this.state.filteredMods,
         toggleMod: index => { this.toggleMod(index) },
+        installMods: () => { this.installMods() },
 
         selected: this.state.selected,
         setSelected: selected => this.setState({ selected }),
