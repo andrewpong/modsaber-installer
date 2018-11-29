@@ -8,11 +8,13 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
     "@lolpants/bulma": "^0.7.2",
+    "bulma-checkradio": "^2.1.0",
     "electron-is-dev": "^1.0.1",
     "electron-updater": "^4.0.4",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-helmet": "^5.2.0",
     "react-scripts": "^2.1.1",
     "snekfetch": "^4.0.4",
     "winreg": "^1.2.4"

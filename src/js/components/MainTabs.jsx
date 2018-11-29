@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
+import Mods from './tabs/Mods.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
 
@@ -26,7 +27,7 @@ class MainLoader extends Component {
       )
     }
 
-    return <div></div>
+    return <Mods />
   }
 }
 

@@ -20,6 +20,11 @@ html, body {
   width: 100%;
 }
 
+.monospaced {
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.9rem;
+}
+
 /* Layout */
 div.layout {
   --margin: 5px;
@@ -43,15 +48,35 @@ div.layout-item.main {
 
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 div.box#main {
   flex-grow: 1;
+  max-height: calc(100vh - 197px);
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.is-checkradio[type=checkbox]+label::before,
+.is-checkradio[type=checkbox]+label:before {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.is-checkradio[type=checkbox]+label::after,
+.is-checkradio[type=checkbox]+label:after {
+  top: 0.25rem;
+  left: 0.45rem;
+}
+
+.is-checkradio[type=checkbox]+label {
+  padding-left: 0;
+  font-size: 0px;
+  padding-top: 8px;
 }
 
 /* Bottom Bar */

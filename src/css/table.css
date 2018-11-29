@@ -1,0 +1,38 @@
+.table.is-narrow td, .table.is-narrow th {
+  padding: 0.2em 0.5em;
+}
+
+.table td {
+  border: 1px solid transparent !important;
+}
+
+.table th {
+  height: 0;
+  line-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  color: transparent;
+  border: none !important;
+  white-space: nowrap;
+}
+
+.table th div {
+  position: absolute;
+  background: transparent;
+  color: #363636;
+  padding: 9px 25px;
+  top: 65px;
+  margin-left: -25px;
+  line-height: normal;
+}
+
+.table thead div.header {
+  position: absolute;
+  border-radius: 6px 6px 0 0;
+  left: 10px;
+  top: 65px;
+  height: 41px;
+  background-color: white;
+  width: calc(100% - 61px);
+  border-bottom: 2px solid #dbdbdb;
+}

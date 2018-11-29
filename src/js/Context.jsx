@@ -21,6 +21,7 @@ export class ControllerProvider extends Component {
 
       mods: [],
       gameVersions: [],
+      filteredMods: [],
     }
 
     ipcRenderer.on('set-install', (_, install) => this.setState({ install }))
@@ -32,7 +33,7 @@ export class ControllerProvider extends Component {
         status: 'loaded',
         mods,
         gameVersions,
-      })
+      }, () => { this.filterMods() })
     })
   }
 
@@ -45,6 +46,21 @@ export class ControllerProvider extends Component {
     ipcRenderer.send('get-remote')
   }
 
+  filterMods (index = 0) {
+    const { mods, gameVersions } = this.state
+    const gameVersion = gameVersions[index] || {}
+
+    const filteredMods = mods
+      .filter(mod => mod !== null)
+      .filter(mod => mod.gameVersion.manifest === gameVersion.manifest)
+      .map(mod => {
+        mod.meta.category = mod.meta.category || 'Other'
+        return mod
+      })
+
+    this.setState({ filteredMods })
+  }
+
   render () {
     return (
       <Provider value={{
@@ -53,6 +69,10 @@ export class ControllerProvider extends Component {
         status: this.state.status,
 
         setStatusText: statusText => this.setState({ statusText }),
+
+        mods: this.state.mods,
+        gameVersions: this.state.gameVersions,
+        filteredMods: this.state.filteredMods,
       }}>
         { this.props.children }
       </Provider>
