@@ -87,8 +87,9 @@ class Mods extends Component {
                   >
                     <i className={ `far fa-${mod.install.selected || mod.install.requiredBy.length > 0 || false ? 'check-square' : 'square'}` }></i>
                   </td>
+
                   <td className='icon locked' title={ mod.install.requiredBy.length === 0 ? undefined : 'This mod is required!' }>
-                    <i className={ `fas fa-exclamation${mod.install.requiredBy.length === 0 ? ' hidden' : ''}` }></i>
+                    <i className={ `fas fa-lock${mod.install.requiredBy.length === 0 ? ' hidden' : ''}` }></i>
                   </td>
 
                   <td className='monospaced'>{ mod.details.title }</td>
