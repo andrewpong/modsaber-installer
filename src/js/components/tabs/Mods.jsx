@@ -74,29 +74,37 @@ class Mods extends Component {
                 </td>
               </tr>
 
-              { mods.map((mod, j) =>
-                <tr
-                  key={ j }
-                  style={ !(mod.index === this.context.selected) ? undefined : { backgroundColor: 'rgba(50, 115, 220, 0.1)' } }
-                  onClick={ e => { if (e.target.type !== 'i') this.context.setSelected(mod.index) } }
-                >
-                  <td
-                    className='icon'
-                    style={ mod.install.requiredBy.length === 0 ? undefined : { opacity: 0.7 } }
-                    onClick={ () => { this.context.toggleMod(mod.index) } }
+              { mods.map((mod, j) => {
+                const locked = mod.install.requiredBy.length > 0 || mod.install.conflictsWith.length > 0
+
+                return (
+                  <tr
+                    key={ j }
+                    style={ !(mod.index === this.context.selected) ? undefined : { backgroundColor: 'rgba(50, 115, 220, 0.1)' } }
+                    onClick={ e => { if (e.target.type !== 'i') this.context.setSelected(mod.index) } }
                   >
-                    <i className={ `far fa-${mod.install.selected || mod.install.requiredBy.length > 0 || false ? 'check-square' : 'square'}` }></i>
-                  </td>
+                    <td
+                      className='icon'
+                      style={ !locked ? undefined : { opacity: 0.7 } }
+                      onClick={ () => { this.context.toggleMod(mod.index) } }
+                    >
+                      <i className={ `far fa-${mod.install.selected || mod.install.requiredBy.length > 0 || false ? 'check-square' : 'square'}` }></i>
+                    </td>
 
-                  <td className='icon locked' title={ mod.install.requiredBy.length === 0 ? undefined : 'This mod is required!' }>
-                    <i className={ `fas fa-lock${mod.install.requiredBy.length === 0 ? ' hidden' : ''}` }></i>
-                  </td>
+                    <td className='icon locked' title={
+                      !locked ? undefined : mod.install.selected || mod.install.requiredBy.length > 0 ?
+                        'This mod is required!' :
+                        'CONFLICT'
+                    }>
+                      <i className={ `fas fa-lock${!locked ? ' hidden' : ''}` }></i>
+                    </td>
 
-                  <td className='monospaced'>{ mod.details.title }</td>
-                  <td className='monospaced'>{ mod.details.author.name }</td>
-                  <td className='monospaced'>{ mod.version }</td>
-                </tr>
-              ) }
+                    <td className='monospaced'>{ mod.details.title }</td>
+                    <td className='monospaced'>{ mod.details.author.name }</td>
+                    <td className='monospaced'>{ mod.version }</td>
+                  </tr>
+                )
+              }) }
             </Fragment>
           )}</tbody>
         </table>

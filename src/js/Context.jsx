@@ -9,6 +9,7 @@ import * as c from './constants.js'
  */
 const electron = window.require('electron')
 const { ipcRenderer } = electron
+const { dialog } = electron.remote
 
 const Context = React.createContext()
 const { Provider, Consumer } = Context
@@ -66,6 +67,7 @@ export class ControllerProvider extends Component {
         mod.install = {
           selected: c.MODS_DEFAULT.includes(mod.name),
           requiredBy: c.MODS_REQUIRED.includes(mod.name) ? ['global'] : [],
+          conflictsWith: [],
         }
 
         return mod
@@ -79,50 +81,78 @@ export class ControllerProvider extends Component {
     const mods = JSON.parse(JSON.stringify(this.state.filteredMods))
     const mod = mods[index]
 
-    if (mod.install.requiredBy.length > 0) return undefined
+    const locked = mod.install.requiredBy.length > 0 || mod.install.conflictsWith.length > 0
+    if (locked) return undefined
+
     mod.install.selected = !mod.install.selected
 
     if (mod.install.selected) this.checkMod(mod, mods)
     else this.uncheckMod(mod, mods)
-
-    mods[index] = mod
-    this.setState({ filteredMods: mods })
   }
 
   checkMod (mod, mods) {
-    const linkKeys = this.findLinks(mod, mods, true)
-    for (const key of linkKeys) {
+    const depKeys = this.findLinks(mod, mods, 'dependencies', true)
+    for (const key of depKeys) {
       const [name, version] = key.split('@')
-      const i = mods.findIndex(x => x.name === name && x.version === version)
-      const depMod = mods[i]
+      const depMod = mods.find(x => x.name === name && x.version === version)
 
       depMod.install.requiredBy = [...depMod.install.requiredBy, this.modKey(mod)]
-
-      mods[i] = depMod
     }
 
-    return mods
+    const conflicts = this.findLinks(mod, mods, 'conflicts', true)
+    for (const conflictKey of conflicts) {
+      const [name, version] = conflictKey.split('@')
+      const conflict = mods.find(x => x.name === name && x.version === version)
+
+      conflict.install.conflictsWith = [...conflict.install.conflictsWith, this.modKey(mod)]
+
+      console.log(conflictKey)
+      const selected = conflict.install.selected || conflict.install.requiredBy.length > 0 || false
+      if (!selected) continue
+
+      return dialog.showMessageBox({
+        title: 'Conflicting Mod',
+        type: 'error',
+        message:
+          `This mod conflicts with ${conflict.details.title} v${conflict.version}\n\n` +
+          `Uncheck it and try again!`,
+      })
+    }
+
+    this.setState({ filteredMods: mods })
   }
 
   uncheckMod (mod, mods) {
     const key = this.modKey(mod)
-    const otherMods = mods.filter(x => x.install.requiredBy.includes(key))
+    const otherMods = mods.filter(x => x.install.requiredBy.includes(key) || x.install.conflictsWith.includes(key))
 
     for (const otherModIdx in otherMods) {
       otherMods[otherModIdx].install.requiredBy =
         otherMods[otherModIdx].install.requiredBy.filter(x => x !== key)
+
+      otherMods[otherModIdx].install.conflictsWith =
+        otherMods[otherModIdx].install.conflictsWith.filter(x => x !== key)
     }
 
-    return mods
+    this.setState({ filteredMods: mods })
   }
 
   modKey (mod) {
     return `${mod.name}@${mod.version}`
   }
 
-  findLinks (mod, mods, keys = false) {
+  /**
+   * @param {any} mod Mod to search
+   * @param {any[]} mods Array of Mods
+   * @param {('dependencies'|'conflicts')} type Type
+   * @param {boolean} [keys] Checked
+   * @returns {string[]}
+   */
+  findLinks (mod, mods, type, keys = false) {
     const modsClone = JSON.parse(JSON.stringify(mods))
-    const recursiveSearch = this.findLinksR(mod.links.dependencies, modsClone)
+
+    const links = type === 'dependencies' ? mod.links.dependencies : mod.links.conflicts
+    const recursiveSearch = this.findLinksR(links, modsClone, type)
       .filter(x => x !== this.modKey(mod))
 
     if (keys) return recursiveSearch
@@ -132,23 +162,41 @@ export class ControllerProvider extends Component {
     })
   }
 
-  findLinksR (dependencies, mods, li, ch) {
+  /**
+   * @param {string[]} linksToSearch Array of links
+   * @param {any[]} mods Array of Mods
+   * @param {('dependencies'|'conflicts')} type Type
+   * @param {string[]} li Checked
+   * @param {string[]} ch Checked
+   * @returns {string[]}
+   */
+  findLinksR (linksToSearch, mods, type, li, ch) {
     const links = !li ? [] : [...li]
     const checked = !ch ? [] : [...ch]
 
-    for (const link of dependencies) {
+    for (const link of linksToSearch) {
       const [name, range] = link.split('@')
       const search = mods.find(x => x.name === name && semver.satisfies(x.version, range))
 
       // Not satisfied
-      if (!search) throw new Error()
+      if (!search && type === 'dependencies') throw new Error('Dependency not satisfied')
 
-      links.push(this.modKey(search))
-      checked.push(link)
+      // Push link
+      const key = this.modKey(search)
+      if (!links.includes(key)) {
+        links.push(key)
+        checked.push(link)
+      }
 
-      const nestedDeps = search.links.dependencies.filter(x => !checked.includes(x))
-      if (nestedDeps.length > 0) {
-        const nested = this.findLinksR(nestedDeps, mods, links, checked)
+      // Conflicts only need to check 1 level deep
+      if (type === 'conflicts') continue
+
+      const nestedLinks = search.links.dependencies.filter(x => !checked.includes(x))
+
+      // Process nested links
+      if (nestedLinks.length > 0) {
+        const nested = this.findLinksR(nestedLinks, mods, type, links, checked)
+
         for (const n of nested) {
           if (!links.includes(n)) links.push(n)
         }
