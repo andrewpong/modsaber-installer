@@ -24,6 +24,7 @@ app.on('ready', () => {
     minWidth: width,
     minHeight: isDev ? height + 20 : height,
     show: false,
+    icon: path.join(__dirname, 'icon.png'),
   })
 
   const menu = !isDev ? null : new Menu.buildFromTemplate([ // eslint-disable-line
