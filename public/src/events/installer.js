@@ -1,11 +1,14 @@
 const { join, parse } = require('path')
 const { exec } = require('child_process')
-const { ipcMain, dialog } = require('electron')
+const { ipcMain, dialog, BrowserWindow } = require('electron')
 const { get } = require('snekfetch')
 const AdmZip = require('adm-zip')
 const fse = require('../logic/file.js')
 
 ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
+  // Get Browser Window
+  const window = BrowserWindow.fromWebContents(sender)
+
   // Invalid install path
   if (install.platform === 'unknown' || !install.valid) return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
 
@@ -50,7 +53,8 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
 
   if (!canPatch) {
     sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
-    return dialog.showMessageBox({
+
+    return dialog.showMessageBox(window, {
       title: 'IPA Error',
       type: 'error',
       message: 'Could not patch Beat Saber (IPA Missing)',
@@ -62,7 +66,7 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
   exec(`"${ipaPath}" "${exePath}"`, err => {
     if (err) {
       sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
-      return dialog.showMessageBox({
+      return dialog.showMessageBox(window, {
         title: 'IPA Error',
         type: 'error',
         message: 'Could not patch Beat Saber (IPA Error!)',

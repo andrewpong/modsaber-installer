@@ -8,14 +8,14 @@ import * as c from '../constants.js'
  */
 const electron = window.require('electron')
 const { ipcRenderer } = electron
-const { dialog } = electron.remote
+const { dialog, getCurrentWindow } = electron.remote
 
 class PathPicker extends Component {
   static contextType = Context
 
   componentDidMount () {
     ipcRenderer.on('invalid-path', () => {
-      dialog.showMessageBox({
+      dialog.showMessageBox(getCurrentWindow(), {
         title: 'Invalid Path',
         type: 'error',
         message: "The directory you selected doesn't contain Beat Saber.exe!\nPlease try again.",
@@ -23,7 +23,7 @@ class PathPicker extends Component {
     })
 
     ipcRenderer.on('unknown-path', () => {
-      dialog.showMessageBox({
+      dialog.showMessageBox(getCurrentWindow(), {
         title: 'Unknown Install Directory',
         type: 'error',
         message: 'We could not automatically find your Beat Saber install folder.\nPlease select it manually.',
@@ -32,7 +32,7 @@ class PathPicker extends Component {
   }
 
   openDialog () {
-    dialog.showOpenDialog({
+    dialog.showOpenDialog(getCurrentWindow(), {
       properties: ['openDirectory'],
       defaultPath: this.context.install.path || undefined,
     }, paths => {

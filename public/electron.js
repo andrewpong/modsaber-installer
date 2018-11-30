@@ -52,12 +52,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
-autoUpdater.on('download-progress', percent => {
-  window.setProgressBar(percent.percent, { mode: 'normal' })
+autoUpdater.on('download-progress', ({ percent }) => {
+  window.setProgressBar(percent, { mode: 'normal' })
 })
 
 autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox({
+  dialog.showMessageBox(window, {
     type: 'info',
     buttons: [],
     title: 'Updater',

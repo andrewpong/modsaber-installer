@@ -9,7 +9,7 @@ import * as c from './constants.js'
  */
 const electron = window.require('electron')
 const { ipcRenderer } = electron
-const { dialog } = electron.remote
+const { dialog, getCurrentWindow } = electron.remote
 
 const Context = React.createContext()
 const { Provider, Consumer } = Context
@@ -134,7 +134,7 @@ export class ControllerProvider extends Component {
       const selected = conflict.install.selected || conflict.install.requiredBy.length > 0 || false
       if (!selected) continue
 
-      return dialog.showMessageBox({
+      return dialog.showMessageBox(getCurrentWindow(), {
         title: 'Conflicting Mod',
         type: 'error',
         message:
