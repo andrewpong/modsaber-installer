@@ -7,7 +7,7 @@ const fse = require('../logic/file.js')
 
 ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
   // Invalid install path
-  if (install.platform === 'unknown' || !install.valid) return
+  if (install.platform === 'unknown' || !install.valid) return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
 
   sender.send('set-status', { text: 'Downloading mods...', status: 'working' })
 

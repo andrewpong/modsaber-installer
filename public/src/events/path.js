@@ -3,7 +3,8 @@ const { findPath, testPath } = require('../logic/pathFinder.js')
 
 ipcMain.on('get-path', async ({ sender }) => {
   const path = await findPath()
-  sender.send('set-path', path)
+  if (path.platform === 'unknown') sender.send('unknown-path')
+  else sender.send('set-path', path)
 })
 
 ipcMain.on('set-path', async ({ sender }, installDir) => {

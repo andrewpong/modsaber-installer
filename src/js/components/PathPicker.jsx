@@ -19,6 +19,14 @@ class PathPicker extends Component {
         message: "The directory you selected doesn't contain Beat Saber.exe!\nPlease try again.",
       }, () => { this.openDialog() })
     })
+
+    ipcRenderer.on('unknown-path', () => {
+      dialog.showMessageBox({
+        title: 'Unknown Install Directory',
+        type: 'error',
+        message: 'We could not automatically find your Beat Saber install folder.\nPlease select it manually.',
+      }, () => { this.openDialog() })
+    })
   }
 
   openDialog () {
