@@ -2,6 +2,8 @@ const path = require('path')
 const Registry = require('winreg')
 const fse = require('./file.js')
 
+const BEAT_SABER_EXE = 'Beat Saber.exe'
+
 /**
  * @typedef {('steam'|'oculus'|'unknown')} Platform
  */
@@ -65,8 +67,7 @@ const findSteam = async appID => {
  * @returns {Promise.<{ path: string, valid: boolean, platform: Platform }>}
  */
 const testPath = async installDir => {
-  const executable = 'Beat Saber.exe'
-  const valid = await fse.exists(path.join(installDir, executable))
+  const valid = await fse.exists(path.join(installDir, BEAT_SABER_EXE))
 
   const lower = installDir.toLowerCase()
   const oculus = lower.includes('oculus') || lower.includes('hyperbolic-magnetism-beat-saber')
@@ -74,17 +75,42 @@ const testPath = async installDir => {
   return { path: installDir, valid, platform: oculus ? 'oculus' : 'steam' }
 }
 
+const findOculus = () => new Promise((resolve, reject) => {
+  const regKey = new Registry({
+    hive: Registry.HKLM,
+    key: '\\Software\\WOW6432Node\\Oculus VR, LLC\\Oculus\\Config',
+  })
+
+  regKey.get('InitialAppLibrary', (err, key) => {
+    if (err) return reject(err)
+
+    const oculusPath = path.join(key.value, 'Software/hyperbolic-magnetism-beat-saber')
+    resolve(oculusPath)
+  })
+})
+
 /**
  * @returns {Promise.<{path: string, platform: Platform}>}
  */
 const findPath = async () => {
-  const steamPath = await findSteam('620980')
-  if (steamPath) {
-    const pathTest = await testPath(steamPath)
-    if (pathTest.valid) return pathTest
+  try {
+    const steamPath = await findSteam('620980')
+    if (steamPath) {
+      const pathTest = await testPath(steamPath)
+      if (pathTest.valid) return pathTest
+    }
+
+    const oculusPath = await findOculus()
+    if (oculusPath) {
+      const pathTest = await testPath(oculusPath)
+      if (pathTest.valid) return pathTest
+    }
+  } catch (err) {
+    // Do nothing
+    console.error(err)
   }
 
   return { path: null, platform: 'unknown' }
 }
 
-module.exports = { findSteamLibraries, findSteam, testPath, findPath }
+module.exports = { findSteam, findOculus, testPath, findPath }
