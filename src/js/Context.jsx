@@ -61,7 +61,13 @@ export class ControllerProvider extends Component {
     this.setState({ statusText: c.STATUS_TEXT_LOADING })
   }
 
-  filterMods (index = 0) {
+  setStateAsync (state) {
+    return new Promise(resolve => {
+      this.setState(state, () => { resolve() })
+    })
+  }
+
+  async filterMods (index = 0) {
     const { mods, gameVersions } = this.state
     const gameVersion = gameVersions[index] || {}
 
@@ -90,7 +96,7 @@ export class ControllerProvider extends Component {
       })
       .map(mod => {
         mod.install = {
-          selected: c.MODS_DEFAULT.includes(mod.name),
+          selected: false,
           requiredBy: c.MODS_REQUIRED.includes(mod.name) ? ['global'] : [],
           conflictsWith: [],
         }
@@ -98,7 +104,15 @@ export class ControllerProvider extends Component {
         return mod
       })
 
-    this.setState({ filteredMods, selected: null })
+    await this.setStateAsync({ filteredMods, selected: null })
+
+    const defaultMods = this.state.filteredMods
+      .filter(x => c.MODS_DEFAULT.includes(x.name))
+      .map(x => this.state.filteredMods.findIndex(mod => mod.name === x.name && mod.version === x.version))
+
+    for (const idx of defaultMods) {
+      await this.toggleMod(idx) // eslint-disable-line
+    }
   }
 
   toggleMod (index) {
@@ -111,8 +125,8 @@ export class ControllerProvider extends Component {
 
     mod.install.selected = !mod.install.selected
 
-    if (mod.install.selected) this.checkMod(mod, mods)
-    else this.uncheckMod(mod, mods)
+    if (mod.install.selected) return this.checkMod(mod, mods)
+    else return this.uncheckMod(mod, mods)
   }
 
   checkMod (mod, mods) {
@@ -143,7 +157,7 @@ export class ControllerProvider extends Component {
       })
     }
 
-    this.setState({ filteredMods: mods })
+    return this.setStateAsync({ filteredMods: mods })
   }
 
   uncheckMod (mod, mods) {
@@ -158,7 +172,7 @@ export class ControllerProvider extends Component {
         otherMods[otherModIdx].install.conflictsWith.filter(x => x !== key)
     }
 
-    this.setState({ filteredMods: mods })
+    return this.setStateAsync({ filteredMods: mods })
   }
 
   modKey (mod) {
