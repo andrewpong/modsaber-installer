@@ -26,6 +26,7 @@ export const MODS_REQUIRED = [
 ]
 export const MODS_DEFAULT = [
   'scoresaber',
+  'beatsaverdownloader',
 ]
 
 // Other

@@ -1,4 +1,4 @@
-const BASE_URL = 'https://staging.modsaber.org'
+const BASE_URL = 'https://www.modsaber.org'
 
 module.exports = {
   BASE_URL, API_URL: `${BASE_URL}/api/v1.1`,
