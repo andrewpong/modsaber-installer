@@ -33,7 +33,11 @@ class BottomBar extends Component {
 
         <button
           className='button'
-          disabled={ this.context.status === STATUS_WORKING || this.context.status === STATUS_LOADING }
+          disabled={
+            this.context.status === STATUS_WORKING ||
+            this.context.status === STATUS_LOADING ||
+            this.context.filteredMods.length === 0
+          }
           onClick={ () => { this.context.installMods() } }
         >
           Install / Update

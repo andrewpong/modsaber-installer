@@ -42,12 +42,22 @@ div.layout-item {
   padding: 10px;
 }
 
-/* Input */
+/* Top Content */
+div.layout-item.top {
+  display: flex;
+  padding-bottom: 0;
+}
+
 input.input.monospaced {
   font-family: 'Fira Code', monospace;
   padding-top: 5px;
   padding-left: 34px !important;
   height: 2.8em;
+}
+
+.select select[disabled],
+.select select[disabled]:hover {
+  border-color: rgba(0, 0, 0, 0.4);
 }
 
 /* Main Content */

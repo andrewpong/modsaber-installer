@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
+import * as c from '../constants.js'
+
 /**
  * @type {Electron}
  */
@@ -40,10 +42,21 @@ class PathPicker extends Component {
     })
   }
 
+  switchVersion (gv) {
+    const gameVersions = JSON.parse(JSON.stringify(this.context.gameVersions))
+      .map(x => {
+        delete x.selected
+        return x
+      })
+
+    const idx = gameVersions.findIndex(x => x.manifest === gv.manifest)
+    this.context.filterMods(idx)
+  }
+
   render () {
     return (
       <>
-        <div className='field is-expanded has-addons'>
+        <div className='field is-expanded has-addons' style={{ flexGrow: 1 }}>
           <div className='control has-icons-left is-fullwidth'>
             <input
               type='text'
@@ -62,6 +75,16 @@ class PathPicker extends Component {
               ..
             </button>
           </div>
+        </div>
+
+        <div className='select' style={{ marginLeft: '10px' }} onChange={ e => { this.switchVersion(JSON.parse(e.target.value)) } }>
+          <select disabled={ this.context.status === c.STATUS_WORKING || this.context.status === c.STATUS_LOADING }>
+            { this.context.gameVersions.map((gv, i) =>
+              <option value={ JSON.stringify(gv) } selected={ gv.selected } key={ i }>
+                { gv.value }
+              </option>)
+            }
+          </select>
         </div>
       </>
     )

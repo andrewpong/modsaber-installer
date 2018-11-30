@@ -39,12 +39,14 @@ export class ControllerProvider extends Component {
     ipcRenderer.on('set-remote', (_, { status, mods, gameVersions }) => {
       if (status === 'error') return this.setState({ statusText: c.STATUS_TEXT_OFFLINE, status: c.STATUS_OFFLINE })
 
+      const gvIdx = gameVersions.findIndex(x => x.selected)
+
       this.setState({
         statusText: c.STATUS_TEXT_LOADED,
         status: c.STATUS_LOADED,
         mods,
         gameVersions,
-      }, () => { this.filterMods() })
+      }, () => { this.filterMods(gvIdx) })
     })
   }
 
@@ -56,16 +58,32 @@ export class ControllerProvider extends Component {
     ipcRenderer.send('get-path')
     ipcRenderer.send('get-remote')
 
-    this.setState({ statusText: 'Loading mods...' })
+    this.setState({ statusText: c.STATUS_TEXT_LOADING })
   }
 
   filterMods (index = 0) {
     const { mods, gameVersions } = this.state
     const gameVersion = gameVersions[index] || {}
 
-    const filteredMods = mods
+    const filtered = mods
       .filter(mod => mod !== null)
       .filter(mod => mod.gameVersion.manifest === gameVersion.manifest)
+
+    const grouped = Object.values(
+      filtered.reduce((acc, mod) => {
+        if (!acc[mod.name]) acc[mod.name] = []
+        acc[mod.name].push(mod)
+
+        return acc
+      }, {})
+    )
+
+    const latest = grouped.map(group => {
+      const [first] = group.sort((a, b) => semver.rcompare(a.version, b.version))
+      return first
+    })
+
+    const filteredMods = latest
       .map(mod => {
         mod.meta.category = mod.meta.category || c.CATEGORY_DEFAULT
         return mod
@@ -221,10 +239,11 @@ export class ControllerProvider extends Component {
   render () {
     return (
       <Provider value={{
+        status: this.state.status,
         statusText: this.state.statusText,
         install: this.state.install,
-        status: this.state.status,
 
+        setStatus: status => this.setState({ status }),
         setStatusText: statusText => this.setState({ statusText }),
 
         mods: this.state.mods,
@@ -232,6 +251,7 @@ export class ControllerProvider extends Component {
         filteredMods: this.state.filteredMods,
         toggleMod: index => { this.toggleMod(index) },
         installMods: () => { this.installMods() },
+        filterMods: gvIdx => { this.filterMods(gvIdx) },
 
         selected: this.state.selected,
         setSelected: selected => this.setState({ selected }),

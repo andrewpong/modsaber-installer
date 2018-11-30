@@ -3,6 +3,7 @@ export const BASE_URL = 'https://www.modsaber.org'
 
 // Status Text
 export const STATUS_TEXT_IDLE = 'Idle'
+export const STATUS_TEXT_LOADING = 'Loading mods...'
 export const STATUS_TEXT_OFFLINE = 'Could not connect to ModSaber'
 export const STATUS_TEXT_LOADED = 'Mod list loaded'
 
