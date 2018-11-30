@@ -1,6 +1,7 @@
 const { ipcMain } = require('electron')
 const { fetchMods, fetchGameVersions } = require('../logic/modsaber.js')
 const { findSteam } = require('../logic/pathFinder.js')
+const { STEAM_APP_ID } = require('../constants.js')
 
 ipcMain.on('get-remote', async ({ sender }) => {
   try {
@@ -9,7 +10,7 @@ ipcMain.on('get-remote', async ({ sender }) => {
       fetchGameVersions(),
     ])
 
-    const manifestTest = await findSteam('620980')
+    const manifestTest = await findSteam(STEAM_APP_ID)
     if (manifestTest) {
       const idx = gameVersions.findIndex(x => x.manifest === manifestTest.manifest)
       if (idx) gameVersions[idx].selected = true

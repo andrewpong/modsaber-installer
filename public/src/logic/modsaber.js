@@ -1,7 +1,5 @@
 const { get } = require('snekfetch')
-
-const BASE_URL = 'https://www.modsaber.org'
-const API_URL = `${BASE_URL}/api/v1.1`
+const { API_URL } = require('../constants.js')
 
 /**
  * @param {('latest'|'all')} options Mod Fetch Options

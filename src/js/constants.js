@@ -1,5 +1,11 @@
+/**
+ * @type {Electron}
+ */
+const electron = window.require('electron')
+const { getCurrentWindow } = electron.remote
+
 // Remote URLs
-export const BASE_URL = 'https://www.modsaber.org'
+export const BASE_URL = getCurrentWindow().custom.BASE_URL
 
 // Status Text
 export const STATUS_TEXT_IDLE = 'Idle'

@@ -4,6 +4,7 @@ const { ipcMain, dialog, BrowserWindow } = require('electron')
 const { get } = require('snekfetch')
 const AdmZip = require('adm-zip')
 const fse = require('../logic/file.js')
+const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
 
 ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
   // Get Browser Window
@@ -47,8 +48,8 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
     await Promise.all(jobs) // eslint-disable-line
   }
 
-  const exePath = join(install.path, 'Beat Saber.exe')
-  const ipaPath = join(install.path, 'IPA.exe')
+  const exePath = join(install.path, BEAT_SABER_EXE)
+  const ipaPath = join(install.path, IPA_EXE)
   const canPatch = await fse.exists(exePath) && await fse.exists(ipaPath)
 
   if (!canPatch) {

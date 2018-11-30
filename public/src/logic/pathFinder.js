@@ -1,8 +1,7 @@
 const path = require('path')
 const Registry = require('winreg')
 const fse = require('./file.js')
-
-const BEAT_SABER_EXE = 'Beat Saber.exe'
+const { BEAT_SABER_EXE, STEAM_APP_ID } = require('../constants.js')
 
 /**
  * @typedef {('steam'|'oculus'|'unknown')} Platform
@@ -102,7 +101,7 @@ const findOculus = () => new Promise((resolve, reject) => {
  */
 const findPath = async () => {
   try {
-    const steamPath = await findSteam('620980')
+    const steamPath = await findSteam(STEAM_APP_ID)
     if (steamPath) {
       const pathTest = await testPath(steamPath.path)
       if (pathTest.valid) return pathTest
