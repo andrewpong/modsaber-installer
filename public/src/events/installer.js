@@ -9,6 +9,10 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
   // Invalid install path
   if (install.platform === 'unknown' || !install.valid) return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
 
+  // Ensure UserData directory exists
+  await fse.ensureDir(join(install.path, 'UserData'))
+
+  // Send status
   sender.send('set-status', { text: 'Downloading mods...', status: 'working' })
 
   /**
