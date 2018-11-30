@@ -22,7 +22,8 @@ html, body {
 
 .monospaced {
   font-family: 'Fira Mono', monospace;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 /* Layout */

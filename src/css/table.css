@@ -54,13 +54,13 @@ td.icon.locked {
 td.icon i {
   font-size: 1.2rem;
   line-height: 0;
-  margin-top: 4px;
+  margin-top: 1px;
   transition: color 0.1s;
 }
 
 td.icon.locked i {
   font-size: 0.9rem;
-  margin-top: 3px;
+  margin-top: 0;
 }
 
 td.icon.disabled i {
