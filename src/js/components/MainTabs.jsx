@@ -1,44 +1,15 @@
 import React, { Component } from 'react'
-import Context from '../Context.jsx'
 
-import * as c from '../constants.js'
-
-import Mods from './tabs/Mods.jsx'
+import Main from './main/Main.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
-
-class MainLoader extends Component {
-  static contextType = Context
-
-  render () {
-    if (this.context.status === c.STATUS_LOADING || this.context.status === c.STATUS_WORKING) {
-      return (
-        <>
-          <i className='fas fa-spin fa-cog fa-2x'></i>
-          <span style={{ marginTop: '5px' }}>{this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working' }...</span>
-        </>
-      )
-    }
-
-    if (this.context.status === c.STATUS_OFFLINE) {
-      return (
-        <>
-          <i className='fas fa-exclamation-triangle fa-2x'></i>
-          <span style={{ marginTop: '5px' }}>Offline</span>
-        </>
-      )
-    }
-
-    return <Mods />
-  }
-}
 
 class MainTabs extends Component {
   constructor (props) {
     super(props)
 
     this.pages = [
-      { title: 'Mods', component: <MainLoader /> },
+      { title: 'Mods', component: <Main /> },
       { title: 'Help', component: <Help /> },
       { title: 'Credits', component: <Credits /> },
     ]
