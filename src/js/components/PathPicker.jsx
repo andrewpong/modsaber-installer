@@ -47,7 +47,7 @@ class PathPicker extends Component {
           <div className='control has-icons-left is-fullwidth'>
             <input
               type='text'
-              className='input'
+              className='input monospaced'
               readOnly
               value={ this.context.install.path || '' }
             />

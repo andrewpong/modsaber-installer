@@ -42,6 +42,14 @@ div.layout-item {
   padding: 10px;
 }
 
+/* Input */
+input.input.monospaced {
+  font-family: 'Fira Code', monospace;
+  padding-top: 5px;
+  padding-left: 34px !important;
+  height: 2.8em;
+}
+
 /* Main Content */
 div.layout-item.main {
   flex-grow: 1;
