@@ -2,7 +2,7 @@ const { get } = require('snekfetch')
 const { API_URL } = require('../constants.js')
 
 /**
- * @param {('latest'|'all')} options Mod Fetch Options
+ * @param {('latest'|'all'|'newest-by-gameversion')} options Mod Fetch Options
  * @returns {Promise.<any[]>}
  */
 const fetchMods = async options => {

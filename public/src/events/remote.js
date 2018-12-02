@@ -6,7 +6,7 @@ const { STEAM_APP_ID } = require('../constants.js')
 ipcMain.on('get-remote', async ({ sender }) => {
   try {
     const [mods, gameVersions] = await Promise.all([
-      fetchMods('all'),
+      fetchMods('newest-by-gameversion'),
       fetchGameVersions(),
     ])
 

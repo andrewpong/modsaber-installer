@@ -71,25 +71,9 @@ export class ControllerProvider extends Component {
     const { mods, gameVersions } = this.state
     const gameVersion = gameVersions[index] || {}
 
-    const filtered = mods
+    const filteredMods = mods
       .filter(mod => mod !== null)
       .filter(mod => mod.gameVersion.manifest === gameVersion.manifest)
-
-    const grouped = Object.values(
-      filtered.reduce((acc, mod) => {
-        if (!acc[mod.name]) acc[mod.name] = []
-        acc[mod.name].push(mod)
-
-        return acc
-      }, {})
-    )
-
-    const latest = grouped.map(group => {
-      const [first] = group.sort((a, b) => semver.rcompare(a.version, b.version))
-      return first
-    })
-
-    const filteredMods = latest
       .map(mod => {
         mod.meta.category = mod.meta.category || c.CATEGORY_DEFAULT
         return mod
