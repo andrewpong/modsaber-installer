@@ -37,8 +37,7 @@ class Mods extends Component {
   }
 
   render () {
-    const { filteredMods } = this.context
-    const categories = this.categorize(filteredMods)
+    const categories = this.categorize(this.context.mods)
 
     return (
       <>

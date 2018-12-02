@@ -18,7 +18,7 @@ class Main extends Component {
       return <Status text='Offline' icon='fas fa-exclamation-triangle' />
     }
 
-    if (this.context.filteredMods.length === 0) {
+    if (this.context.mods.length === 0) {
       return <Status text='No Mods' icon='fas fa-exclamation-triangle' />
     }
 

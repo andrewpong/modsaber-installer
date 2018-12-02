@@ -13,7 +13,7 @@ class BottomBar extends Component {
   static contextType = Context
 
   render () {
-    const mod = this.context.filteredMods[this.context.selected]
+    const mod = this.context.mods[this.context.selected]
     const modInfo = mod && `${BASE_URL}/mod/${mod.name}/${mod.version}`
 
     return (
@@ -36,7 +36,7 @@ class BottomBar extends Component {
           disabled={
             this.context.status === STATUS_WORKING ||
             this.context.status === STATUS_LOADING ||
-            this.context.filteredMods.length === 0
+            this.context.mods.length === 0
           }
           onClick={ () => { this.context.installMods() } }
         >

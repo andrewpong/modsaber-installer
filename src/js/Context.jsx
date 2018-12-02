@@ -23,9 +23,9 @@ export class ControllerProvider extends Component {
       install: { path: null, platform: 'unknown' },
       status: c.STATUS_LOADING,
 
-      mods: [],
+      rawMods: [],
       gameVersions: [],
-      filteredMods: [],
+      mods: [],
 
       selected: null,
     }
@@ -44,7 +44,7 @@ export class ControllerProvider extends Component {
       this.setState({
         statusText: c.STATUS_TEXT_LOADED,
         status: c.STATUS_LOADED,
-        mods,
+        rawMods: mods,
         gameVersions,
       }, () => { this.filterMods(gvIdx) })
     })
@@ -68,10 +68,10 @@ export class ControllerProvider extends Component {
   }
 
   async filterMods (index = 0) {
-    const { mods, gameVersions } = this.state
+    const { rawMods, gameVersions } = this.state
     const gameVersion = gameVersions[index] || {}
 
-    const filteredMods = mods
+    const mods = rawMods
       .filter(mod => mod !== null)
       .filter(mod => mod.gameVersion.manifest === gameVersion.manifest)
       .map(mod => {
@@ -88,11 +88,11 @@ export class ControllerProvider extends Component {
         return mod
       })
 
-    await this.setStateAsync({ filteredMods, selected: null })
+    await this.setStateAsync({ mods, selected: null })
 
-    const defaultMods = this.state.filteredMods
+    const defaultMods = this.state.mods
       .filter(x => c.MODS_DEFAULT.includes(x.name))
-      .map(x => this.state.filteredMods.findIndex(mod => mod.name === x.name && mod.version === x.version))
+      .map(x => this.state.mods.findIndex(mod => mod.name === x.name && mod.version === x.version))
 
     for (const idx of defaultMods) {
       await this.toggleMod(idx) // eslint-disable-line
@@ -101,7 +101,7 @@ export class ControllerProvider extends Component {
 
   toggleMod (index) {
     // Deep clone
-    const mods = JSON.parse(JSON.stringify(this.state.filteredMods))
+    const mods = JSON.parse(JSON.stringify(this.state.mods))
     const mod = mods[index]
 
     const locked = mod.install.requiredBy.length > 0 || mod.install.conflictsWith.length > 0
@@ -141,7 +141,7 @@ export class ControllerProvider extends Component {
       })
     }
 
-    return this.setStateAsync({ filteredMods: mods })
+    return this.setStateAsync({ mods })
   }
 
   uncheckMod (mod, mods) {
@@ -156,7 +156,7 @@ export class ControllerProvider extends Component {
         otherMods[otherModIdx].install.conflictsWith.filter(x => x !== key)
     }
 
-    return this.setStateAsync({ filteredMods: mods })
+    return this.setStateAsync({ mods })
   }
 
   modKey (mod) {
@@ -229,7 +229,7 @@ export class ControllerProvider extends Component {
   }
 
   installMods () {
-    const mods = [...this.state.filteredMods]
+    const mods = [...this.state.mods]
     const toInstall = mods.filter(mod => mod.install.selected || mod.install.requiredBy.length > 0 || false)
     ipcRenderer.send('install-mods', { mods: toInstall, install: this.state.install })
   }
@@ -244,9 +244,9 @@ export class ControllerProvider extends Component {
         setStatus: status => this.setState({ status }),
         setStatusText: statusText => this.setState({ statusText }),
 
-        mods: this.state.mods,
+        rawMods: this.state.rawMods,
         gameVersions: this.state.gameVersions,
-        filteredMods: this.state.filteredMods,
+        mods: this.state.mods,
         toggleMod: index => { this.toggleMod(index) },
         installMods: () => { this.installMods() },
         filterMods: gvIdx => { this.filterMods(gvIdx) },
