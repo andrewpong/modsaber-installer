@@ -14,6 +14,10 @@ class Main extends Component {
       return <Status text={ `${this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working'}...` } spin />
     }
 
+    if (this.context.install.pirated) {
+      return <Status text='Pirated Copy Detected' icon='fas fa-exclamation-triangle' />
+    }
+
     if (this.context.status === c.STATUS_OFFLINE) {
       return <Status text='Offline' icon='fas fa-exclamation-triangle' />
     }

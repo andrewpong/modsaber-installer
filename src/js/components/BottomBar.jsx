@@ -36,6 +36,7 @@ class BottomBar extends Component {
           disabled={
             this.context.status === STATUS_WORKING ||
             this.context.status === STATUS_LOADING ||
+            this.context.install.pirated ||
             this.context.mods.length === 0
           }
           onClick={ () => { this.context.installMods() } }
