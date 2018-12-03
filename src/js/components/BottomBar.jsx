@@ -31,18 +31,21 @@ class BottomBar extends Component {
           View Selected Mod Info
         </button>
 
-        <button
-          className='button'
-          disabled={
-            this.context.status === STATUS_WORKING ||
-            this.context.status === STATUS_LOADING ||
-            this.context.install.pirated ||
-            this.context.mods.length === 0
-          }
-          onClick={ () => { this.context.installMods() } }
-        >
-          Install / Update
-        </button>
+        {
+          this.context.install.pirated ?
+            <button className='button' onClick={ () => shell.openExternal('https://beatgames.com/') }>Buy the Game</button> :
+            <button
+              className='button'
+              disabled={
+                this.context.status === STATUS_WORKING ||
+                this.context.status === STATUS_LOADING ||
+                this.context.mods.length === 0
+              }
+              onClick={ () => { this.context.installMods() } }
+            >
+            Install / Update
+            </button>
+        }
       </>
     )
   }

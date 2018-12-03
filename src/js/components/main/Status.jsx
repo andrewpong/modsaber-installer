@@ -4,12 +4,12 @@ import PropTypes from 'prop-types'
 const Status = props =>
   <Fragment>
     <i className={ `${props.icon || 'fas fa-cog'} fa-2x${props.spin ? ' fa-spin' : ''}` }></i>
-    <span style={{ marginTop: '5px' }}>{ props.text }</span>
+    <span style={{ marginTop: '5px', textAlign: 'center' }}>{ props.children }</span>
   </Fragment>
 
 Status.propTypes = {
   icon: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
   spin: PropTypes.bool,
 }
 

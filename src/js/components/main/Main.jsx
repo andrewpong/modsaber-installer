@@ -6,24 +6,44 @@ import Context from '../../Context.jsx'
 import Status from './Status.jsx'
 import Mods from './Mods.jsx'
 
+/**
+ * @type {Electron}
+ */
+const electron = window.require('electron')
+const { shell } = electron
+
 class Main extends Component {
   static contextType = Context
 
   render () {
     if (this.context.status === c.STATUS_LOADING || this.context.status === c.STATUS_WORKING) {
-      return <Status text={ `${this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working'}...` } spin />
+      return (
+        <Status spin>
+          { this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working' }...
+        </Status>
+      )
     }
 
     if (this.context.install.pirated) {
-      return <Status text='Pirated Copy Detected' icon='fas fa-exclamation-triangle' />
+      return (
+        <Status icon='fas fa-exclamation-triangle'>
+          Pirated Copy Detected<br />
+          <a href='/' onClick={ e => {
+            e.preventDefault()
+            shell.openExternal('https://youtu.be/i8ju_10NkGY')
+          } }>
+            Override?
+          </a>
+        </Status>
+      )
     }
 
     if (this.context.status === c.STATUS_OFFLINE) {
-      return <Status text='Offline' icon='fas fa-exclamation-triangle' />
+      return <Status icon='fas fa-exclamation-triangle'>Offline</Status>
     }
 
     if (this.context.mods.length === 0) {
-      return <Status text='No Mods' icon='fas fa-exclamation-triangle' />
+      return <Status icon='fas fa-exclamation-triangle'>No Mods</Status>
     }
 
     return <Mods />
