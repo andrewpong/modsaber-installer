@@ -22,7 +22,7 @@ class BottomBar extends Component {
 
         <button
           className='button'
-          disabled={ this.context.selected === null }
+          disabled={ this.context.install.pirated || this.context.selected === null }
           onClick={ () => {
             if (!modInfo) return undefined
             else shell.openExternal(modInfo)
