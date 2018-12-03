@@ -1,6 +1,7 @@
 const path = require('path')
 const Registry = require('winreg')
 const fse = require('./file.js')
+const { checkPiracy } = require('./piracy.js')
 const { BEAT_SABER_EXE, STEAM_APP_ID } = require('../constants.js')
 
 /**
@@ -71,7 +72,7 @@ const findSteam = async appID => {
 /**
  * Tests an install directory for the Beat Saber Executable
  * @param {string} installDir Install Directory
- * @returns {Promise.<{ path: string, valid: boolean, platform: Platform }>}
+ * @returns {Promise.<{ path: string, valid: boolean, pirated: boolean, platform: Platform }>}
  */
 const testPath = async installDir => {
   const valid = await fse.exists(path.join(installDir, BEAT_SABER_EXE))
@@ -79,7 +80,9 @@ const testPath = async installDir => {
   const lower = installDir.toLowerCase()
   const oculus = lower.includes('oculus') || lower.includes('hyperbolic-magnetism-beat-saber')
 
-  return { path: installDir, valid, platform: oculus ? 'oculus' : 'steam' }
+  const pirated = await checkPiracy(installDir)
+
+  return { path: installDir, valid, pirated, platform: oculus ? 'oculus' : 'steam' }
 }
 
 const findOculus = () => new Promise((resolve, reject) => {
