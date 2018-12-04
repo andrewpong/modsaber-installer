@@ -46,7 +46,9 @@ app.on('ready', () => {
   window.loadURL(startURL)
 
   window.setTitle(`ModSaber Installer // v${VERSION}`)
-  window.show()
+  window.once('ready-to-show', () => {
+    window.show()
+  })
 
   window.custom = { BASE_URL }
 })
