@@ -2,7 +2,7 @@ const path = require('path')
 const { app, BrowserWindow, dialog, Menu } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
-const { BASE_URL } = require('./src/constants.js')
+const { BASE_URL, VERSION } = require('./src/constants.js')
 
 // Event Handlers
 require('./src/events/path.js')
@@ -45,7 +45,7 @@ app.on('ready', () => {
     `file://${path.join(__dirname, '../build/index.html')}`
   window.loadURL(startURL)
 
-  window.setTitle(`ModSaber Installer // v${require('../package.json').version}`)
+  window.setTitle(`ModSaber Installer // v${VERSION}`)
   window.show()
 
   window.custom = { BASE_URL }

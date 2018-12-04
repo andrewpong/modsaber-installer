@@ -2,7 +2,7 @@ const path = require('path')
 const AdmZip = require('adm-zip')
 const { get } = require('snekfetch')
 const { calculateHash } = require('./helpers.js')
-const { API_URL } = require('../constants.js')
+const { API_URL, USER_AGENT } = require('../constants.js')
 
 /**
  * @typedef {Object} Files
@@ -27,11 +27,11 @@ const { API_URL } = require('../constants.js')
 const fetchMods = async options => {
   const type = options || 'latest'
 
-  const { body: { lastPage } } = await get(`${API_URL}/mods/approved/${type}`)
+  const { body: { lastPage } } = await get(`${API_URL}/mods/approved/${type}`).set('User-Agent', USER_AGENT)
   const pages = Array.from(new Array(lastPage + 1)).map((_, i) => i)
 
   const multi = await Promise.all(pages.map(async page => {
-    const { body: { mods } } = await get(`${API_URL}/mods/approved/${type}/${page}`)
+    const { body: { mods } } = await get(`${API_URL}/mods/approved/${type}/${page}`).set('User-Agent', USER_AGENT)
     return mods
   }))
 
@@ -42,7 +42,7 @@ const fetchMods = async options => {
  * @returns {Promise.<{ id: string, value: string, manifest: string }[]>}
  */
 const fetchGameVersions = async () => {
-  const { body } = await get(`${API_URL}/site/gameversions`)
+  const { body } = await get(`${API_URL}/site/gameversions`).set('User-Agent', USER_AGENT)
   return body
 }
 
@@ -52,7 +52,7 @@ const fetchGameVersions = async () => {
  */
 const safeDownload = async url => {
   try {
-    const resp = await get(url)
+    const resp = await get(url).set('User-Agent', USER_AGENT)
 
     if (resp.statusCode !== 200) throw new Error('Status not 200')
     else return { error: false, body: resp.body }
