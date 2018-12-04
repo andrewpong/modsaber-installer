@@ -11,9 +11,9 @@ ipcMain.on('get-remote', async ({ sender }) => {
     ])
 
     const manifestTest = await findSteam(STEAM_APP_ID)
-    if (manifestTest) {
+    if (manifestTest.found) {
       const idx = gameVersions.findIndex(x => x.manifest === manifestTest.manifest)
-      if (idx) gameVersions[idx].selected = true
+      if (idx > 0) gameVersions[idx].selected = true
       else gameVersions[0].selected = true
     } else {
       gameVersions[0].selected = true

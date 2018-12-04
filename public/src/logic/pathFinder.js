@@ -36,37 +36,41 @@ const findSteamLibraries = () => new Promise((resolve, reject) => {
 /**
  * Find a Steam game install path by App ID
  * @param {string} appID Steam App ID
- * @returns {{ path: string, manifest: string }}
+ * @returns {{ found: boolean, path: string, manifest: string }}
  */
 const findSteam = async appID => {
-  const libraries = await findSteamLibraries()
+  try {
+    const libraries = await findSteamLibraries()
 
-  const manifests = await Promise.all(libraries.map(async library => {
-    const test = path.join(library, `appmanifest_${appID}.acf`)
-    const exists = await fse.exists(test)
-    return { path: test, library, exists }
-  }))
+    const manifests = await Promise.all(libraries.map(async library => {
+      const test = path.join(library, `appmanifest_${appID}.acf`)
+      const exists = await fse.exists(test)
+      return { path: test, library, exists }
+    }))
 
-  const [manifest] = manifests
-    .filter(x => x.exists)
+    const [manifest] = manifests
+      .filter(x => x.exists)
 
-  if (manifest === undefined) return null
-  const manifestLines = await fse.readFile(manifest.path, 'utf8')
+    if (manifest === undefined) return null
+    const manifestLines = await fse.readFile(manifest.path, 'utf8')
 
-  const regex = /\s"installdir"\s+"(.+)"/
-  const [installDir] = manifestLines.split('\n')
-    .filter(line => line.match(regex))
-    .map(line => regex.exec(line)[1].replace(/\\\\/g, '\\'))
+    const regex = /\s"installdir"\s+"(.+)"/
+    const [installDir] = manifestLines.split('\n')
+      .filter(line => line.match(regex))
+      .map(line => regex.exec(line)[1].replace(/\\\\/g, '\\'))
 
-  const final = { path: path.join(manifest.library, 'common', installDir) }
+    const final = { found: true, path: path.join(manifest.library, 'common', installDir) }
 
-  const depot = parseInt(appID, 10) + 1
-  const manifestIdRx = new RegExp(`"${depot}"\\s+{\\s+"manifest"\\s+"(\\d+)"`, 'm')
+    const depot = parseInt(appID, 10) + 1
+    const manifestIdRx = new RegExp(`"${depot}"\\s+{\\s+"manifest"\\s+"(\\d+)"`, 'm')
 
-  const manifestIdText = manifestIdRx.exec(manifestLines)
-  if (manifestIdText && manifestIdText[1]) final.manifest = manifestIdText[1]
+    const manifestIdText = manifestIdRx.exec(manifestLines)
+    if (manifestIdText && manifestIdText[1]) final.manifest = manifestIdText[1]
 
-  return final
+    return final
+  } catch (err) {
+    return { found: false, path: null, manifest: null }
+  }
 }
 
 /**
@@ -85,17 +89,20 @@ const testPath = async installDir => {
   return { path: installDir, valid, pirated, platform: oculus ? 'oculus' : 'steam' }
 }
 
-const findOculus = () => new Promise((resolve, reject) => {
+/**
+ * @returns {Promise.<{ found: boolean, path: string }>}
+ */
+const findOculus = () => new Promise(resolve => {
   const regKey = new Registry({
     hive: Registry.HKLM,
     key: '\\Software\\WOW6432Node\\Oculus VR, LLC\\Oculus\\Config',
   })
 
   regKey.get('InitialAppLibrary', (err, key) => {
-    if (err) return reject(err)
+    if (err) return resolve({ found: false, path: null })
 
     const oculusPath = path.join(key.value, 'Software/hyperbolic-magnetism-beat-saber')
-    resolve(oculusPath)
+    resolve({ found: true, path: oculusPath })
   })
 })
 
@@ -105,14 +112,14 @@ const findOculus = () => new Promise((resolve, reject) => {
 const findPath = async () => {
   try {
     const steamPath = await findSteam(STEAM_APP_ID)
-    if (steamPath) {
+    if (steamPath.found) {
       const pathTest = await testPath(steamPath.path)
       if (pathTest.valid) return pathTest
     }
 
     const oculusPath = await findOculus()
-    if (oculusPath) {
-      const pathTest = await testPath(oculusPath)
+    if (oculusPath.found) {
+      const pathTest = await testPath(oculusPath.path)
       if (pathTest.valid) return pathTest
     }
   } catch (err) {
