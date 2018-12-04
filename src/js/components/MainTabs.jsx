@@ -4,6 +4,7 @@ import Context from '../Context.jsx'
 import Main from './main/Main.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
+import ModInfo from './tabs/ModInfo.jsx'
 
 class MainTabs extends Component {
   static contextType = Context
@@ -18,9 +19,13 @@ class MainTabs extends Component {
     ]
   }
 
+  componentDidMount () {
+    this.context.setMaxPages(this.pages.length)
+  }
+
   render () {
     const pages = this.context.selected === null ? this.pages :
-      [...this.pages, { title: 'Mod Info', component: <div></div> }]
+      [...this.pages, { title: 'Mod Info', component: <ModInfo /> }]
 
     const selected = this.context.currentPage > pages.length - 1 ? 0 :
       this.context.currentPage

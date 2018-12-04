@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
-import { BASE_URL, STATUS_WORKING, STATUS_LOADING } from '../constants.js'
+import { STATUS_WORKING, STATUS_LOADING } from '../constants.js'
 
 /**
  * @type {Electron}
@@ -12,10 +12,14 @@ const { shell } = electron
 class BottomBar extends Component {
   static contextType = Context
 
-  render () {
-    const mod = this.context.mods[this.context.selected]
-    const modInfo = mod && `${BASE_URL}/mod/${mod.name}/${mod.version}`
+  handleModInfo () {
+    const page = this.context.currentPage !== this.context.maxPages ?
+      this.context.maxPages : 0
 
+    return this.context.setCurrentPage(page)
+  }
+
+  render () {
     return (
       <>
         <span className='status'>Status: { this.context.statusText }</span>
@@ -23,12 +27,9 @@ class BottomBar extends Component {
         <button
           className='button'
           disabled={ this.context.install.pirated || this.context.selected === null }
-          onClick={ () => {
-            if (!modInfo) return undefined
-            else shell.openExternal(modInfo)
-          } }
+          onClick={ () => this.handleModInfo() }
         >
-          View Selected Mod Info
+          { this.context.currentPage !== this.context.maxPages ? 'View Selected Mod Info' : 'Go Back' }
         </button>
 
         {

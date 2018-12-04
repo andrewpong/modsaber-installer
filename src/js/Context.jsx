@@ -28,6 +28,7 @@ export class ControllerProvider extends Component {
       mods: [],
 
       currentPage: 0,
+      maxPages: null,
       selected: null,
     }
 
@@ -257,6 +258,9 @@ export class ControllerProvider extends Component {
 
         currentPage: this.state.currentPage,
         setCurrentPage: currentPage => this.setState({ currentPage }),
+
+        maxPages: this.state.maxPages,
+        setMaxPages: maxPages => this.setState({ maxPages }),
       }}>
         { this.props.children }
       </Provider>

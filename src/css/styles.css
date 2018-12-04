@@ -11,6 +11,19 @@ html, body {
   background-color: rgb(243, 243, 243);
 }
 
+pre {
+  border-radius: 5px;
+  padding: 5px !important;
+}
+
+code {
+  font-family: 'Fira Mono', monospace;
+}
+
+code.hljs {
+  background-color: transparent;
+}
+
 #root {
   width: 100%;
   height: 100%;
