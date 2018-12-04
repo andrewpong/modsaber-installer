@@ -1,14 +1,24 @@
 const { join, parse } = require('path')
 const { exec } = require('child_process')
 const { ipcMain, dialog, BrowserWindow } = require('electron')
-const { get } = require('snekfetch')
 const AdmZip = require('adm-zip')
 const fse = require('../logic/file.js')
+const { downloadMod } = require('../logic/modsaber.js')
 const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
 
-ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
+ipcMain.on('install-mods', async ({ sender }, data) => {
   // Get Browser Window
   const window = BrowserWindow.fromWebContents(sender)
+
+  /**
+   * @type {any[]}
+   */
+  const mods = data.mods
+
+  /**
+   * @type {{ path: string, valid: boolean, platform: ('steam'|'oculus'|'unknown') }}
+   */
+  const install = data.install
 
   // Invalid install path
   if (install.platform === 'unknown' || !install.valid) return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
@@ -19,18 +29,18 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
   // Send status
   sender.send('set-status', { text: 'Downloading mods...', status: 'working' })
 
-  /**
-   * @type {string[]}
-   */
-  const URLs = mods.map(mod => install.platform === 'steam' ? mod.files.steam : mod.files.oculus)
-    .map(x => x.url)
+  const downloads = await Promise.all(mods.map(mod => downloadMod(mod, install.platform)))
+  const errorCheck = downloads.find(x => x.valid === false)
+  if (errorCheck) {
+    sender.send('set-status', { text: errorCheck.error, status: 'complete' })
+    return dialog.showMessageBox(window, {
+      title: 'Download Error',
+      type: 'error',
+      message: `Download failed for ${errorCheck.mod.name}@${errorCheck.mod.version}\nError: ${errorCheck.error}`,
+    })
+  }
 
-  const zips = await Promise.all(URLs.map(async url => {
-    const { body } = await get(url)
-    return body
-  }))
-
-  sender.send('set-status', { text: 'Extracting mods...' })
+  return sender.send('set-status', { text: 'Extracting mods...' })
   const extracted = await Promise.all(zips.map(blob => extractZip(blob, install.path)))
 
   for (const idx in extracted) {
@@ -45,7 +55,7 @@ ipcMain.on('install-mods', async ({ sender }, { mods, install }) => {
       return fse.writeFile(file.path, file.data)
     })
 
-    await Promise.all(jobs) // eslint-disable-line
+  await Promise.all(jobs) // eslint-disable-line
   }
 
   const exePath = join(install.path, BEAT_SABER_EXE)
