@@ -10,6 +10,8 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * More modern UI
 * More stable dependency system
 * Parallel downloads
+* Download hash validation
+* More robust network error handling
 * More user-friendly status messages
 * Ensures `UserData` folder exists
 * Auto-detects current Steam version
