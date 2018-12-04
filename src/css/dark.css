@@ -1,0 +1,122 @@
+html.dark {
+  --white: #e6e6e6;
+  --light: #b3b3b3;
+
+  --black: #161616;
+  --dark: #303030;
+
+  --mid: #666666;
+
+  --blue: #5e9cff;
+  --darkblue: #5280c9;
+}
+
+html.dark body {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+html.dark a {
+  color: var(--blue);
+}
+
+html.dark a:hover,
+html.dark a:focus,
+html.dark a:active {
+  color: var(--darkblue);
+}
+
+html.dark input.input {
+  border-color: var(--mid);
+  background-color: var(--dark);
+  color: var(--white);
+}
+
+html.dark input.input:hover,
+html.dark input.input:focus {
+  border-color: var(--light);
+}
+
+html.dark .control.has-icons-left .input:focus ~ .icon,
+html.dark .control.has-icons-left .select:focus ~ .icon,
+html.dark .control.has-icons-right .input:focus ~ .icon,
+html.dark .control.has-icons-right .select:focus ~ .icon {
+  color: inherit;
+}
+
+html.dark .select select,
+html.dark .select select:disabled {
+  border-color: var(--mid);
+  background-color: var(--dark);
+  color: var(--white);
+}
+
+html.dark .select select:hover,
+html.dark .select select:focus {
+  border-color: var(--light);
+}
+
+html.dark .select:not(.is-multiple):not(.is-loading)::after {
+  border-color: var(--blue);
+}
+
+html.dark .select:not(.is-multiple):not(.is-loading):hover::after {
+  border-color: var(--light);
+}
+
+html.dark .tabs ul,
+html.dark .tabs a {
+  border-bottom-color:var(--light) ;
+  color: var(--light);
+}
+
+html.dark .tabs a:hover {
+  border-bottom-color:var(--white) ;
+  color: var(--white);
+}
+
+html.dark .tabs li.is-active a {
+  border-bottom-color: var(--blue);
+  color: var(--blue);
+}
+
+html.dark .button,
+html.dark .button:disabled {
+  border-color: var(--mid);
+  background-color: var(--dark);
+  color: var(--white);
+}
+
+html.dark .button:hover, .button:focus {
+  border-color: var(--light);
+  color: var(--white);
+}
+
+html.dark .button:disabled {
+  border-color: var(--mid);
+}
+
+html.dark div.box,
+html.dark table.table,
+html.dark .table thead div.header {
+  background-color: var(--dark);
+  color: var(--white);
+}
+
+html.dark .content h1,
+html.dark .content h2,
+html.dark .content h3,
+html.dark .content h4,
+html.dark .content h5,
+html.dark .content h6,
+html.dark .table th div {
+  color: var(--white);
+}
+
+html.dark div.separator {
+  background-color: var(--blue);
+}
+
+html.dark .table tr.selected {
+  background-color: rgba(123, 174, 255, 0.15);
+}

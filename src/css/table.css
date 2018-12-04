@@ -41,6 +41,10 @@
   transition: background-color 0.15s ease-in-out;
 }
 
+.table tr.selected {
+  background-color: rgba(50, 115, 220, 0.1);
+}
+
 td.icon {
   padding: 0 !important;
   padding-left: 12px !important;
@@ -69,4 +73,10 @@ td.icon.disabled i {
 
 td.icon.hidden i {
   color: transparent;
+}
+
+div.separator {
+  flex-grow: 1;
+  height: 1px;
+  background-color: rgba(50, 115, 220, 0.75);
 }

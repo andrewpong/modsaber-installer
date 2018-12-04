@@ -11,6 +11,9 @@ const electron = window.require('electron')
 const { ipcRenderer } = electron
 const { dialog, getCurrentWindow } = electron.remote
 
+const Store = window.require('electron-store')
+const store = new Store()
+
 const Context = React.createContext()
 const { Provider, Consumer } = Context
 
@@ -19,6 +22,8 @@ export class ControllerProvider extends Component {
     super(props)
 
     this.state = {
+      theme: store.get('theme') || 'light',
+
       statusText: c.STATUS_TEXT_IDLE,
       install: { path: null, platform: 'unknown' },
       status: c.STATUS_LOADING,
@@ -61,12 +66,23 @@ export class ControllerProvider extends Component {
     ipcRenderer.send('get-remote')
 
     this.setState({ statusText: c.STATUS_TEXT_LOADING })
+    this.setTheme(this.state.theme)
   }
 
   setStateAsync (state) {
     return new Promise(resolve => {
       this.setState(state, () => { resolve() })
     })
+  }
+
+  setTheme (theme) {
+    const [html] = document.getElementsByTagName('html')
+
+    if (theme === 'dark') html.classList.add('dark')
+    else html.classList.remove('dark')
+
+    store.set('theme', theme)
+    this.setState({ theme })
   }
 
   async filterMods (index = 0) {
@@ -239,6 +255,9 @@ export class ControllerProvider extends Component {
   render () {
     return (
       <Provider value={{
+        theme: this.state.theme,
+        setTheme: theme => this.setTheme(theme),
+
         status: this.state.status,
         statusText: this.state.statusText,
         install: this.state.install,

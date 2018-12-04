@@ -64,11 +64,7 @@ class Mods extends Component {
                 <td colSpan={ 5 }>
                   <div style={{ display: 'flex', alignItems: 'center', marginTop: i === 0 ? '30px' : undefined }}>
                     <b style={{ marginRight: '12px' }}>{ name }</b>
-                    <div style={{
-                      flexGrow: 1,
-                      height: '1px',
-                      backgroundColor: 'rgba(50, 115, 220, .75)',
-                    }}></div>
+                    <div className='separator'></div>
                   </div>
                 </td>
               </tr>
@@ -79,7 +75,7 @@ class Mods extends Component {
                 return (
                   <tr
                     key={ j }
-                    style={ !(mod.index === this.context.selected) ? undefined : { backgroundColor: 'rgba(50, 115, 220, 0.1)' } }
+                    className={ mod.index !== this.context.selected ? '' : 'selected' }
                     onClick={ e => { if (e.target.type !== 'i') this.context.setSelected(mod.index) } }
                   >
                     <td
