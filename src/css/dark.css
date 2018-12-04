@@ -16,6 +16,14 @@ html.dark body {
   color: var(--white);
 }
 
+html.dark hr {
+  background-color: hsla(0, 0%, 96%, 0.452);
+}
+
+html.dark strong {
+  color: var(--white);
+}
+
 html.dark a {
   color: var(--blue);
 }

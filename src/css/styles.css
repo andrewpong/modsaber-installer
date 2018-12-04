@@ -39,6 +39,10 @@ code.hljs {
   font-weight: 500;
 }
 
+hr {
+  margin: 0.8rem 0;
+}
+
 /* Layout */
 div.layout {
   --margin: 5px;
