@@ -32,7 +32,7 @@ class Main extends Component {
             e.preventDefault()
             shell.openExternal('https://youtu.be/i8ju_10NkGY')
           } }>
-            Override?
+            Override Restriction
           </a>
         </Status>
       )
