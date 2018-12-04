@@ -4,7 +4,6 @@ import Context from '../Context.jsx'
 import Main from './main/Main.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
-import Settings from './tabs/Settings.jsx'
 import ModInfo from './tabs/ModInfo.jsx'
 
 class MainTabs extends Component {
@@ -17,7 +16,6 @@ class MainTabs extends Component {
       { title: 'Mods', component: <Main /> },
       { title: 'Help', component: <Help /> },
       { title: 'Credits', component: <Credits /> },
-      { title: 'Settings', component: <Settings /> },
     ]
   }
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import semver from 'semver'
+import Konami from 'react-konami'
 import PropTypes from 'prop-types'
 
 import * as c from './constants.js'
@@ -254,35 +255,42 @@ export class ControllerProvider extends Component {
 
   render () {
     return (
-      <Provider value={{
-        theme: this.state.theme,
-        setTheme: theme => this.setTheme(theme),
+      <>
+        <Provider value={{
+          theme: this.state.theme,
+          setTheme: theme => this.setTheme(theme),
 
-        status: this.state.status,
-        statusText: this.state.statusText,
-        install: this.state.install,
+          status: this.state.status,
+          statusText: this.state.statusText,
+          install: this.state.install,
 
-        setStatus: status => this.setState({ status }),
-        setStatusText: statusText => this.setState({ statusText }),
+          setStatus: status => this.setState({ status }),
+          setStatusText: statusText => this.setState({ statusText }),
 
-        rawMods: this.state.rawMods,
-        gameVersions: this.state.gameVersions,
-        mods: this.state.mods,
-        toggleMod: index => { this.toggleMod(index) },
-        installMods: () => { this.installMods() },
-        filterMods: gvIdx => { this.filterMods(gvIdx) },
+          rawMods: this.state.rawMods,
+          gameVersions: this.state.gameVersions,
+          mods: this.state.mods,
+          toggleMod: index => { this.toggleMod(index) },
+          installMods: () => { this.installMods() },
+          filterMods: gvIdx => { this.filterMods(gvIdx) },
 
-        selected: this.state.selected,
-        setSelected: selected => this.setState({ selected }),
+          selected: this.state.selected,
+          setSelected: selected => this.setState({ selected }),
 
-        currentPage: this.state.currentPage,
-        setCurrentPage: currentPage => this.setState({ currentPage }),
+          currentPage: this.state.currentPage,
+          setCurrentPage: currentPage => this.setState({ currentPage }),
 
-        maxPages: this.state.maxPages,
-        setMaxPages: maxPages => this.setState({ maxPages }),
-      }}>
-        { this.props.children }
-      </Provider>
+          maxPages: this.state.maxPages,
+          setMaxPages: maxPages => this.setState({ maxPages }),
+        }}>
+          { this.props.children }
+        </Provider>
+
+        <Konami easterEgg={ () => {
+          const theme = this.state.theme === 'dark' ? 'light' : 'dark'
+          this.setTheme(theme)
+        } } />
+      </>
     )
   }
 }
