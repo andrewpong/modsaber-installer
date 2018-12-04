@@ -1,5 +1,7 @@
+const path = require('path')
+const AdmZip = require('adm-zip')
 const { get } = require('snekfetch')
-const { calculateHash } = require('./hash.js')
+const { calculateHash } = require('./helpers.js')
 const { API_URL } = require('../constants.js')
 
 /**
@@ -45,21 +47,72 @@ const fetchGameVersions = async () => {
 }
 
 /**
+ * @param {string} url URL
+ * @returns {Promise.<{ error: boolean, body: Buffer}>}
+ */
+const safeDownload = async url => {
+  try {
+    const resp = await get(url)
+
+    if (resp.statusCode !== 200) throw new Error('Status not 200')
+    else return { error: false, body: resp.body }
+  } catch (err) {
+    return { error: true, body: null }
+  }
+}
+
+/**
+ * @param {Buffer} blob Zip Blob
+ * @param {string} installDir Install Directory
+ * @returns {Promise.<{ path: string, data: Buffer }[]>}
+ */
+const extractZip = async (blob, installDir) => {
+  const zip = new AdmZip(blob)
+
+  const entries = zip.getEntries().map(entry => new Promise(resolve => {
+    if (entry.isDirectory) resolve(null)
+
+    entry.getDataAsync(data => resolve({ path: path.join(installDir, entry.entryName), data }))
+  }))
+
+  const data = await Promise.all(entries)
+  return data.filter(x => x !== null)
+}
+
+class InstallError extends Error {
+  /**
+   * @param {string} message Error Message
+   * @param {Mod} mod Mod
+   */
+  constructor (message, mod) {
+    super(message)
+    this.mod = mod
+  }
+}
+
+/**
  * @param {Mod} mod Mod Data
  * @param {('steam'|'oculus')} platform Install Platform
- * @returns {Promise.<{ mod: Mod, valid: boolean, data: Buffer, error: string }>}
+ * @param {string} installDir Install Directory
+ * @returns {Promise.<{ path: string, data: Buffer }[]>}
  */
-const downloadMod = async (mod, platform) => {
+const downloadMod = async (mod, platform, installDir) => {
+  const files = platform === 'oculus' ? mod.files.oculus : mod.files.steam
+
+  // Download
+  const resp = await safeDownload(files.url)
+  if (resp.error) throw new InstallError('Network Failure', mod)
+
+  // Calculate Hash
+  const hash = await calculateHash(resp.body)
+  if (hash !== files.hash) throw new InstallError('Download Hash Mismatch', mod)
+
+  // Extract
   try {
-    const files = platform === 'oculus' ? mod.files.oculus : mod.files.steam
-    const { body } = await get(files.url)
-
-    const hash = await calculateHash(body)
-    if (hash !== files.hash) return { mod, valid: false, data: null, error: 'Download Hash Mismatch' }
-
-    return { mod, valid: true, data: body }
+    const extracted = await extractZip(resp.body, installDir)
+    return extracted
   } catch (err) {
-    return { mod, valid: false, data: null, error: 'Network Error' }
+    throw new InstallError('Extraction Failure', mod)
   }
 }
 

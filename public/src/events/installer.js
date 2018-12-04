@@ -1,8 +1,8 @@
 const { join, parse } = require('path')
 const { exec } = require('child_process')
 const { ipcMain, dialog, BrowserWindow } = require('electron')
-const AdmZip = require('adm-zip')
 const fse = require('../logic/file.js')
+const { promiseHandler } = require('../logic/helpers.js')
 const { downloadMod } = require('../logic/modsaber.js')
 const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
 
@@ -29,23 +29,21 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   // Send status
   sender.send('set-status', { text: 'Downloading mods...', status: 'working' })
 
-  const downloads = await Promise.all(mods.map(mod => downloadMod(mod, install.platform)))
-  const errorCheck = downloads.find(x => x.valid === false)
-  if (errorCheck) {
-    sender.send('set-status', { text: errorCheck.error, status: 'complete' })
+  const downloadJobs = Promise.all(mods.map(mod => downloadMod(mod, install.platform, install.path)))
+  const { error: dlError, result: downloaded } = await promiseHandler(downloadJobs)
+
+  if (dlError) {
+    sender.send('set-status', { text: dlError.message, status: 'complete' })
     return dialog.showMessageBox(window, {
       title: 'Download Error',
       type: 'error',
-      message: `Download failed for ${errorCheck.mod.name}@${errorCheck.mod.version}\nError: ${errorCheck.error}`,
+      message: `Download failed for ${dlError.mod.name}@${dlError.mod.version}\nError: ${dlError.message}`,
     })
   }
 
-  return sender.send('set-status', { text: 'Extracting mods...' })
-  const extracted = await Promise.all(zips.map(blob => extractZip(blob, install.path)))
-
-  for (const idx in extracted) {
+  for (const idx in downloaded) {
     const mod = mods[idx]
-    const modFiles = extracted[idx]
+    const modFiles = downloaded[idx]
 
     sender.send('set-status', { text: `Writing ${mod.name}@${mod.version}` })
     const jobs = modFiles.map(async file => {
@@ -55,7 +53,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
       return fse.writeFile(file.path, file.data)
     })
 
-  await Promise.all(jobs) // eslint-disable-line
+    await Promise.all(jobs) // eslint-disable-line
   }
 
   const exePath = join(install.path, BEAT_SABER_EXE)
@@ -87,21 +85,3 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
     sender.send('set-status', { text: 'Install complete!', status: 'complete' })
   })
 })
-
-/**
- * @param {Buffer} blob Zip Blob
- * @param {string} installDir Install Directory
- * @returns {Promise.<{ path: string, data: Buffer }[]>}
- */
-const extractZip = async (blob, installDir) => {
-  const zip = new AdmZip(blob)
-
-  const entries = zip.getEntries().map(entry => new Promise(resolve => {
-    if (entry.isDirectory) resolve(null)
-
-    entry.getDataAsync(data => resolve({ path: join(installDir, entry.entryName), data }))
-  }))
-
-  const data = await Promise.all(entries)
-  return data.filter(x => x !== null)
-}
