@@ -10,5 +10,5 @@ ipcMain.on('get-path', async ({ sender }) => {
 ipcMain.on('set-path', async ({ sender }, installDir) => {
   const test = await testPath(installDir)
   if (test.valid) return sender.send('set-path', test)
-  else return sender.send('invalid-path')
+  else return sender.send('invalid-path', test.path)
 })

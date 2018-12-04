@@ -14,12 +14,12 @@ class PathPicker extends Component {
   static contextType = Context
 
   componentDidMount () {
-    ipcRenderer.on('invalid-path', () => {
+    ipcRenderer.on('invalid-path', (_, path) => {
       dialog.showMessageBox(getCurrentWindow(), {
         title: 'Invalid Path',
         type: 'error',
         message: "The directory you selected doesn't contain Beat Saber.exe!\nPlease try again.",
-      }, () => { this.openDialog() })
+      }, () => { this.openDialog(path) })
     })
 
     ipcRenderer.on('unknown-path', () => {
@@ -31,10 +31,10 @@ class PathPicker extends Component {
     })
   }
 
-  openDialog () {
+  openDialog (defaultPath) {
     dialog.showOpenDialog(getCurrentWindow(), {
       properties: ['openDirectory'],
-      defaultPath: this.context.install.path || undefined,
+      defaultPath: defaultPath || this.context.install.path || undefined,
     }, paths => {
       if (paths === undefined) return
       const [path] = paths
