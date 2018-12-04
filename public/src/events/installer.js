@@ -20,11 +20,29 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
    */
   const install = data.install
 
+  // Progress Values
+  const USERDATA_PRG = 2
+  const DL_PRG = 20
+  const FILE_PRG_FACTOR = 2
+  const FILE_PRG = data.mods.reduce((acc, mod) => {
+    const files = install.platform === 'oculus' ? mod.files.oculus.files : mod.files.steam.files
+    return acc + (Object.keys(files).length * FILE_PRG_FACTOR)
+  }, 0)
+
+  // Setup progress bar
+  const maxProgress = USERDATA_PRG + DL_PRG + FILE_PRG
+  let progress = 0
+  window.setProgressBar(progress / maxProgress, { mode: 'normal' })
+
   // Invalid install path
-  if (install.platform === 'unknown' || !install.valid) return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
+  if (install.platform === 'unknown' || !install.valid) {
+    window.setProgressBar(0, { mode: 'none' })
+    return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
+  }
 
   // Ensure UserData directory exists
   await fse.ensureDir(join(install.path, 'UserData'))
+  window.setProgressBar((progress += USERDATA_PRG) / maxProgress, { mode: 'normal' })
 
   // Send status
   sender.send('set-status', { text: 'Downloading mods...', status: 'working' })
@@ -34,11 +52,15 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
 
   if (dlError) {
     sender.send('set-status', { text: dlError.message, status: 'complete' })
+    window.setProgressBar(0, { mode: 'none' })
+
     return dialog.showMessageBox(window, {
       title: 'Download Error',
       type: 'error',
       message: `Download failed for ${dlError.mod.name}@${dlError.mod.version}\nError: ${dlError.message}`,
     })
+  } else {
+    window.setProgressBar((progress += DL_PRG) / maxProgress, { mode: 'normal' })
   }
 
   for (const idx in downloaded) {
@@ -50,6 +72,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
       const { dir } = parse(file.path)
       await fse.ensureDir(dir)
 
+      window.setProgressBar((progress += FILE_PRG_FACTOR) / maxProgress, { mode: 'normal' })
       return fse.writeFile(file.path, file.data)
     })
 
@@ -62,6 +85,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
 
   if (!canPatch) {
     sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+    window.setProgressBar(0, { mode: 'none' })
 
     return dialog.showMessageBox(window, {
       title: 'IPA Error',
@@ -75,6 +99,8 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   exec(`"${ipaPath}" "${exePath}"`, err => {
     if (err) {
       sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+      window.setProgressBar(0, { mode: 'none' })
+
       return dialog.showMessageBox(window, {
         title: 'IPA Error',
         type: 'error',
@@ -82,6 +108,12 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
       })
     }
 
+    window.setProgressBar(1, { mode: 'none' })
     sender.send('set-status', { text: 'Install complete!', status: 'complete' })
+
+    // Reset progress bar
+    setTimeout(() => {
+      window.setProgressBar(0, { mode: 'none' })
+    }, 500)
   })
 })

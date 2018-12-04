@@ -1,9 +1,12 @@
-const { ipcMain } = require('electron')
+const { BrowserWindow, ipcMain } = require('electron')
 const { fetchMods, fetchGameVersions } = require('../logic/modsaber.js')
 const { findSteam } = require('../logic/pathFinder.js')
 const { STEAM_APP_ID } = require('../constants.js')
 
 ipcMain.on('get-remote', async ({ sender }) => {
+  const window = BrowserWindow.fromWebContents(sender)
+  window.setProgressBar(1, { mode: 'indeterminate' })
+
   try {
     const [mods, gameVersions] = await Promise.all([
       fetchMods('newest-by-gameversion'),
@@ -19,9 +22,12 @@ ipcMain.on('get-remote', async ({ sender }) => {
       gameVersions[0].selected = true
     }
 
+    window.setProgressBar(0, { mode: 'none' })
     sender.send('set-remote', { status: 'success', mods, gameVersions })
   } catch (err) {
     console.error(err)
+
     sender.send('set-remote', { status: 'error' })
+    window.setProgressBar(1, { mode: 'error' })
   }
 })
