@@ -27,6 +27,7 @@ export class ControllerProvider extends Component {
       gameVersions: [],
       mods: [],
 
+      currentPage: 0,
       selected: null,
     }
 
@@ -253,6 +254,9 @@ export class ControllerProvider extends Component {
 
         selected: this.state.selected,
         setSelected: selected => this.setState({ selected }),
+
+        currentPage: this.state.currentPage,
+        setCurrentPage: currentPage => this.setState({ currentPage }),
       }}>
         { this.props.children }
       </Provider>

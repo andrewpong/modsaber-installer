@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import Context from '../Context.jsx'
 
 import Main from './main/Main.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
 
 class MainTabs extends Component {
+  static contextType = Context
+
   constructor (props) {
     super(props)
 
@@ -13,22 +16,26 @@ class MainTabs extends Component {
       { title: 'Help', component: <Help /> },
       { title: 'Credits', component: <Credits /> },
     ]
-
-    this.state = { selected: 0 }
   }
 
   render () {
+    const pages = this.context.selected === null ? this.pages :
+      [...this.pages, { title: 'Mod Info', component: <div></div> }]
+
+    const selected = this.context.currentPage > pages.length - 1 ? 0 :
+      this.context.currentPage
+
     return (
       <>
         <div className='tabs'>
-          <ul>{ this.pages.map(({ title }, i) =>
-            <li key={ i } className={ this.state.selected === i ? 'is-active' : '' }>
+          <ul>{ pages.map(({ title }, i) =>
+            <li key={ i } className={ selected === i ? 'is-active' : '' }>
               <a
                 href='/'
                 draggable={ false }
                 onClick={ e => {
                   e.preventDefault()
-                  this.setState({ selected: i })
+                  this.context.setCurrentPage(i)
                 } }
               >
                 { title }
@@ -38,7 +45,7 @@ class MainTabs extends Component {
         </div>
 
         <div className='box' id='main'>
-          { this.pages[this.state.selected].component }
+          { pages[selected].component }
         </div>
       </>
     )
