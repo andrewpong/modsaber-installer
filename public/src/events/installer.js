@@ -1,10 +1,17 @@
 const { join, parse } = require('path')
 const { exec } = require('child_process')
-const { ipcMain, dialog, BrowserWindow } = require('electron')
+const { ipcMain, dialog, shell, BrowserWindow } = require('electron')
 const fse = require('../logic/file.js')
 const { promiseHandler } = require('../logic/helpers.js')
 const { downloadMod } = require('../logic/modsaber.js')
 const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
+
+const getAttention = window => {
+  if (!window.isFocused()) {
+    shell.beep()
+    window.flashFrame(true)
+  }
+}
 
 ipcMain.on('install-mods', async ({ sender }, data) => {
   // Get Browser Window
@@ -53,6 +60,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   if (dlError) {
     sender.send('set-status', { text: dlError.message, status: 'complete' })
     window.setProgressBar(0, { mode: 'none' })
+    getAttention(window)
 
     return dialog.showMessageBox(window, {
       title: 'Download Error',
@@ -86,6 +94,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   if (!canPatch) {
     sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
     window.setProgressBar(0, { mode: 'none' })
+    getAttention(window)
 
     return dialog.showMessageBox(window, {
       title: 'IPA Error',
@@ -100,6 +109,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
     if (err) {
       sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
       window.setProgressBar(0, { mode: 'none' })
+      getAttention(window)
 
       return dialog.showMessageBox(window, {
         title: 'IPA Error',
@@ -108,6 +118,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
       })
     }
 
+    getAttention(window)
     window.setProgressBar(1, { mode: 'none' })
     sender.send('set-status', { text: 'Install complete!', status: 'complete' })
 

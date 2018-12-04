@@ -50,6 +50,10 @@ app.on('ready', () => {
     window.show()
   })
 
+  window.on('focus', () => {
+    window.flashFrame(false)
+  })
+
   window.custom = { BASE_URL }
 })
 
