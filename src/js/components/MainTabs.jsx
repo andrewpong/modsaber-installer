@@ -17,6 +17,8 @@ class MainTabs extends Component {
       { title: 'Help', component: <Help /> },
       { title: 'Credits', component: <Credits /> },
     ]
+
+    this.container = React.createRef()
   }
 
   componentDidMount () {
@@ -40,6 +42,7 @@ class MainTabs extends Component {
                 draggable={ false }
                 onClick={ e => {
                   e.preventDefault()
+                  if (i !== this.context.currentPage) this.container.current.scrollTop = 0
                   this.context.setCurrentPage(i)
                 } }
               >
@@ -49,7 +52,7 @@ class MainTabs extends Component {
           ) }</ul>
         </div>
 
-        <div className='box' id='main'>
+        <div ref={ this.container } className='box' id='main'>
           { pages[selected].component }
         </div>
       </>
