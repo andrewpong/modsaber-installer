@@ -1,13 +1,25 @@
 const { dialog } = require('electron')
+const isDev = require('electron-is-dev')
 
 /**
  * @param {string[]} argv Process Args
+ * @returns {void}
  */
 const handleArgs = argv => {
+  /**
+   * @type {string}
+   */
+  const schema = argv[isDev ? 2 : 1]
+
+  // Ignore if schema url is not passed
+  if (!schema.startsWith('modsaber://')) return undefined
+
   dialog.showMessageBox({
-    title: 'Argv',
+    title: 'Schema Trigger',
     type: 'info',
-    message: JSON.stringify(argv, null, 2),
+    message: schema,
+  }, () => {
+    // Async
   })
 }
 
