@@ -78,7 +78,11 @@ class PathPicker extends Component {
         </div>
 
         <div className='select' style={{ marginLeft: '10px' }} onChange={ e => { this.switchVersion(JSON.parse(e.target.value)) } }>
-          <select disabled={ this.context.status === c.STATUS_WORKING || this.context.status === c.STATUS_LOADING }>
+          <select disabled={
+            this.context.status === c.STATUS_WORKING ||
+            this.context.status === c.STATUS_LOADING ||
+            this.context.status === c.STATUS_OFFLINE
+          }>
             { this.context.gameVersions.map((gv, i) =>
               <option value={ JSON.stringify(gv) } selected={ gv.selected } key={ i }>
                 { gv.value }

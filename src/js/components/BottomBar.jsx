@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
-import { STATUS_WORKING, STATUS_LOADING } from '../constants.js'
+import { STATUS_WORKING, STATUS_LOADING, STATUS_OFFLINE } from '../constants.js'
 
 /**
  * @type {Electron}
@@ -22,7 +22,9 @@ class BottomBar extends Component {
   render () {
     return (
       <>
-        <span className='status'>Status: { this.context.statusText }</span>
+        <span className='status'>
+          { this.context.status === STATUS_OFFLINE ? 'Error' : 'Status' }: { this.context.statusText }
+        </span>
 
         <button
           className='button'
