@@ -27,6 +27,11 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
    */
   const install = data.install
 
+  /**
+   * @type {{ id: string, manifest: string, value: string }}
+   */
+  const gameVersion = data.gameVersion
+
   // Progress Values
   const USERDATA_PRG = 2
   const DL_PRG = 20
@@ -50,6 +55,11 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   // Ensure UserData directory exists
   await fse.ensureDir(join(install.path, 'UserData'))
   window.setProgressBar((progress += USERDATA_PRG) / maxProgress, { mode: 'normal' })
+
+  // Check BeatSaberVersion.txt
+  const versionTxt = join(install.path, 'BeatSaberVersion.txt')
+  const versionTxtExists = await fse.exists(versionTxt)
+  if (!versionTxtExists) await fse.writeFile(versionTxt, gameVersion.value)
 
   // Send status
   sender.send('set-status', { text: 'Downloading mods...', status: 'working' })

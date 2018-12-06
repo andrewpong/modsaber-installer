@@ -250,7 +250,9 @@ export class ControllerProvider extends Component {
   installMods () {
     const mods = [...this.state.mods]
     const toInstall = mods.filter(mod => mod.install.selected || mod.install.requiredBy.length > 0 || false)
-    ipcRenderer.send('install-mods', { mods: toInstall, install: this.state.install })
+
+    const gameVersion = this.state.gameVersions.find(x => x.selected === true)
+    ipcRenderer.send('install-mods', { mods: toInstall, install: this.state.install, gameVersion })
   }
 
   render () {
