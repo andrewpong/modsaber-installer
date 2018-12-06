@@ -57,6 +57,7 @@
     },
     "nsis": {
       "oneClick": false,
+      "perMachine" : true,
       "allowToChangeInstallationDirectory": true
     },
     "win": {
