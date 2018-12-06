@@ -51,7 +51,7 @@ const findSteam = async appID => {
     const [manifest] = manifests
       .filter(x => x.exists)
 
-    if (manifest === undefined) return null
+    if (manifest === undefined) return { found: false, path: null, manifest: null }
     const manifestLines = await fse.readFile(manifest.path, 'utf8')
 
     const regex = /\s"installdir"\s+"(.+)"/
