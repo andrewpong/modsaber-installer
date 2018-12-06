@@ -1,5 +1,6 @@
 const path = require('path')
-const fse = require('./file.js')
+const { promisify } = require('util')
+const glob = promisify(require('glob'))
 
 /**
  * @param {string} installDir Install Path
@@ -10,18 +11,16 @@ const checkPiracy = async installDir => {
     'IGG-GAMES.COM.url',
     'GAMESTORRENT.CO.url',
     'SmartSteamEmu.ini',
-    'Beat Saber_Data/Plugins/valve.ini',
-    'Beat Saber_Data/Plugins/steam.ini',
-    'Beat Saber_Data/Plugins/huhuvr.ini',
-    'Beat Saber_Data/Plugins/ALI213.ini',
+    'Beat Saber_Data/Plugins/*.ini',
     'Beat Saber_Data/Plugins/HUHUVR_steam_api64.dll',
     'Beat Saber_Data/Plugins/BSteam crack.dll',
   ]
 
   const checks = knownFiles.map(async x => {
     const file = path.join(installDir, x)
-    const exists = await fse.exists(file)
+    const files = await glob(file)
 
+    const exists = files.length > 0
     return { file, exists }
   })
 
