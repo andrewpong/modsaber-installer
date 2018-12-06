@@ -9,6 +9,10 @@ require('./src/events/path.js')
 require('./src/events/remote.js')
 require('./src/events/installer.js')
 
+// Instance Lock
+const instanceLock = app.requestSingleInstanceLock()
+if (!instanceLock) return app.quit()
+
 /**
  * @type {BrowserWindow}
  */
@@ -55,6 +59,13 @@ app.on('ready', () => {
   })
 
   window.custom = { BASE_URL }
+})
+
+app.on('second-instance', () => {
+  if (!window) return undefined
+
+  if (window.isMinimized()) window.maximize()
+  window.focus()
 })
 
 app.on('window-all-closed', () => {
