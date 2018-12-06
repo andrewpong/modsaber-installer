@@ -2,6 +2,7 @@ const path = require('path')
 const { app, BrowserWindow, dialog, Menu } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
+const { handleArgs } = require('./src/events/schema.js')
 const { BASE_URL, VERSION } = require('./src/constants.js')
 
 // Event Handlers
@@ -20,6 +21,8 @@ let window
 
 app.on('ready', () => {
   if (!isDev) autoUpdater.checkForUpdates()
+
+  handleArgs(process.argv)
 
   const width = 800
   const height = 580
@@ -61,10 +64,12 @@ app.on('ready', () => {
   window.custom = { BASE_URL }
 })
 
-app.on('second-instance', () => {
+app.on('second-instance', (event, argv) => {
   if (!window) return undefined
 
-  if (window.isMinimized()) window.maximize()
+  handleArgs(argv)
+
+  if (window.isMinimized()) window.restore()
   window.focus()
 })
 
