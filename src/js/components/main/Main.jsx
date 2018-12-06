@@ -10,7 +10,7 @@ import Mods from './Mods.jsx'
  * @type {Electron}
  */
 const electron = window.require('electron')
-const { shell } = electron
+const { shell, ipcRenderer } = electron
 
 class Main extends Component {
   static contextType = Context
@@ -39,7 +39,20 @@ class Main extends Component {
     }
 
     if (this.context.status === c.STATUS_OFFLINE) {
-      return <Status icon='fas fa-exclamation-triangle'>Offline</Status>
+      return (
+        <Status icon='fas fa-exclamation-triangle'>
+          Connection Error<br />
+          <a href='/' onClick={ e => {
+            e.preventDefault()
+            ipcRenderer.send('get-remote')
+
+            this.context.setStatus(c.STATUS_LOADING)
+            this.context.setStatusText(c.STATUS_TEXT_LOADING)
+          } }>
+            Retry
+          </a>
+        </Status>
+      )
     }
 
     if (this.context.mods.length === 0) {

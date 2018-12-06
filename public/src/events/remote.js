@@ -27,7 +27,7 @@ ipcMain.on('get-remote', async ({ sender }) => {
   } catch (err) {
     console.error(err)
 
-    sender.send('set-remote', { status: 'error' })
+    sender.send('set-remote', { status: 'error', statusText: err.message })
     window.setProgressBar(1, { mode: 'error' })
   }
 })

@@ -44,8 +44,8 @@ export class ControllerProvider extends Component {
     })
 
     ipcRenderer.on('set-path', (_, install) => this.setState({ install }))
-    ipcRenderer.on('set-remote', (_, { status, mods, gameVersions }) => {
-      if (status === 'error') return this.setState({ statusText: c.STATUS_TEXT_OFFLINE, status: c.STATUS_OFFLINE })
+    ipcRenderer.on('set-remote', (_, { status, statusText, mods, gameVersions }) => {
+      if (status === 'error') return this.setState({ statusText, status: c.STATUS_OFFLINE })
 
       const gvIdx = gameVersions.findIndex(x => x.selected)
 
