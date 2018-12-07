@@ -72,6 +72,10 @@ const extractZip = async (blob, installDir) => {
   const entries = zip.getEntries().map(entry => new Promise(resolve => {
     if (entry.isDirectory) resolve(null)
 
+    // Filter out files that try to break out of the install dir
+    const fullPath = path.join(installDir, entry.entryName)
+    if (!fullPath.startsWith(installDir)) return resolve(null)
+
     entry.getDataAsync(data => resolve({ path: path.join(installDir, entry.entryName), data }))
   }))
 
