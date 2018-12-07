@@ -6,6 +6,13 @@ import Context from '../../Context.jsx'
 import Status from './Status.jsx'
 import Mods from './Mods.jsx'
 
+const funLinks = [
+  'https://youtu.be/i8ju_10NkGY',
+  'https://youtu.be/C5kGCwJ25Yc',
+]
+
+const funLink = () => funLinks[Math.floor(Math.random() * funLinks.length)]
+
 /**
  * @type {Electron}
  */
@@ -30,7 +37,7 @@ class Main extends Component {
           Pirated Copy Detected<br />
           <a href='/' onClick={ e => {
             e.preventDefault()
-            shell.openExternal('https://youtu.be/i8ju_10NkGY')
+            shell.openExternal(funLink())
           } }>
             Override Restriction
           </a>
