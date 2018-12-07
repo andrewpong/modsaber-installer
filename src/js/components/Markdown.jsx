@@ -32,7 +32,6 @@ CodeBlock.propTypes = {
   value: PropTypes.string.isRequired,
 }
 
-
 const InlineCode = ({ children }) => <code className='tag is-code'>{ children }</code>
 InlineCode.propTypes = { children: PropTypes.string.isRequired }
 
