@@ -21,6 +21,9 @@ export const STATUS_LOADED = 'loaded'
 export const STATUS_WORKING = 'working'
 export const STATUS_COMPLETE = 'complete'
 
+// Errors
+export const ERR_NOT_SATISFIED = 'Dependency not satisfied'
+
 // Required and Default Mods
 export const MODS_REQUIRED = [
   'song-loader',

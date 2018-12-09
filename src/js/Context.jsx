@@ -133,12 +133,23 @@ export class ControllerProvider extends Component {
   }
 
   checkMod (mod, mods) {
-    const depKeys = this.findLinks(mod, mods, 'dependencies', true)
-    for (const key of depKeys) {
-      const [name, version] = key.split('@')
-      const depMod = mods.find(x => x.name === name && x.version === version)
+    try {
+      const depKeys = this.findLinks(mod, mods, 'dependencies', true)
+      for (const key of depKeys) {
+        const [name, version] = key.split('@')
+        const depMod = mods.find(x => x.name === name && x.version === version)
 
-      depMod.install.requiredBy = [...depMod.install.requiredBy, this.modKey(mod)]
+        depMod.install.requiredBy = [...depMod.install.requiredBy, this.modKey(mod)]
+      }
+    } catch (err) {
+      if (err.message !== c.ERR_NOT_SATISFIED) return dialog.showErrorBox('Unhandled Exception', err.message)
+
+      return dialog.showMessageBox(getCurrentWindow(), {
+        title: `Unmet Dependency // ${mod.name}@${mod.version}`,
+        type: 'error',
+        message: `This mod has an unmet dependency: ${err.link}\n` +
+          `Please ask the mod author to update the links to a compatible version.`,
+      })
     }
 
     const conflicts = this.findLinks(mod, mods, 'conflicts', true)
@@ -152,7 +163,7 @@ export class ControllerProvider extends Component {
       if (!selected) continue
 
       return dialog.showMessageBox(getCurrentWindow(), {
-        title: 'Conflicting Mod',
+        title: `Conflicting Mod // ${mod.name}@${mod.version}`,
         type: 'error',
         message:
           `This mod conflicts with ${conflict.details.title} v${conflict.version}\n\n` +
@@ -220,7 +231,12 @@ export class ControllerProvider extends Component {
       const search = mods.find(x => x.name === name && semver.satisfies(x.version, range))
 
       // Not satisfied
-      if (!search && type === 'dependencies') throw new Error('Dependency not satisfied')
+      if (!search && type === 'dependencies') {
+        const error = new Error(c.ERR_NOT_SATISFIED)
+        error.link = link
+
+        throw error
+      }
 
       // Push link
       const key = this.modKey(search)
