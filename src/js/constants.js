@@ -18,8 +18,6 @@ export const STATUS_TEXT_PIRATED = 'Pirated copy detected'
 export const STATUS_LOADING = 'loading'
 export const STATUS_OFFLINE = 'offline'
 export const STATUS_LOADED = 'loaded'
-export const STATUS_WORKING = 'working'
-export const STATUS_COMPLETE = 'complete'
 
 // Errors
 export const ERR_NOT_SATISFIED = 'Dependency not satisfied'

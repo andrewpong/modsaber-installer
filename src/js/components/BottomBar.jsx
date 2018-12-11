@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
-import { STATUS_WORKING, STATUS_LOADING, STATUS_OFFLINE } from '../constants.js'
+import { STATUS_LOADING, STATUS_OFFLINE } from '../constants.js'
 
 /**
  * @type {Electron}
@@ -40,7 +40,7 @@ class BottomBar extends Component {
             <button
               className='button'
               disabled={
-                this.context.status === STATUS_WORKING ||
+                this.context.jobs.length > 0 ||
                 this.context.status === STATUS_LOADING ||
                 this.context.mods.length === 0
               }

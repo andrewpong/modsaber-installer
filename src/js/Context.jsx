@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import semver from 'semver'
 import Konami from 'react-konami'
+import uuid from 'uuid/v4'
 import PropTypes from 'prop-types'
 
 import * as c from './constants.js'
@@ -28,6 +29,7 @@ export class ControllerProvider extends Component {
       statusText: c.STATUS_TEXT_IDLE,
       install: { path: null, platform: 'unknown' },
       status: c.STATUS_LOADING,
+      jobs: [],
 
       rawMods: [],
       gameVersions: [],
@@ -56,10 +58,44 @@ export class ControllerProvider extends Component {
         gameVersions,
       }, () => { this.filterMods(gvIdx) })
     })
+
+    ipcRenderer.on('queue-job', async (_, { id, task, noonce }) => {
+      const resp = await (task === 'enqueue' ? this.enqueueJob(id) : this.dequeueJob(id))
+      ipcRenderer.send('queue-job-resp', { id: resp, noonce })
+    })
   }
 
   static propTypes = {
     children: PropTypes.node.isRequired,
+  }
+
+  /**
+   * @param {string} id Job ID
+   * @returns {Promise.<string>}
+   */
+  async enqueueJob (id) {
+    /**
+     * @type {string[]}
+     */
+    const jobs = JSON.parse(JSON.stringify(this.state.jobs))
+
+    const uid = id || uuid()
+    await this.setStateAsync({ jobs: [...jobs, uid] })
+    return uid
+  }
+
+  /**
+   * @param {string} id Job ID
+   * @returns {Promise.<string>}
+   */
+  async dequeueJob (id) {
+    /**
+     * @type {string[]}
+     */
+    const jobs = JSON.parse(JSON.stringify(this.state.jobs))
+
+    await this.setStateAsync({ jobs: jobs.filter(x => x !== id) })
+    return id
   }
 
   componentDidMount () {
@@ -281,6 +317,10 @@ export class ControllerProvider extends Component {
           status: this.state.status,
           statusText: this.state.statusText,
           install: this.state.install,
+
+          jobs: this.state.jobs,
+          enqueueJob: id => this.enqueueJob(id),
+          dequeueJob: id => this.dequeueJob(id),
 
           setStatus: status => this.setState({ status }),
           setStatusText: statusText => this.setState({ statusText }),

@@ -79,7 +79,7 @@ class PathPicker extends Component {
 
         <div className='select' style={{ marginLeft: '10px' }} onChange={ e => { this.switchVersion(JSON.parse(e.target.value)) } }>
           <select disabled={
-            this.context.status === c.STATUS_WORKING ||
+            this.context.jobs.length > 0 ||
             this.context.status === c.STATUS_LOADING ||
             this.context.status === c.STATUS_OFFLINE
           }>

@@ -6,6 +6,7 @@ const Store = require('electron-store')
 const fse = require('../logic/file.js')
 const { promiseHandler } = require('../logic/helpers.js')
 const { downloadMod } = require('../logic/modsaber.js')
+const { enqueueJob, dequeueJob } = require('../logic/queue.js')
 const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
 const store = new Store()
 
@@ -55,7 +56,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   // Invalid install path
   if (install.platform === 'unknown' || !install.valid) {
     window.setProgressBar(0, { mode: 'none' })
-    return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
+    return sender.send('set-status', { text: 'Invalid install path!' })
   }
 
   // Save install path
@@ -70,16 +71,22 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   const versionTxtExists = await fse.exists(versionTxt)
   if (!versionTxtExists) await fse.writeFile(versionTxt, gameVersion.value)
 
+  // Add job to jobs queue
+  const jobID = await enqueueJob()
+
   // Send status
-  sender.send('set-status', { text: 'Downloading mods...', status: 'working' })
+  sender.send('set-status', { text: 'Downloading mods...' })
 
   const downloadJobs = Promise.all(mods.map(mod => downloadMod(mod, install.platform, install.path)))
   const { error: dlError, result: downloaded } = await promiseHandler(downloadJobs)
 
   if (dlError) {
-    sender.send('set-status', { text: dlError.message, status: 'complete' })
+    sender.send('set-status', { text: dlError.message })
     window.setProgressBar(0, { mode: 'none' })
     getAttention(window)
+
+    // Dequeue job
+    await dequeueJob(jobID)
 
     return dialog.showMessageBox(window, {
       title: 'Download Error',
@@ -111,9 +118,12 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   const canPatch = await fse.exists(exePath) && await fse.exists(ipaPath)
 
   if (!canPatch) {
-    sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+    sender.send('set-status', { text: 'IPA Error!' })
     window.setProgressBar(0, { mode: 'none' })
     getAttention(window)
+
+    // Dequeue job
+    await dequeueJob(jobID)
 
     return dialog.showMessageBox(window, {
       title: 'IPA Error',
@@ -124,10 +134,13 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
 
   sender.send('set-status', { text: 'Patching game...' })
 
-  exec(`"${ipaPath}" "${exePath}"`, err => {
+  exec(`"${ipaPath}" "${exePath}"`, async err => {
     if (err) {
-      sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+      sender.send('set-status', { text: 'IPA Error!' })
       log.error(err)
+
+      // Dequeue job
+      await dequeueJob(jobID)
 
       window.setProgressBar(0, { mode: 'none' })
       getAttention(window)
@@ -139,9 +152,12 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
       })
     }
 
+    // Dequeue job
+    await dequeueJob(jobID)
+
     getAttention(window)
     window.setProgressBar(1, { mode: 'none' })
-    sender.send('set-status', { text: 'Install complete!', status: 'complete' })
+    sender.send('set-status', { text: 'Install complete!' })
 
     // Reset progress bar
     setTimeout(() => {

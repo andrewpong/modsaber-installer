@@ -23,7 +23,7 @@ class Main extends Component {
   static contextType = Context
 
   render () {
-    if (this.context.status === c.STATUS_LOADING || this.context.status === c.STATUS_WORKING) {
+    if (this.context.jobs.length > 0 || this.context.status === c.STATUS_LOADING) {
       return (
         <Status spin>
           { this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working' }...
