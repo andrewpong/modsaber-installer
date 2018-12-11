@@ -37,7 +37,10 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   const DL_PRG = 20
   const FILE_PRG_FACTOR = 2
   const FILE_PRG = data.mods.reduce((acc, mod) => {
-    const files = install.platform === 'oculus' ? mod.files.oculus.files : mod.files.steam.files
+    const files = install.platform === 'steam' || mod.files.oculus === undefined ?
+      mod.files.steam.files :
+      mod.files.oculus.files
+
     return acc + (Object.keys(files).length * FILE_PRG_FACTOR)
   }, 0)
 

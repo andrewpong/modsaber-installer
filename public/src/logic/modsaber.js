@@ -101,7 +101,9 @@ class InstallError extends Error {
  * @returns {Promise.<{ path: string, data: Buffer }[]>}
  */
 const downloadMod = async (mod, platform, installDir) => {
-  const files = platform === 'oculus' ? mod.files.oculus : mod.files.steam
+  const files = platform === 'steam' || mod.files.oculus === undefined ?
+    mod.files.steam :
+    mod.files.oculus
 
   // Download
   const resp = await safeDownload(files.url)
