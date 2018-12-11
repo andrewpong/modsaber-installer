@@ -1,5 +1,6 @@
 const { join, parse } = require('path')
 const { exec } = require('child_process')
+const log = require('electron-log')
 const { ipcMain, dialog, shell, BrowserWindow } = require('electron')
 const Store = require('electron-store')
 const fse = require('../logic/file.js')
@@ -126,6 +127,8 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   exec(`"${ipaPath}" "${exePath}"`, err => {
     if (err) {
       sender.send('set-status', { text: 'IPA Error!', status: 'complete' })
+      log.error(err)
+
       window.setProgressBar(0, { mode: 'none' })
       getAttention(window)
 

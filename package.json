@@ -8,6 +8,7 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "electron-is-dev": "^1.0.1",
+    "electron-log": "^2.2.17",
     "electron-store": "^2.0.0",
     "electron-updater": "^4.0.5",
     "glob": "^7.1.3",
@@ -57,7 +58,7 @@
     },
     "nsis": {
       "oneClick": false,
-      "perMachine" : true,
+      "perMachine": true,
       "allowToChangeInstallationDirectory": true
     },
     "win": {
