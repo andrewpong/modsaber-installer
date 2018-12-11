@@ -1,8 +1,10 @@
 const path = require('path')
 const Registry = require('winreg')
+const Store = require('electron-store')
 const fse = require('./file.js')
 const { checkPiracy } = require('./piracy.js')
 const { BEAT_SABER_EXE, STEAM_APP_ID } = require('../constants.js')
+const store = new Store()
 
 /**
  * @typedef {('steam'|'oculus'|'unknown')} Platform
@@ -111,6 +113,12 @@ const findOculus = () => new Promise(resolve => {
  */
 const findPath = async () => {
   try {
+    const prevPath = store.get('install.path')
+    if (prevPath !== undefined) {
+      const pathTest = await testPath(prevPath)
+      if (pathTest.valid) return pathTest
+    }
+
     const steamPath = await findSteam(STEAM_APP_ID)
     if (steamPath.found) {
       const pathTest = await testPath(steamPath.path)

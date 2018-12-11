@@ -1,10 +1,12 @@
 const { join, parse } = require('path')
 const { exec } = require('child_process')
 const { ipcMain, dialog, shell, BrowserWindow } = require('electron')
+const Store = require('electron-store')
 const fse = require('../logic/file.js')
 const { promiseHandler } = require('../logic/helpers.js')
 const { downloadMod } = require('../logic/modsaber.js')
 const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
+const store = new Store()
 
 const getAttention = window => {
   if (!window.isFocused()) {
@@ -54,6 +56,9 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
     window.setProgressBar(0, { mode: 'none' })
     return sender.send('set-status', { text: 'Invalid install path!', status: 'complete' })
   }
+
+  // Save install path
+  store.set('install', install)
 
   // Ensure UserData directory exists
   await fse.ensureDir(join(install.path, 'UserData'))
