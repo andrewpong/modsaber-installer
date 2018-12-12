@@ -8,6 +8,8 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import './css/styles.css'
 import './css/dark.css'
 
+import './js/shortcuts.js'
+
 ReactDOM.render(
   <ControllerProvider>
     <App />
