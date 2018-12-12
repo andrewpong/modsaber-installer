@@ -1,5 +1,7 @@
-const { BrowserWindow, dialog } = require('electron')
+const { BrowserWindow } = require('electron')
 const isDev = require('electron-is-dev')
+const { runJob } = require('../jobs/job.js')
+const { downloadSong } = require('../jobs/beatsaver.js')
 
 /**
  * @param {string[]} argv Process Args
@@ -20,13 +22,11 @@ const handleArgs = (argv, win) => {
   // Ignore if schema url is not passed
   if (!schema.startsWith('modsaber://')) return undefined
 
-  dialog.showMessageBox(window, {
-    title: 'Schema Trigger',
-    type: 'info',
-    message: schema,
-  }, () => {
-    // Async
-  })
+  // Split protocol up into parts
+  const [job, ...args] = schema.replace(/^modsaber:\/\//g, '').split('/')
+
+  // Handle BeatSaver Downloads
+  if (job === 'song') return runJob(downloadSong(args[0], window), window)
 }
 
 module.exports = { handleArgs }
