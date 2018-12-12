@@ -1,7 +1,7 @@
 const { get } = require('snekfetch')
 
 const inputType = input => {
-  const idRx = /^(?:[0-9]{1,5})-(?:[0-9]{1,5})$/g
+  const idRx = /^[0-9]{1,5}(?:-[0-9]{1,5})?$/g
   const hashRx = /^[a-f0-9]{32}$/i
 
   return idRx.test(input) ?
