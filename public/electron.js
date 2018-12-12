@@ -76,7 +76,7 @@ app.on('window-all-closed', () => {
 })
 
 autoUpdater.on('download-progress', ({ percent }) => {
-  window.setProgressBar(percent, { mode: 'normal' })
+  window.setProgressBar(percent / 100, { mode: 'normal' })
 })
 
 autoUpdater.on('update-downloaded', () => {
