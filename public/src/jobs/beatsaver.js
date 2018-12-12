@@ -1,13 +1,14 @@
 const path = require('path')
 const { BrowserWindow } = require('electron')
 const fse = require('../utils/file.js')
+const { JobError } = require('./job.js')
 const { findPath } = require('../logic/pathFinder.js')
 const { extractZip, safeDownload } = require('../remote/remote.js')
 const { inputType, fromHash, fromID } = require('../remote/beatsaver.js')
 
-class BeatSaverError extends Error {
-  constructor (message, title) {
-    super(message)
+class BeatSaverError extends JobError {
+  constructor (message, status, title) {
+    super(message, status, title)
     this.title = title || 'Song Download Error'
   }
 }

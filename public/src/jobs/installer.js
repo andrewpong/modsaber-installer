@@ -4,25 +4,17 @@ const exec = promisify(require('child_process').exec)
 const { BrowserWindow } = require('electron')
 const Store = require('electron-store')
 const log = require('electron-log')
+const { JobError } = require('./job.js')
 const fse = require('../utils/file.js')
 const { promiseHandler } = require('../utils/helpers.js')
 const { downloadMod } = require('../remote/modsaber.js')
 const { BEAT_SABER_EXE, IPA_EXE } = require('../constants.js')
 const store = new Store()
 
-class InstallerError extends Error {
-  /**
-   * @param {string} message Error Message
-   * @param {string} [status] IPC Status
-   * @param {string} [title] Dialog Title
-   */
+class InstallError extends JobError {
   constructor (message, status, title) {
-    super(message)
-
+    super(message, status, title)
     this.title = title || 'Install Error'
-    this.status = status
-
-    this.flash = false
   }
 }
 
@@ -38,7 +30,7 @@ const installMods = async (mods, install, gameVersion, win) => {
   const sender = window.webContents
 
   // Validate install details
-  if (install.platform === 'unknown' || !install.valid) throw new InstallerError('Invalid install path!', 'Invalid install path!')
+  if (install.platform === 'unknown' || !install.valid) throw new InstallError('Invalid install path!', 'Invalid install path!')
 
   // Save install path
   store.set('install', install)
@@ -60,7 +52,7 @@ const installMods = async (mods, install, gameVersion, win) => {
 
   // Handle download errors
   if (dlError) {
-    const err = new InstallerError(
+    const err = new InstallError(
       `Download failed for ${dlError.mod.name}@${dlError.mod.version}\nError: ${dlError.message}`,
       dlError.message,
       'Download Error'
@@ -93,7 +85,7 @@ const installMods = async (mods, install, gameVersion, win) => {
   // Check if IPA exists
   const canPatch = await fse.exists(exePath) && await fse.exists(ipaPath)
   if (!canPatch) {
-    const err = new InstallerError('Could not patch Beat Saber! (IPA Missing)', 'IPA Error!', 'IPA Error')
+    const err = new InstallError('Could not patch Beat Saber! (IPA Missing)', 'IPA Error!', 'IPA Error')
 
     err.flash = true
     throw err
@@ -109,10 +101,10 @@ const installMods = async (mods, install, gameVersion, win) => {
   } catch (error) {
     log.error(error)
 
-    const err = new InstallerError('Could not patch Beat Saber! (IPA Error)\nStack trace written to log file.', 'IPA Error!', 'IPA Error')
+    const err = new InstallError('Could not patch Beat Saber! (IPA Error)\nStack trace written to log file.', 'IPA Error!', 'IPA Error')
     err.flash = true
     throw err
   }
 }
 
-module.exports = { InstallerError, installMods }
+module.exports = { InstallError, installMods }
