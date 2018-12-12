@@ -51,6 +51,8 @@ const downloadSong = async (input, win) => {
     // File Write Jobs
     const jobs = files.map(async file => {
       const { dir } = path.parse(file.path)
+
+      if (dir.includes('autosaves')) return undefined
       await fse.ensureDir(dir)
 
       return fse.writeFile(file.path, file.data)
