@@ -22,6 +22,7 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * More user-friendly status messages
 * Ensures `UserData` folder exists
 * Auto-detects current Steam version
+* `modsaber://` protocol handling
 * **_A dark secret..._**
 
 ### Disadvantages
