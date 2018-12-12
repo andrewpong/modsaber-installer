@@ -20,7 +20,7 @@ const handleArgs = (argv, win) => {
   const window = win || BrowserWindow.getAllWindows()[0]
 
   // Ignore if schema url is not passed
-  if (!schema.startsWith('modsaber://')) return undefined
+  if (!schema || !schema.startsWith('modsaber://')) return undefined
 
   // Split protocol up into parts
   const [job, ...args] = schema.replace(/^modsaber:\/\//g, '').split('/')
