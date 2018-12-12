@@ -69,7 +69,6 @@
         "nsis"
       ],
       "icon": "build/icon.png",
-      "requestedExecutionLevel": "requireAdministrator",
       "publish": [
         {
           "provider": "github",
