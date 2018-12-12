@@ -7,11 +7,11 @@ const { BrowserWindow, ipcMain } = require('electron')
  * @returns {Promise.<string>}
  */
 const manageJob = (task, id) => new Promise((resolve, reject) => {
-  const win = BrowserWindow.getAllWindows()[0]
-  if (!win) return reject(new Error('Window not found'))
+  const window = BrowserWindow.getAllWindows()[0]
+  if (!window) return reject(new Error('Window not found'))
 
   const noonce = uuid()
-  win.webContents.send('queue-job', { noonce, task, id })
+  window.webContents.send('queue-job', { noonce, task, id })
 
   ipcMain.on('queue-job-resp', (_, resp) => {
     if (resp.noonce !== noonce) return undefined

@@ -45,7 +45,7 @@ const fetchGameVersions = async () => {
   return body
 }
 
-class InstallError extends Error {
+class DownloadError extends Error {
   /**
    * @param {string} message Error Message
    * @param {Mod} mod Mod
@@ -69,18 +69,18 @@ const downloadMod = async (mod, platform, installDir) => {
 
   // Download
   const resp = await safeDownload(files.url)
-  if (resp.error) throw new InstallError('Network Failure', mod)
+  if (resp.error) throw new DownloadError('Network Failure', mod)
 
   // Calculate Hash
   const hash = await calculateHash(resp.body)
-  if (hash !== files.hash) throw new InstallError('Download Hash Mismatch', mod)
+  if (hash !== files.hash) throw new DownloadError('Download Hash Mismatch', mod)
 
   // Extract
   try {
     const extracted = await extractZip(resp.body, installDir)
     return extracted
   } catch (err) {
-    throw new InstallError('Extraction Failure', mod)
+    throw new DownloadError('Extraction Failure', mod)
   }
 }
 
