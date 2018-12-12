@@ -36,7 +36,8 @@ const downloadSong = async (input, win) => {
 
   // Download song info
   sender.send('set-status', { text: 'Downloading song info...' })
-  const song = await (type === 'hash' ? fromHash(input) : fromID(input))
+  const { error, song } = await (type === 'hash' ? fromHash(input) : fromID(input))
+  if (error) throw new BeatSaverError('Song Not Found!')
 
   // Download song zip
   sender.send('set-status', { text: 'Downloading song zip...' })

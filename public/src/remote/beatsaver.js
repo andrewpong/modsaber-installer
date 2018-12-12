@@ -1,4 +1,4 @@
-const { get } = require('snekfetch')
+const { safeDownload } = require('./remote.js')
 
 const inputType = input => {
   const idRx = /^[0-9]{1,5}(?:-[0-9]{1,5})?$/g
@@ -26,14 +26,24 @@ const inputType = input => {
 
 /**
  * @param {string} id Song ID
- * @returns {Promise.<Song>}
+ * @returns {Promise.<{ error: boolean, song: Song }>}
  */
-const fromID = async id => (await get(`https://beatsaver.com/api/songs/detail/${id}`)).body.song
+const fromID = async id => {
+  const { error, body } = await safeDownload(`https://beatsaver.com/api/songs/detail/${id}`)
+
+  if (error) return { error: true, song: null }
+  else return { error: false, song: body.song }
+}
 
 /**
  * @param {string} hash Song Hash
- * @returns {Promise.<Song>}
+ * @returns {Promise.<{ error: boolean, song: Song }>}
  */
-const fromHash = async hash => (await get(`https://beatsaver.com/api/songs/search/hash/${hash}`)).body.songs[0]
+const fromHash = async hash => {
+  const { error, body } = await safeDownload(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+
+  if (error) return { error: true, song: null }
+  else return { error: false, song: body.songs[0] }
+}
 
 module.exports = { inputType, fromID, fromHash }
