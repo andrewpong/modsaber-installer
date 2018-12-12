@@ -1,7 +1,7 @@
 const path = require('path')
 const Registry = require('winreg')
 const Store = require('electron-store')
-const fse = require('./file.js')
+const fse = require('../utils/file.js')
 const { checkPiracy } = require('./piracy.js')
 const { BEAT_SABER_EXE, STEAM_APP_ID } = require('../constants.js')
 const store = new Store()

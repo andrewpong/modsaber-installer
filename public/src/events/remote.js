@@ -1,5 +1,5 @@
 const { BrowserWindow, ipcMain } = require('electron')
-const { fetchMods, fetchGameVersions } = require('../logic/modsaber.js')
+const { fetchMods, fetchGameVersions } = require('../remote/modsaber.js')
 const { findSteam } = require('../logic/pathFinder.js')
 const { STEAM_APP_ID } = require('../constants.js')
 

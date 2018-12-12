@@ -1,8 +1,8 @@
 const path = require('path')
 const { get } = require('snekfetch')
 const { BrowserWindow, dialog } = require('electron')
-const fse = require('./file.js')
-const { findPath } = require('./pathFinder.js')
+const fse = require('../utils/file.js')
+const { findPath } = require('../logic/pathFinder.js')
 const { extractZip, safeDownload } = require('./remote.js')
 
 const fromID = async id => (await get(`https://beatsaver.com/api/songs/detail/${id}`)).body.song

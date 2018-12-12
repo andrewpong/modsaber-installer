@@ -1,6 +1,6 @@
 const { get } = require('snekfetch')
 const { extractZip, safeDownload } = require('./remote.js')
-const { calculateHash } = require('./helpers.js')
+const { calculateHash } = require('../utils/helpers.js')
 const { API_URL, USER_AGENT } = require('../constants.js')
 
 /**
