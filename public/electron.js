@@ -22,8 +22,6 @@ let window
 app.on('ready', () => {
   if (!isDev) autoUpdater.checkForUpdates()
 
-  handleArgs(process.argv)
-
   const width = 800
   const height = 580
   window = new BrowserWindow({
@@ -55,6 +53,7 @@ app.on('ready', () => {
   window.setTitle(`ModSaber Installer // v${VERSION}`)
   window.once('ready-to-show', () => {
     window.show()
+    handleArgs(process.argv, window)
   })
 
   window.on('focus', () => {
@@ -66,8 +65,7 @@ app.on('ready', () => {
 
 app.on('second-instance', (event, argv) => {
   if (!window) return undefined
-
-  handleArgs(argv)
+  handleArgs(argv, window)
 
   if (window.isMinimized()) window.restore()
   window.focus()
