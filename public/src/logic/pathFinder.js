@@ -1,5 +1,6 @@
 const path = require('path')
 const Registry = require('winreg')
+const log = require('electron-log')
 const Store = require('electron-store')
 const fse = require('../utils/file.js')
 const { checkPiracy } = require('./piracy.js')
@@ -132,7 +133,7 @@ const findPath = async () => {
     }
   } catch (err) {
     // Do nothing
-    console.error(err)
+    log.error(err)
   }
 
   return { path: null, platform: 'unknown' }

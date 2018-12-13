@@ -1,4 +1,5 @@
 const { BrowserWindow, ipcMain } = require('electron')
+const log = require('electron-log')
 const { fetchMods, fetchGameVersions } = require('../remote/modsaber.js')
 const { findSteam } = require('../logic/pathFinder.js')
 const { STEAM_APP_ID } = require('../constants.js')
@@ -25,7 +26,7 @@ ipcMain.on('get-remote', async ({ sender }) => {
     window.setProgressBar(0, { mode: 'none' })
     sender.send('set-remote', { status: 'success', mods, gameVersions })
   } catch (err) {
-    console.error(err)
+    log.error(err)
 
     sender.send('set-remote', { status: 'error', statusText: err.message })
     window.setProgressBar(1, { mode: 'error' })
