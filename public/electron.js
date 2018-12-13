@@ -1,9 +1,11 @@
 const path = require('path')
 const { app, BrowserWindow, dialog, Menu } = require('electron')
+const log = require('electron-log')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
 const { handleArgs } = require('./src/events/schema.js')
-const { BASE_URL, VERSION } = require('./src/constants.js')
+const { enqueueJob, dequeueJob } = require('./src/logic/queue.js')
+const { BASE_URL, VERSION, AUTO_UPDATE_JOB } = require('./src/constants.js')
 
 // Event Handlers
 require('./src/events/path.js')
@@ -14,13 +16,23 @@ require('./src/events/installer.js')
 const instanceLock = app.requestSingleInstanceLock()
 if (!instanceLock) return app.quit()
 
+// Setup Auto Updater
+autoUpdater.autoDownload = false
+autoUpdater.logger = log
+autoUpdater.logger.transports.file.level = 'info'
+
 /**
  * @type {BrowserWindow}
  */
 let window
 
 app.on('ready', () => {
-  if (!isDev) autoUpdater.checkForUpdates()
+  const updateCheck = async () => {
+    if (isDev) return false
+    else return (await autoUpdater.checkForUpdates()).cancellationToken !== undefined
+  }
+
+  const hasUpdate = updateCheck()
 
   const width = 800
   const height = 580
@@ -51,7 +63,12 @@ app.on('ready', () => {
   window.loadURL(startURL)
 
   window.setTitle(`ModSaber Installer // v${VERSION}`)
-  window.once('ready-to-show', () => {
+  window.once('ready-to-show', async () => {
+    if (await hasUpdate) {
+      await enqueueJob(AUTO_UPDATE_JOB)
+      autoUpdater.downloadUpdate()
+    }
+
     window.show()
     handleArgs(process.argv, window)
   })
@@ -60,7 +77,7 @@ app.on('ready', () => {
     window.flashFrame(false)
   })
 
-  window.custom = { BASE_URL }
+  window.custom = { BASE_URL, AUTO_UPDATE_JOB }
 })
 
 app.on('second-instance', (event, argv) => {
@@ -88,4 +105,8 @@ autoUpdater.on('update-downloaded', () => {
   })
 
   autoUpdater.quitAndInstall(true, true)
+})
+
+autoUpdater.on('error', () => {
+  dequeueJob(AUTO_UPDATE_JOB)
 })

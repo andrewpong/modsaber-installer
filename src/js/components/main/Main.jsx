@@ -26,7 +26,12 @@ class Main extends Component {
     if (this.context.jobs.length > 0 || this.context.status === c.STATUS_LOADING) {
       return (
         <Status spin>
-          { this.context.status === c.STATUS_LOADING ? 'Loading' : 'Working' }...
+          {
+            this.context.jobs.includes(c.AUTO_UPDATE_JOB) ? 'Updating Installer' :
+              this.context.status === c.STATUS_LOADING ?
+                'Loading' :
+                'Working'
+          }...
         </Status>
       )
     }

@@ -7,6 +7,8 @@ module.exports = {
   VERSION,
   USER_AGENT: `ModSaber Installer/${VERSION}`,
 
+  AUTO_UPDATE_JOB: 'update',
+
   IPA_EXE: 'IPA.exe',
   BEAT_SABER_EXE: 'Beat Saber.exe',
   STEAM_APP_ID: '620980',

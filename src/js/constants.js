@@ -7,6 +7,9 @@ const { getCurrentWindow } = electron.remote
 // Remote URLs
 export const BASE_URL = getCurrentWindow().custom.BASE_URL
 
+// Auto Update Job
+export const AUTO_UPDATE_JOB = getCurrentWindow().custom.AUTO_UPDATE_JOB
+
 // Status Text
 export const STATUS_TEXT_IDLE = 'Idle'
 export const STATUS_TEXT_LOADING = 'Loading mods...'
