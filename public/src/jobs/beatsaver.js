@@ -47,7 +47,13 @@ const downloadSong = async (input, win) => {
   try {
     // Extract zip
     sender.send('set-status', { text: 'Extracting song...' })
-    const files = await extractZip(zip.body, path.join(customSongs, song.key))
+    const files = await extractZip(
+      zip.body, path.join(customSongs, song.key),
+      {
+        filter: ['.json', '.ogg', '.wav', '.jpg', '.jpeg', '.png'],
+        filterType: 'whitelist',
+      }
+    )
 
     // File Write Jobs
     const jobs = files.map(async file => {
