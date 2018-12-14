@@ -1,7 +1,7 @@
 const { get } = require('snekfetch')
 const { extractZip, safeDownload } = require('./remote.js')
 const { calculateHash } = require('../utils/helpers.js')
-const { API_URL, USER_AGENT } = require('../constants.js')
+const { API_URL, USER_AGENT, BLOCKED_EXTENSIONS } = require('../constants.js')
 
 /**
  * @typedef {Object} Files
@@ -77,7 +77,7 @@ const downloadMod = async (mod, platform, installDir) => {
 
   // Extract
   try {
-    const extracted = await extractZip(resp.body, installDir)
+    const extracted = await extractZip(resp.body, installDir, { filter: BLOCKED_EXTENSIONS, filterType: 'blacklist' })
     return extracted
   } catch (err) {
     throw new DownloadError('Extraction Failure', mod)
