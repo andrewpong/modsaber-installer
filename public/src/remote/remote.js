@@ -21,17 +21,30 @@ const safeDownload = async url => {
 /**
  * @param {Buffer} blob Zip Blob
  * @param {string} installDir Install Directory
+ * @param {{ filter: string[], filterType: ('whitelist'|'blacklist') }} [options] File extension filter options
  * @returns {Promise.<{ path: string, data: Buffer }[]>}
  */
-const extractZip = async (blob, installDir) => {
+const extractZip = async (blob, installDir, options) => {
   const zip = new AdmZip(blob)
 
   const entries = zip.getEntries().map(entry => new Promise(resolve => {
-    if (entry.isDirectory) resolve(null)
+    if (entry.isDirectory) return resolve(null)
 
     // Filter out files that try to break out of the install dir
     const fullPath = path.join(installDir, entry.entryName)
     if (!fullPath.startsWith(installDir)) return resolve(null)
+
+    // Implement filter blacklist/whitelist
+    if (options.filter) {
+      const type = options.filterType || 'whitelist'
+      const { ext } = path.parse(entry.entryName)
+
+      const allowed = type === 'whitelist' ?
+        options.filter.includes(ext) :
+        !options.filter.includes(ext)
+
+      if (!allowed) return resolve(null)
+    }
 
     entry.getDataAsync(data => resolve({ path: path.join(installDir, entry.entryName), data }))
   }))
