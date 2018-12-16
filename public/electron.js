@@ -1,6 +1,5 @@
 const path = require('path')
 const { app, BrowserWindow, dialog, Menu } = require('electron')
-const log = require('electron-log')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
 const { handleArgs } = require('./src/events/schema.js')
@@ -18,8 +17,6 @@ if (!instanceLock) return app.quit()
 
 // Setup Auto Updater
 autoUpdater.autoDownload = false
-autoUpdater.logger = log
-autoUpdater.logger.transports.file.level = 'info'
 
 /**
  * @type {BrowserWindow}
