@@ -10,6 +10,7 @@ const { BASE_URL, VERSION, AUTO_UPDATE_JOB } = require('./src/constants.js')
 require('./src/events/path.js')
 require('./src/events/remote.js')
 require('./src/events/installer.js')
+require('./src/events/uploadLog.js')
 
 // Instance Lock
 const instanceLock = app.requestSingleInstanceLock()

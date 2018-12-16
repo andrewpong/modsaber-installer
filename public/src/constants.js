@@ -6,6 +6,7 @@ module.exports = {
 
   VERSION,
   USER_AGENT: `ModSaber Installer/${VERSION}`,
+  HASTE_URL: 'https://paste.fuelrats.com',
 
   AUTO_UPDATE_JOB: 'update',
 
