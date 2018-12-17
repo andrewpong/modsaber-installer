@@ -20,6 +20,7 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * Download hash validation
 * More robust network error handling
 * More user-friendly status messages
+* Automatic diagnostic reports
 * Ensures `UserData` folder exists
 * Auto-detects current Steam version
 * `modsaber://` protocol handling
@@ -29,6 +30,16 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * Not a single binary
 * Larger file size
 * Higher memory usage
+
+## Keyboard Shortcuts
+ModSaber Installer has a few debug features activated by keyboard shortcuts.  
+Actions that upload to hastebin will copy the resulting URL to your clipboard automatically.
+
+| Shortcut | Action |
+| - | - |
+| <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>K</kbd> | Open log file in the system's default editor |
+| <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>L</kbd> | Upload log file to hastebin |
+| <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>D</kbd> | Run diagnostic report and upload to hastebin |
 
 ## Screenshot
 ![Screenshot](https://b.catgirlsare.sexy/Lvds.png)
