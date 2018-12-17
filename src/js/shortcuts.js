@@ -16,7 +16,7 @@ const fs = electron.remote.require('fs')
 // Constant log path
 const logPath = path.join(app.getPath('userData'), 'log.log')
 
-// Open file
+// Open log file
 Mousetrap.bind('ctrl+shift+k', () => {
   fs.exists(logPath, exists => {
     if (exists) return shell.openItem(logPath)
@@ -24,9 +24,13 @@ Mousetrap.bind('ctrl+shift+k', () => {
   })
 })
 
+// Upload log file
 Mousetrap.bind('ctrl+shift+l', () => {
   fs.exists(logPath, exists => {
     if (exists) return ipcRenderer.send('upload-log', logPath)
     else return shell.beep()
   })
 })
+
+// Run Diagnostics
+Mousetrap.bind('ctrl+shift+d', () => ipcRenderer.send('run-diagnostics'))

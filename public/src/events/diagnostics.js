@@ -2,6 +2,8 @@ const fs = require('fs')
 const { promisify } = require('util')
 const { ipcMain, dialog, clipboard, shell, BrowserWindow } = require('electron')
 const log = require('electron-log')
+const { runJob } = require('../jobs/job.js')
+const { runDiagnostics } = require('../jobs/diagnostics.js')
 const { uploadPaste } = require('../remote/paste.js')
 const readFile = promisify(fs.readFile)
 
@@ -26,4 +28,12 @@ ipcMain.on('upload-log', async ({ sender }, logPath) => {
       message: 'Log file failed to upload!\nTry pressing CTRL+SHIFT+K',
     })
   }
+})
+
+ipcMain.on('run-diagnostics', async ({ sender }) => {
+  // Get Browser Window
+  const window = BrowserWindow.fromWebContents(sender)
+
+  // Run diagnostics job
+  await runJob(runDiagnostics(window))
 })
