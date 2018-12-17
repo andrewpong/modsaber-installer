@@ -2,8 +2,7 @@ const fs = require('fs')
 const { promisify } = require('util')
 const { ipcMain, dialog, clipboard, shell, BrowserWindow } = require('electron')
 const log = require('electron-log')
-const { post } = require('snekfetch')
-const { USER_AGENT, HASTE_URL } = require('../constants.js')
+const { uploadPaste } = require('../remote/paste.js')
 const readFile = promisify(fs.readFile)
 
 ipcMain.on('upload-log', async ({ sender }, logPath) => {
@@ -12,11 +11,8 @@ ipcMain.on('upload-log', async ({ sender }, logPath) => {
 
   try {
     const userLog = await readFile(logPath)
-    const { body: { key } } = await post(`${HASTE_URL}/documents`)
-      .set('User-Agent', USER_AGENT)
-      .send(userLog)
+    const url = await uploadPaste(userLog, 'log')
 
-    const url = `${HASTE_URL}/${key}.log`
     clipboard.writeText(url)
     shell.openExternal(url)
 
