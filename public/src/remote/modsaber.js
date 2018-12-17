@@ -1,3 +1,4 @@
+const log = require('electron-log')
 const { get } = require('snekfetch')
 const { extractZip, safeDownload } = require('./remote.js')
 const { calculateHash } = require('../utils/helpers.js')
@@ -80,6 +81,7 @@ const downloadMod = async (mod, platform, installDir) => {
     const extracted = await extractZip(resp.body, installDir, { filter: BLOCKED_EXTENSIONS, filterType: 'blacklist' })
     return extracted
   } catch (err) {
+    log.error(err)
     throw new DownloadError('Extraction Failure', mod)
   }
 }

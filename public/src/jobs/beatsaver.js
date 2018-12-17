@@ -1,5 +1,6 @@
 const path = require('path')
 const { BrowserWindow } = require('electron')
+const log = require('electron-log')
 const fse = require('../utils/file.js')
 const { JobError } = require('./job.js')
 const { findPath } = require('../logic/pathFinder.js')
@@ -71,6 +72,7 @@ const downloadSong = async (input, win) => {
     sender.send('set-status', { text: 'Song install complete!' })
     return undefined
   } catch (err) {
+    log.error(err)
     throw new BeatSaverError('Extraction Failure!')
   }
 }
