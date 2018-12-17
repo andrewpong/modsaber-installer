@@ -59,8 +59,16 @@ const getFiles = async (dir, filter) => {
     return { file: normalised, hash }
   }))
 
+  return resolveFiles(mapped)
+}
+
+/**
+ * @param {{ file: string, hash: string }} arr Input Array
+ * @returns {Object}
+ */
+const resolveFiles = arr => {
   const final = {}
-  for (const { file, hash } of mapped.filter(x => x !== undefined)) {
+  for (const { file, hash } of arr.filter(x => x !== undefined)) {
     const fileParts = file.split('/')
     let prev = final
 
