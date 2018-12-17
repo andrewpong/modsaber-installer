@@ -1,4 +1,5 @@
 const fs = require('fs')
+const rimraf = require('rimraf')
 const mkdirp = require('mkdirp')
 const { promisify } = require('util')
 const access = promisify(fs.access)
@@ -36,5 +37,7 @@ module.exports = {
   isFile,
   ensureDir: promisify(mkdirp),
   readDir: promisify(fs.readdir),
+  rename: promisify(fs.rename),
+  rmDir: promisify(rimraf),
   glob: promisify(require('glob')),
 }

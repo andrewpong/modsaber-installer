@@ -39,10 +39,54 @@ const installMods = async (mods, install, gameVersion, win) => {
   await fse.ensureDir(path.join(install.path, 'UserData'))
   await fse.ensureDir(path.join(install.path, 'Playlists'))
 
-  // Ensure BeatSaberVersion.txt exists
+  // Move incompatible plugins
+  const moveAndWrite = async (version = 'Unknown') => {
+    // Send status
+    sender.send('set-status', { text: 'Moving incompatible plugins...' })
+
+    // Write new txt value
+    await fse.writeFile(versionTxt, gameVersion.value)
+
+    // Reference directories
+    const pluginsDir = path.join(install.path, 'Plugins')
+    const incompatibleDir = path.join(install.path, 'Incompatible Plugins', `Plugins v${version}`)
+
+    // Clean new directory
+    try {
+      await fse.rmDir(incompatibleDir)
+    } catch (err) {
+      // Ignore errors
+    }
+
+    // Create directories
+    await fse.ensureDir(path.join(install.path, 'Incompatible Plugins'))
+    await fse.ensureDir(incompatibleDir)
+
+    // Move old files
+    const oldFiles = await fse.glob(path.join(pluginsDir, '**', '*'))
+    await Promise.all(oldFiles.map(oldPath => {
+      const newPath = path.join(incompatibleDir, oldPath.replace(pluginsDir.replace(/\\/g, '/'), ''))
+      return fse.rename(oldPath, newPath)
+    }))
+
+    try {
+      await fse.rmDir(pluginsDir)
+      return undefined
+    } catch (err) {
+      // Ignore errors
+      return undefined
+    }
+  }
+
+  // Validate Beat Saber version
   const versionTxt = path.join(install.path, 'BeatSaberVersion.txt')
   const versionTxtExists = await fse.exists(versionTxt)
-  if (!versionTxtExists) await fse.writeFile(versionTxt, gameVersion.value)
+  if (!versionTxtExists) {
+    await moveAndWrite()
+  } else {
+    const versionTxtValue = await fse.readFile(versionTxt, 'utf8')
+    if (versionTxtValue !== gameVersion.value) await moveAndWrite(versionTxtValue)
+  }
 
   // Send status
   sender.send('set-status', { text: 'Downloading mods...' })
