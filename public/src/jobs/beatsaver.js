@@ -26,9 +26,10 @@ const downloadSong = async (input, win) => {
   const install = await findPath()
   if (install.platform === 'unknown') throw new BeatSaverError('Could not find your Beat Saber directory.\nRun the mod manager once first!')
 
-  // Ensure CustomSongs exists
+  // Ensure CustomSongs and Playlists exists
   const customSongs = path.join(install.path, 'CustomSongs')
   await fse.ensureDir(customSongs)
+  await fse.ensureDir(path.join(install.path, 'Playlists'))
 
   // Validate input type
   const type = inputType(input)
