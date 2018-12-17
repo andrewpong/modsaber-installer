@@ -49,6 +49,7 @@ const getFiles = async (dir, options = {}) => {
   const recursive = options.recursive !== undefined ? options.recursive : true
   const hashes = options.hashes !== undefined ? options.hashes : true
 
+  const normalisedDir = dir.replace(/\\/g, '/')
   const globPath = recursive ? path.join(dir, '**', '*.*') : path.join(dir, '*.*')
   const files = await glob(globPath)
 
@@ -62,9 +63,7 @@ const getFiles = async (dir, options = {}) => {
     const data = await fse.readFile(file)
     const hash = hashes ? await calculateHash(data) : null
 
-    const normalisedDir = dir.replace(/\\/g, '/')
     const normalised = file.replace(`${normalisedDir}/`, '')
-
     return { file: normalised, hash }
   }))
 
