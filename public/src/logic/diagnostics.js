@@ -40,13 +40,17 @@ const getVersion = async dir => {
 
 /**
  * @param {string} dir Directory to list
+ * @param {boolean} [recursive] Search recursively
  * @param {string[]} [filter] File Name Whitelist
  */
-const getFiles = async (dir, filter) => {
-  const globPath = path.join(dir, '**', '*.*')
+const getFiles = async (dir, recursive = true, filter) => {
+  const globPath = recursive ? path.join(dir, '**', '*.*') : path.join(dir, '*.*')
   const files = await glob(globPath)
 
   const mapped = await Promise.all(files.map(async file => {
+    const isFile = await fse.isFile(file)
+    if (!isFile) return undefined
+
     const { base } = path.parse(file)
     if (filter !== undefined && !filter.includes(base)) return undefined
 
@@ -99,10 +103,11 @@ const generate = async dir => {
     'Assembly-CSharp-firstpass.dll',
   ]
 
-  const [Plugins, DataManaged, DataPlugins] = await Promise.all([
+  const [Plugins, DataManaged, DataPlugins, rootFiles] = await Promise.all([
     getFiles(path.join(dir, 'Plugins')),
-    getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), managedFilter),
+    getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), true, managedFilter),
     getFiles(path.join(dir, 'Beat Saber_Data', 'Plugins')),
+    getFiles(dir, false),
   ])
 
   const tree = {
@@ -111,6 +116,10 @@ const generate = async dir => {
       Managed: DataManaged,
       Plugins: DataPlugins,
     },
+  }
+
+  for (const [k, v] of Object.entries(rootFiles)) {
+    tree[k] = v
   }
 
   return render(version, tree)
