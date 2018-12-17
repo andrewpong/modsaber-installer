@@ -208,10 +208,10 @@ const generate = async dir => {
     .map(({ title, content }) => {
       const padded = content
         .split('\n')
-        .map(line => `    ${line}`)
+        .map((line, i, arr) => `${i === arr.length - 1 ? '──┘ ' : '  │ '}${line}`)
         .join('\n')
 
-      return `--- ${title} --- \n${padded}\n`
+      return `──┬── ${title} \n${padded}\n`
     })
     .join('\n')
 }
