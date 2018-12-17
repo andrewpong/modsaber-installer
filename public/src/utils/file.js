@@ -23,4 +23,5 @@ module.exports = {
   access,
   exists,
   ensureDir: promisify(mkdirp),
+  readDir: promisify(fs.readdir),
 }
