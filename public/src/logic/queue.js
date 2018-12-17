@@ -13,10 +13,14 @@ const manageJob = (task, id) => new Promise((resolve, reject) => {
   const noonce = uuid()
   window.webContents.send('queue-job', { noonce, task, id })
 
-  ipcMain.on('queue-job-resp', (_, resp) => {
+  const respListener = (_, resp) => {
     if (resp.noonce !== noonce) return undefined
-    resolve(resp.id)
-  })
+
+    ipcMain.removeListener('queue-job-resp', respListener)
+    return resolve(resp.id)
+  }
+
+  ipcMain.on('queue-job-resp', respListener)
 })
 
 /**
