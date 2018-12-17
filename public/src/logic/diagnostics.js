@@ -40,10 +40,15 @@ const getVersion = async dir => {
 
 /**
  * @param {string} dir Directory to list
- * @param {boolean} [recursive] Search recursively
- * @param {string[]} [filter] File Name Whitelist
+ * @param {Object} [options] Options
+ * @param {boolean} [options.recursive] Search recursively
+ * @param {string[]} [options.filter] File Name Whitelist
+ * @param {boolean} [options.hashes] Include hashes
  */
-const getFiles = async (dir, recursive = true, filter) => {
+const getFiles = async (dir, options = {}) => {
+  const recursive = options.recursive !== undefined ? options.recursive : true
+  const hashes = options.hashes !== undefined ? options.hashes : true
+
   const globPath = recursive ? path.join(dir, '**', '*.*') : path.join(dir, '*.*')
   const files = await glob(globPath)
 
@@ -52,10 +57,10 @@ const getFiles = async (dir, recursive = true, filter) => {
     if (!isFile) return undefined
 
     const { base } = path.parse(file)
-    if (filter !== undefined && !filter.includes(base)) return undefined
+    if (options.filter !== undefined && !options.filter.includes(base)) return undefined
 
     const data = await fse.readFile(file)
-    const hash = await calculateHash(data)
+    const hash = hashes ? await calculateHash(data) : null
 
     const normalisedDir = dir.replace(/\\/g, '/')
     const normalised = file.replace(`${normalisedDir}/`, '')
@@ -103,11 +108,16 @@ const generate = async dir => {
     'Assembly-CSharp-firstpass.dll',
   ]
 
-  const [Plugins, DataManaged, DataPlugins, rootFiles] = await Promise.all([
+  const [
+    Plugins,
+    DataManaged,
+    DataPlugins,
+    rootFiles,
+  ] = await Promise.all([
     getFiles(path.join(dir, 'Plugins')),
-    getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), true, managedFilter),
+    getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), { filter: managedFilter }),
     getFiles(path.join(dir, 'Beat Saber_Data', 'Plugins')),
-    getFiles(dir, false),
+    getFiles(dir, { recursive: false }),
   ])
 
   const tree = {
