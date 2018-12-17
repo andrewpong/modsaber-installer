@@ -112,20 +112,29 @@ const generate = async dir => {
     Plugins,
     DataManaged,
     DataPlugins,
+    CustomAvatars,
+    CustomPlatforms,
+    CustomSabers,
     rootFiles,
   ] = await Promise.all([
     getFiles(path.join(dir, 'Plugins')),
     getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), { filter: managedFilter }),
     getFiles(path.join(dir, 'Beat Saber_Data', 'Plugins')),
+    getFiles(path.join(dir, 'CustomAvatars')),
+    getFiles(path.join(dir, 'CustomPlatforms')),
+    getFiles(path.join(dir, 'CustomSabers')),
     getFiles(dir, { recursive: false }),
   ])
 
   const tree = {
-    Plugins,
     'Beat Saber_Data': {
       Managed: DataManaged,
       Plugins: DataPlugins,
     },
+    CustomAvatars,
+    CustomPlatforms,
+    CustomSabers,
+    Plugins,
   }
 
   for (const [k, v] of Object.entries(rootFiles)) {
