@@ -330,6 +330,7 @@ export class ControllerProvider extends Component {
           mods: this.state.mods,
           toggleMod: index => { this.toggleMod(index) },
           installMods: () => { this.installMods() },
+          setGameVersions: gameVersions => this.setState({ gameVersions }),
           filterMods: gvIdx => { this.filterMods(gvIdx) },
 
           selected: this.state.selected,

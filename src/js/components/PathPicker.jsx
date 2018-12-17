@@ -46,10 +46,14 @@ class PathPicker extends Component {
     const gameVersions = JSON.parse(JSON.stringify(this.context.gameVersions))
       .map(x => {
         delete x.selected
+        if (x.manifest === gv.manifest) x.selected = true
+
         return x
       })
 
     const idx = gameVersions.findIndex(x => x.manifest === gv.manifest)
+
+    this.context.setGameVersions(gameVersions)
     this.context.filterMods(idx)
   }
 
