@@ -84,7 +84,28 @@ const getFiles = async (dir, filter) => {
 
 const generate = async dir => {
   const version = await getVersion(dir)
-  return render(version, {})
+
+  const managedFilter = [
+    '0Harmony.dll',
+    'Assembly-CSharp.dll',
+    'Assembly-CSharp-firstpass.dll',
+  ]
+
+  const [Plugins, DataManaged, DataPlugins] = await Promise.all([
+    getFiles(path.join(dir, 'Plugins')),
+    getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), managedFilter),
+    getFiles(path.join(dir, 'Beat Saber_Data', 'Plugins')),
+  ])
+
+  const tree = {
+    Plugins,
+    'Beat Saber_Data': {
+      Managed: DataManaged,
+      Plugins: DataPlugins,
+    },
+  }
+
+  return render(version, tree)
 }
 
 module.exports = { generate }
