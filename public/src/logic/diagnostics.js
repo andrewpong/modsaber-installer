@@ -39,6 +39,12 @@ const getVersion = async dir => {
 }
 
 /**
+ * @param {string} dir Directory
+ * @returns {string}
+ */
+const normaliseDir = dir => `${dir.replace(/\\/g, '/')}/`
+
+/**
  * @param {string} dir Directory to list
  * @param {Object} [options] Options
  * @param {boolean} [options.recursive] Search recursively
@@ -49,7 +55,7 @@ const getFiles = async (dir, options = {}) => {
   const recursive = options.recursive !== undefined ? options.recursive : true
   const hashes = options.hashes !== undefined ? options.hashes : true
 
-  const normalisedDir = dir.replace(/\\/g, '/')
+  const normalisedDir = normaliseDir(dir)
   const globPath = recursive ? path.join(dir, '**', '*.*') : path.join(dir, '*.*')
   const files = await glob(globPath)
 
@@ -63,7 +69,7 @@ const getFiles = async (dir, options = {}) => {
     const data = await fse.readFile(file)
     const hash = hashes ? await calculateHash(data) : null
 
-    const normalised = file.replace(`${normalisedDir}/`, '')
+    const normalised = file.replace(normalisedDir, '')
     return { file: normalised, hash }
   }))
 
