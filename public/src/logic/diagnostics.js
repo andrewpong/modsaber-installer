@@ -146,7 +146,20 @@ const generate = async dir => {
     tree[k] = v
   }
 
-  return render(version, tree)
+  const sections = [
+    { title: 'Directory Structure', content: render(version, tree) },
+  ]
+
+  return sections
+    .map(({ title, content }) => {
+      const padded = content
+        .split('\n')
+        .map(line => `    ${line}`)
+        .join('\n')
+
+      return `--- ${title} --- \n${padded}\n`
+    })
+    .join('\n')
 }
 
 module.exports = { generate }
