@@ -107,6 +107,57 @@ const resolveFiles = arr => {
   return final
 }
 
+/**
+ * @typedef {{ name: string, body: string }} LogFile
+ */
+
+/**
+ * @param {string} dir Directory to scan
+ * @returns {Promise.<{ appData: LogFile[], root: LogFile[] }>}
+ */
+const getLogFiles = async dir => {
+  const blacklist = [
+    'Steamworks.NET.txt',
+    'BeatSaberVersion.txt',
+    'CustomMenuText.txt',
+    'CustomFailText.txt',
+  ]
+
+  const logFiles = (await glob(path.join(dir, '**', '*.{txt,log}')))
+    .filter(file => {
+      if (file.includes('CustomSongs')) return false
+
+      const { base } = path.parse(file)
+      if (blacklist.includes(base)) return false
+
+      return true
+    })
+
+  const appDataPath = path.resolve(`${process.env.APPDATA}\\..\\LocalLow\\Hyperbolic Magnetism\\Beat Saber`)
+  const appDataFiles = await glob(path.join(appDataPath, '{output_log.txt,settings.cfg}'))
+
+  /**
+   * @param {string[]} files Files
+   * @param {string} baseDir File Base Directory
+   * @returns {Promise.<LogFile[]>}
+   */
+  const readAll = (files, baseDir) => Promise.all(files.map(async file => {
+      const body = await fse.readFile(file, 'utf8')
+
+      const normalisedDir = normaliseDir(baseDir)
+      const name = file.replace(normalisedDir, '')
+
+      return { name, body }
+    }))
+
+  const [appData, root] = await Promise.all([
+    readAll(logFiles, dir),
+    readAll(appDataFiles, appDataPath),
+  ])
+
+  return { appData, root }
+}
+
 const generate = async dir => {
   const version = await getVersion(dir)
 
