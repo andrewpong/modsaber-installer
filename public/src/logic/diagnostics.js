@@ -150,7 +150,7 @@ const getLogFiles = async dir => {
       return { name, body }
     }))
 
-  const [appData, root] = await Promise.all([
+  const [root, appData] = await Promise.all([
     readAll(logFiles, dir),
     readAll(appDataFiles, appDataPath),
   ])
