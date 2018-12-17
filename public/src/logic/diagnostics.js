@@ -145,7 +145,7 @@ const getLogFiles = async dir => {
     const normalisedDir = normaliseDir(baseDir)
     const name = file.replace(normalisedDir, '')
 
-    return { name, body }
+    return { name, body: body.length > 100000 ? 'File is greater than 100,000 characters!\nPlease check manually.' : body }
   }))
 
   const [root, appData] = await Promise.all([
