@@ -28,6 +28,9 @@ const render = (root, tree) => {
   return [`${' '.repeat(HASH_LEN + 1)}${root}`, ...withHashes].join('\n')
 }
 
+/**
+ * @param {string} dir Game Directory
+ */
 const getVersion = async dir => {
   const txtPath = path.join(dir, 'BeatSaberVersion.txt')
 
