@@ -32,7 +32,7 @@ app.on('ready', () => {
 
   const hasUpdate = updateCheck()
 
-  const width = 800
+  const width = 810
   const height = 580
   window = new BrowserWindow({
     width: width,
