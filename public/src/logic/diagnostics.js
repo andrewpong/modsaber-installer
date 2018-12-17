@@ -1,7 +1,5 @@
 const path = require('path')
-const { promisify } = require('util')
 const treeify = require('treeify')
-const glob = promisify(require('glob'))
 const { calculateHash } = require('../utils/helpers.js')
 const fse = require('../utils/file.js')
 
@@ -60,7 +58,7 @@ const getFiles = async (dir, options = {}) => {
 
   const normalisedDir = normaliseDir(dir)
   const globPath = recursive ? path.join(dir, '**', '*.*') : path.join(dir, '*.*')
-  const files = await glob(globPath)
+  const files = await fse.glob(globPath)
 
   const mapped = await Promise.all(files.map(async file => {
     const isFile = await fse.isFile(file)
@@ -123,7 +121,7 @@ const getLogFiles = async dir => {
     'CustomFailText.txt',
   ]
 
-  const logFiles = (await glob(path.join(dir, '**', '*.{txt,log}')))
+  const logFiles = (await fse.glob(path.join(dir, '**', '*.{txt,log}')))
     .filter(file => {
       if (file.includes('CustomSongs')) return false
 
@@ -134,7 +132,7 @@ const getLogFiles = async dir => {
     })
 
   const appDataPath = path.resolve(`${process.env.APPDATA}\\..\\LocalLow\\Hyperbolic Magnetism\\Beat Saber`)
-  const appDataFiles = await glob(path.join(appDataPath, '{output_log.txt,settings.cfg}'))
+  const appDataFiles = await fse.glob(path.join(appDataPath, '{output_log.txt,settings.cfg}'))
 
   /**
    * @param {string[]} files Files

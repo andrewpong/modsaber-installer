@@ -1,6 +1,5 @@
 const path = require('path')
-const { promisify } = require('util')
-const glob = promisify(require('glob'))
+const { glob } = require('../utils/file.js')
 
 /**
  * @param {string} installDir Install Path

@@ -36,4 +36,5 @@ module.exports = {
   isFile,
   ensureDir: promisify(mkdirp),
   readDir: promisify(fs.readdir),
+  glob: promisify(require('glob')),
 }
