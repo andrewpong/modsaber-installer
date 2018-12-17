@@ -10,7 +10,7 @@ const fse = require('../utils/file.js')
  * @param {Object} tree Tree Object
  * @returns {string}
  */
-const render = (root, tree) => {
+const renderTree = (root, tree) => {
   const HASH_LEN = 40
 
   /**
@@ -142,13 +142,13 @@ const getLogFiles = async dir => {
    * @returns {Promise.<LogFile[]>}
    */
   const readAll = (files, baseDir) => Promise.all(files.map(async file => {
-      const body = await fse.readFile(file, 'utf8')
+    const body = await fse.readFile(file, 'utf8')
 
-      const normalisedDir = normaliseDir(baseDir)
-      const name = file.replace(normalisedDir, '')
+    const normalisedDir = normaliseDir(baseDir)
+    const name = file.replace(normalisedDir, '')
 
-      return { name, body }
-    }))
+    return { name, body }
+  }))
 
   const [root, appData] = await Promise.all([
     readAll(logFiles, dir),
@@ -175,6 +175,7 @@ const generate = async dir => {
     CustomPlatforms,
     CustomSabers,
     rootFiles,
+    logFiles,
   ] = await Promise.all([
     getFiles(path.join(dir, 'Plugins')),
     getFiles(path.join(dir, 'Beat Saber_Data', 'Managed'), { filter: managedFilter }),
@@ -183,6 +184,7 @@ const generate = async dir => {
     getFiles(path.join(dir, 'CustomPlatforms')),
     getFiles(path.join(dir, 'CustomSabers')),
     getFiles(dir, { recursive: false }),
+    getLogFiles(dir),
   ])
 
   const tree = {
@@ -201,7 +203,9 @@ const generate = async dir => {
   }
 
   const sections = [
-    { title: 'Directory Structure', content: render(version, tree) },
+    { title: 'Directory Structure', content: renderTree(version, tree) },
+    ...logFiles.appData.map(({ name, body }) => ({ title: `AppData/${name}`, content: body })),
+    ...logFiles.root.map(({ name, body }) => ({ title: `Beat Saber/${name}`, content: body })),
   ]
 
   return sections
