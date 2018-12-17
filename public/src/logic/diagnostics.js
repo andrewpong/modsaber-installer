@@ -119,6 +119,10 @@ const getLogFiles = async dir => {
     'BeatSaberVersion.txt',
     'CustomMenuText.txt',
     'CustomFailText.txt',
+    'CustomMenuText-default-2.1.1.txt',
+    'dummy.txt',
+    'songStatus.txt',
+    'songStatusTemplate.txt',
   ]
 
   const logFiles = (await fse.glob(path.join(dir, '**', '*.{txt,log}')))
