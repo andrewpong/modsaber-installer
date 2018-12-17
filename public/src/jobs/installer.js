@@ -35,8 +35,9 @@ const installMods = async (mods, install, gameVersion, win) => {
   // Save install path
   store.set('install', install)
 
-  // Ensure UserData directory exists
+  // Ensure some required folders exist
   await fse.ensureDir(path.join(install.path, 'UserData'))
+  await fse.ensureDir(path.join(install.path, 'Playlists'))
 
   // Ensure BeatSaberVersion.txt exists
   const versionTxt = path.join(install.path, 'BeatSaberVersion.txt')
