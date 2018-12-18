@@ -27,6 +27,9 @@ const runDiagnostics = async win => {
   try {
     // Generate diagnostics report
     const diagnostics = await genDiagnostics(install.path)
+    if (diagnostics.length > 400000) throw new DiagnosticsError('Failed to upload diagnostics!\nReport is too big to upload.')
+
+    // Upload to hastebin
     const url = await uploadPaste(diagnostics, 'txt')
 
     // Open url and save to clipboard
