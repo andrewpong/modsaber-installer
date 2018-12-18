@@ -1,5 +1,6 @@
 const path = require('path')
 const treeify = require('treeify')
+const { fetchByHash } = require('../remote/modsaber.js')
 const { calculateHash } = require('../utils/helpers.js')
 const fse = require('../utils/file.js')
 
@@ -60,6 +61,11 @@ const getFiles = async (dir, options = {}) => {
   const globPath = recursive ? path.join(dir, '**', '*.*') : path.join(dir, '*.*')
   const files = await fse.glob(globPath)
 
+  /**
+   * @type {Set<string>}
+   */
+  const allMods = new Set()
+
   const mapped = await Promise.all(files.map(async file => {
     const isFile = await fse.isFile(file)
     if (!isFile) return undefined
@@ -71,19 +77,36 @@ const getFiles = async (dir, options = {}) => {
     const hash = hashes ? await calculateHash(data) : null
 
     const normalised = file.replace(normalisedDir, '')
-    return { file: normalised, hash }
+    if (hash === null) return { file: normalised, hash, modInfo: undefined }
+
+    const mods = await fetchByHash(hash)
+    if (mods.length === 0) return { file: normalised, hash, modInfo: undefined }
+    const [mod] = mods
+
+    const flags = []
+    if (mods.length > 1) flags.push('Multiple')
+    if (mod.approval.status === true) flags.push('Approved')
+    else flags.push('Not Approved')
+    flags.push(mod.gameVersion.value)
+
+    const modDetails = `${mod.name}@${mod.version}`
+    const modInfo = `${modDetails} // ${flags.join(', ')}`
+    allMods.add(modDetails)
+
+    return { file: normalised, hash, modInfo }
   }))
 
-  return resolveFiles(mapped)
+  const tree = resolveFiles(mapped)
+  return { tree, mods: [...allMods.values()] }
 }
 
 /**
- * @param {{ file: string, hash: string }} arr Input Array
+ * @param {{ file: string, hash: string, modInfo: string }[]} arr Input Array
  * @returns {Object}
  */
 const resolveFiles = arr => {
   const final = {}
-  for (const { file, hash } of arr.filter(x => x !== undefined)) {
+  for (const { file, hash, modInfo } of arr.filter(x => x !== undefined)) {
     const fileParts = file.split('/')
     let prev = final
 
@@ -93,7 +116,10 @@ const resolveFiles = arr => {
       const last = i === fileParts.length - 1
 
       if (last) {
-        prev[part] = hash
+        const append = modInfo ? ` (${modInfo})` : ''
+        const key = `${part}${append}`
+
+        prev[key] = hash
         break
       }
 
@@ -170,13 +196,13 @@ const generate = async dir => {
   ]
 
   const [
-    Plugins,
-    DataManaged,
-    DataPlugins,
-    CustomAvatars,
-    CustomPlatforms,
-    CustomSabers,
-    rootFiles,
+    { tree: Plugins, mods: pluginsMods },
+    { tree: DataManaged, mods: dataManagedMods },
+    { tree: DataPlugins, mods: dataPluginsMods },
+    { tree: CustomAvatars, mods: customAvatarsMods },
+    { tree: CustomPlatforms, mods: customPlatformsMods },
+    { tree: CustomSabers, mods: customSabersMods },
+    { tree: rootFiles, mods: rootFilesMods },
     logFiles,
   ] = await Promise.all([
     getFiles(path.join(dir, 'Plugins')),
@@ -188,6 +214,16 @@ const generate = async dir => {
     getFiles(dir, { recursive: false }),
     getLogFiles(dir),
   ])
+
+  const allMods = [...new Set([
+    ...pluginsMods,
+    ...dataManagedMods,
+    ...dataPluginsMods,
+    ...customAvatarsMods,
+    ...customPlatformsMods,
+    ...customSabersMods,
+    ...rootFilesMods,
+  ])].sort((a, b) => a.localeCompare(b))
 
   const tree = {
     'Beat Saber_Data': {
@@ -206,6 +242,7 @@ const generate = async dir => {
 
   const sections = [
     { title: 'Directory Structure', content: renderTree(version, tree) },
+    { title: 'Detected Mods Breakdown', content: allMods.join('\n') },
     ...logFiles.appData.map(({ name, body }) => ({ title: `AppData/${name}`, content: body })),
     ...logFiles.root.map(({ name, body }) => ({ title: `Beat Saber/${name}`, content: body })),
   ]
