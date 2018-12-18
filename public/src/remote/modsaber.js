@@ -15,9 +15,15 @@ const { API_URL, USER_AGENT, BLOCKED_EXTENSIONS } = require('../constants.js')
  * @typedef {Object} Mod
  * @property {string} name
  * @property {string} version
- * @property {object} files
+ * @property {Object} files
  * @property {Files} files.steam
  * @property {Files} files.oculus
+ * @property {Object} approval
+ * @property {boolean} approval.status
+ * @property {string} approval.modified
+ * @property {Object} gameVersion
+ * @property {string} gameVersion.value
+ * @property {string} gameVersion.manifest
  */
 
 /**
@@ -86,4 +92,13 @@ const downloadMod = async (mod, platform, installDir) => {
   }
 }
 
-module.exports = { fetchMods, fetchGameVersions, downloadMod }
+/**
+ * @param {string} hash Hash Search String
+ * @returns {Promise.<Mod[]>}
+ */
+const fetchByHash = async hash => {
+  const { body } = await get(`${API_URL}/mods/by-hash/${hash}`).set('User-Agent', USER_AGENT)
+  return body
+}
+
+module.exports = { fetchMods, fetchGameVersions, downloadMod, fetchByHash }
