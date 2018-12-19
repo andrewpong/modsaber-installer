@@ -20,7 +20,7 @@ const manageJob = (task, id) => new Promise((resolve, reject) => {
     return resolve(resp.id)
   }
 
-  ipcMain.on('queue-job-resp', respListener)
+  return ipcMain.on('queue-job-resp', respListener)
 })
 
 /**

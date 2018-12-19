@@ -12,13 +12,13 @@ ipcMain.on('upload-log', async ({ sender }, logPath) => {
   const window = BrowserWindow.fromWebContents(sender)
 
   try {
-    const userLog = await readFile(logPath)
+    const userLog = await readFile(logPath, 'utf8')
     const url = await uploadPaste(userLog, 'log')
 
     clipboard.writeText(url)
     shell.openExternal(url)
 
-    sender.send('set-status', { text: 'Log file uploaded, copied URL to clipboard!' })
+    return sender.send('set-status', { text: 'Log file uploaded, copied URL to clipboard!' })
   } catch (err) {
     log.error(err)
 
@@ -35,5 +35,5 @@ ipcMain.on('run-diagnostics', async ({ sender }) => {
   const window = BrowserWindow.fromWebContents(sender)
 
   // Run diagnostics job
-  await runJob(runDiagnostics(window))
+  await runJob(runDiagnostics(window), window)
 })

@@ -14,7 +14,7 @@ require('./src/events/diagnostics.js')
 
 // Instance Lock
 const instanceLock = app.requestSingleInstanceLock()
-if (!instanceLock) return app.quit()
+if (!instanceLock) app.quit()
 
 // Setup Auto Updater
 autoUpdater.autoDownload = false
@@ -83,7 +83,7 @@ app.on('second-instance', (event, argv) => {
   handleArgs(argv, window)
 
   if (window.isMinimized()) window.restore()
-  window.focus()
+  return window.focus()
 })
 
 app.on('window-all-closed', () => {

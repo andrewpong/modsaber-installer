@@ -1,7 +1,7 @@
 module.exports = {
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2018
   },
   "env": {
     "es6": true,
@@ -38,7 +38,8 @@ module.exports = {
 
     "accessor-pairs": "warn",
     "array-callback-return": "error",
-    "complexity": "warn",
+    "complexity": ["warn", 30],
+    "consistent-return": "error",
     "curly": ["error", "multi-line", "consistent"],
     "dot-location": ["error", "property"],
     "dot-notation": "error",
@@ -65,6 +66,7 @@ module.exports = {
     "no-useless-escape": "error",
     "no-useless-return": "error",
     "no-void": "error",
+    "no-var": "error",
     "no-warning-comments": "warn",
     "prefer-promise-reject-errors": "error",
     "require-await": "warn",
@@ -101,7 +103,7 @@ module.exports = {
     "max-len": ["error", 150, 2],
     "max-nested-callbacks": ["error", { "max": 4 }],
     "max-statements-per-line": ["error", { "max": 2 }],
-    "new-cap": "error",
+    "new-cap": "off",
     "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 3 }],
     "no-array-constructor": "error",
     "no-inline-comments": "error",

@@ -32,7 +32,7 @@ const findSteamLibraries = () => new Promise((resolve, reject) => {
       .map(line => regex.exec(line)[1].replace(/\\\\/g, '\\'))
       .map(line => path.join(line, 'steamapps'))
 
-    resolve([baseDir, ...libraries])
+    return resolve([baseDir, ...libraries])
   })
 })
 
@@ -105,7 +105,7 @@ const findOculus = () => new Promise(resolve => {
     if (err) return resolve({ found: false, path: null })
 
     const oculusPath = path.join(key.value, 'Software/hyperbolic-magnetism-beat-saber')
-    resolve({ found: true, path: oculusPath })
+    return resolve({ found: true, path: oculusPath })
   })
 })
 

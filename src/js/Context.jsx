@@ -51,7 +51,7 @@ export class ControllerProvider extends Component {
 
       const gvIdx = gameVersions.findIndex(x => x.selected)
 
-      this.setState({
+      return this.setState({
         statusText: c.STATUS_TEXT_LOADED,
         status: c.STATUS_LOADED,
         rawMods: mods,

@@ -8,7 +8,7 @@ const getAttention = window => {
   if (window.isFocused()) return undefined
 
   shell.beep()
-  window.flashFrame(true)
+  return window.flashFrame(true)
 }
 
 module.exports = { getAttention }

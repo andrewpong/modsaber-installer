@@ -46,7 +46,7 @@ const extractZip = async (blob, installDir, options) => {
       if (!allowed) return resolve(null)
     }
 
-    entry.getDataAsync(data => resolve({ path: path.join(installDir, entry.entryName), data }))
+    return entry.getDataAsync(data => resolve({ path: path.join(installDir, entry.entryName), data }))
   }))
 
   const data = await Promise.all(entries)

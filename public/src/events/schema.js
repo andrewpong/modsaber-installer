@@ -27,6 +27,7 @@ const handleArgs = (argv, win) => {
 
   // Handle BeatSaver Downloads
   if (job === 'song') return runJob(downloadSong(args[0], window), window)
+  else return undefined
 }
 
 module.exports = { handleArgs }
