@@ -45,7 +45,7 @@ const fetchMods = async options => {
 }
 
 /**
- * @returns {Promise.<{ id: string, value: string, manifest: string }[]>}
+ * @returns {Promise.<{ id: string, value: string, manifest: string, selected: boolean }[]>}
  */
 const fetchGameVersions = async () => {
   const { body } = await get(`${API_URL}/site/gameversions`).set('User-Agent', USER_AGENT)

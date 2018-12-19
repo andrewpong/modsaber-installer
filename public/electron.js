@@ -43,7 +43,7 @@ app.on('ready', () => {
     icon: path.join(__dirname, 'icon.png'),
   })
 
-  const menu = !isDev ? null : new Menu.buildFromTemplate([ // eslint-disable-line
+  const menu = !isDev ? null : Menu.buildFromTemplate([
     {
       label: 'Dev',
       submenu: [

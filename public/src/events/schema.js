@@ -26,8 +26,8 @@ const handleArgs = (argv, win) => {
   const [job, ...args] = schema.replace(/^modsaber:\/\//g, '').split('/')
 
   // Handle BeatSaver Downloads
-  if (job === 'song') return runJob(downloadSong(args[0], window), window)
-  else return undefined
+  if (job === 'song') runJob(downloadSong(args[0], window), window)
+  return undefined
 }
 
 module.exports = { handleArgs }

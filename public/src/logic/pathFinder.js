@@ -39,7 +39,7 @@ const findSteamLibraries = () => new Promise((resolve, reject) => {
 /**
  * Find a Steam game install path by App ID
  * @param {string} appID Steam App ID
- * @returns {{ found: boolean, path: string, manifest: string }}
+ * @returns {Promise.<{ found: boolean, path: string, manifest: string }>}
  */
 const findSteam = async appID => {
   try {
@@ -62,7 +62,7 @@ const findSteam = async appID => {
       .filter(line => line.match(regex))
       .map(line => regex.exec(line)[1].replace(/\\\\/g, '\\'))
 
-    const final = { found: true, path: path.join(manifest.library, 'common', installDir) }
+    const final = { found: true, path: path.join(manifest.library, 'common', installDir), manifest: undefined }
 
     const depot = parseInt(appID, 10) + 1
     const manifestIdRx = new RegExp(`"${depot}"\\s+{\\s+"manifest"\\s+"(\\d+)"`, 'm')
