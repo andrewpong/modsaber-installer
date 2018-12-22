@@ -20,11 +20,14 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * Download hash validation
 * More robust network error handling
 * More user-friendly status messages
-* Automatic diagnostic reports
+* Additional Tools
+  * Generate diagnostic reports
+  * Manually patch game
+  * Open / upload installer log file
 * Ensures `UserData` folder exists
 * Auto-detects current Steam version
 * `modsaber://` protocol handling
-* **_A dark secret..._**
+* **_Dark theme!_**
 
 ### Disadvantages
 * Not a single binary

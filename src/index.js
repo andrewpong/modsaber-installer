@@ -7,6 +7,7 @@ import '@lolpants/bulma/css/bulma.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import './css/styles.css'
 import './css/dark.css'
+import './css/tools.css'
 
 import './js/shortcuts.js'
 

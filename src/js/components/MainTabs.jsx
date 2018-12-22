@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Context from '../Context.jsx'
 
 import Main from './main/Main.jsx'
+import Tools from './tabs/Tools.jsx'
 import Help from './tabs/Help.jsx'
 import Credits from './tabs/Credits.jsx'
 import ModInfo from './tabs/ModInfo.jsx'
@@ -14,6 +15,7 @@ class MainTabs extends Component {
 
     this.pages = [
       { title: 'Mods', component: <Main /> },
+      { title: 'Tools', component: <Tools /> },
       { title: 'Help', component: <Help /> },
       { title: 'Credits', component: <Credits /> },
     ]

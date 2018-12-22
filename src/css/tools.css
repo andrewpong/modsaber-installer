@@ -1,0 +1,7 @@
+.content h1:not(:first-child) {
+  margin-top: 0.5em;
+}
+
+.content.tools button.button {
+  margin-right: 6px;
+}
