@@ -22,3 +22,12 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   // Release job queue
   await dequeueJob(jobID)
 })
+
+ipcMain.on('patch-game', async ({ sender }, install) => {
+  // Get Browser Window
+  const window = BrowserWindow.fromWebContents(sender)
+
+  // Patch game
+  const patchJob = patchGame(install, window)
+  await runJob(patchJob, window)
+})

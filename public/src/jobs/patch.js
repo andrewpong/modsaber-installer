@@ -23,6 +23,9 @@ const patchGame = async (install, win) => {
   const window = win || BrowserWindow.getAllWindows()[0]
   const sender = window.webContents
 
+  // Validate install details
+  if (install.platform === 'unknown' || !install.valid) throw new PatchError('Invalid install path!', 'Invalid install path!')
+
   // EXE Paths
   const exePath = path.join(install.path, BEAT_SABER_EXE)
   const ipaPath = path.join(install.path, IPA_EXE)
