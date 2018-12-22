@@ -1,5 +1,5 @@
 const path = require('path')
-const { app, BrowserWindow, dialog, Menu } = require('electron')
+const { app, BrowserWindow, dialog, Menu, shell } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
 const { handleArgs } = require('./src/events/schema.js')
@@ -94,13 +94,20 @@ autoUpdater.on('download-progress', ({ percent }) => {
   window.setProgressBar(percent / 100, { mode: 'normal' })
 })
 
-autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox(window, {
+autoUpdater.on('update-downloaded', async () => {
+  const button = dialog.showMessageBox(window, {
     type: 'info',
-    buttons: [],
+    buttons: ['Release Notes', 'OK'],
     title: 'Updater',
     message: 'A newer version has been downloaded.\n\nClick OK to install the update.\nThe program will restart with the update applied.',
   })
+
+  if (button === 0) {
+    const { provider: { options: { owner, repo } } } = await autoUpdater.getUpdateInfoAndProvider()
+    const releases = `https://github.com/${owner}/${repo}/releases`
+
+    shell.openExternal(releases)
+  }
 
   autoUpdater.quitAndInstall(true, true)
 })
