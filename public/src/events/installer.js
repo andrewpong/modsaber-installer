@@ -20,6 +20,7 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   await runJob(patchJob, window)
 
   // Release job queue
+  sender.send('set-status', { text: 'Install complete!' })
   await dequeueJob(jobID)
 })
 

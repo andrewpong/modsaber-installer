@@ -51,7 +51,7 @@ const patchGame = async (install, win) => {
 
   try {
     await exec(`"${ipaPath}" "${exePath}"`)
-    sender.send('set-status', { text: 'Install complete!' })
+    sender.send('set-status', { text: 'Patch complete!' })
 
     return undefined
   } catch (error) {
