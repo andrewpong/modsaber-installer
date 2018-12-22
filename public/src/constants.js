@@ -12,6 +12,7 @@ module.exports = {
 
   IPA_EXE: 'IPA.exe',
   BEAT_SABER_EXE: 'Beat Saber.exe',
+  BPM_EXE: 'Game.exe',
   STEAM_APP_ID: '620980',
 
   BLOCKED_EXTENSIONS: [

@@ -39,5 +39,6 @@ module.exports = {
   readDir: promisify(fs.readdir),
   rename: promisify(fs.rename),
   rmDir: promisify(rimraf),
+  remove: promisify(fs.unlink),
   glob: promisify(require('glob')),
 }
