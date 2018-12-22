@@ -35,7 +35,7 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * Higher memory usage
 
 ## Keyboard Shortcuts
-ModSaber Installer has a few debug features activated by keyboard shortcuts.  
+ModSaber Installer has a few debug features that can be activated with keyboard shortcuts.  
 Actions that upload to hastebin will copy the resulting URL to your clipboard automatically.
 
 | Shortcut | Action |
