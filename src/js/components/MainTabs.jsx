@@ -27,6 +27,13 @@ class MainTabs extends Component {
     this.context.setMaxPages(this.pages.length)
   }
 
+  componentDidUpdate () {
+    if (this.context.container !== undefined) return undefined
+    if (this.container.current === null) return undefined
+
+    return this.context.setContainer(this.container.current)
+  }
+
   render () {
     const pages = this.context.selected === null ? this.pages :
       [...this.pages, { title: 'Mod Info', component: <ModInfo /> }]

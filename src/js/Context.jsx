@@ -38,6 +38,8 @@ export class ControllerProvider extends Component {
       currentPage: 0,
       maxPages: null,
       selected: null,
+
+      container: undefined,
     }
 
     ipcRenderer.on('set-status', (_, { text, status }) => {
@@ -341,6 +343,9 @@ export class ControllerProvider extends Component {
 
           maxPages: this.state.maxPages,
           setMaxPages: maxPages => this.setState({ maxPages }),
+
+          container: this.state.container,
+          setContainer: container => this.setState({ container }),
         }}>
           { this.props.children }
         </Provider>

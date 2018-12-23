@@ -16,6 +16,7 @@ class BottomBar extends Component {
     const page = this.context.currentPage !== this.context.maxPages ?
       this.context.maxPages : 0
 
+    if (this.context.container !== undefined) this.context.container.scrollTop = 0
     return this.context.setCurrentPage(page)
   }
 
