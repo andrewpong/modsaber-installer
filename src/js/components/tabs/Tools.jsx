@@ -19,7 +19,8 @@ class Tools extends Component {
   }
 
   render () {
-    const disabled = this.context.jobs.length > 0 || this.context.status === c.STATUS_LOADING
+    const working = this.context.jobs.length > 0
+    const disabled = working || this.context.status === c.STATUS_LOADING
 
     return (
       <>
@@ -35,8 +36,10 @@ class Tools extends Component {
 
           <hr />
           <h1>Diagnostics</h1>
-          <button className='button' disabled={ disabled } onClick={ () => ipcRenderer.send('run-diagnostics') }>Run Diagnostics</button>
-          <button className='button' disabled={ disabled } onClick={ () => ipcRenderer.send('patch-game', this.context.install) }>Patch Game</button>
+          <button className={ `button${working ? ' is-loading' : ''}` } disabled={ disabled }
+            onClick={ () => ipcRenderer.send('run-diagnostics') }>Run Diagnostics</button>
+          <button className={ `button${working ? ' is-loading' : ''}` } disabled={ disabled }
+            onClick={ () => ipcRenderer.send('patch-game', this.context.install) }>Patch Game</button>
 
           <hr />
           <h1>ModSaber Installer Log</h1>

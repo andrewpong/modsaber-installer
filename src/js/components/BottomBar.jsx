@@ -39,7 +39,7 @@ class BottomBar extends Component {
           this.context.install.pirated ?
             <button className='button' onClick={ () => shell.openExternal('https://beatgames.com/') }>Buy the Game</button> :
             <button
-              className='button'
+              className={ `button${this.context.jobs.length > 0 ? ' is-loading' : ''}` }
               disabled={
                 this.context.jobs.length > 0 ||
                 this.context.status === STATUS_LOADING ||
