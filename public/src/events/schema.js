@@ -2,6 +2,7 @@ const { BrowserWindow } = require('electron')
 const isDev = require('electron-is-dev')
 const { runJob } = require('../jobs/job.js')
 const { downloadSong } = require('../jobs/beatsaver.js')
+const { downloadPlaylist } = require('../jobs/playlist.js')
 
 /**
  * @param {string[]} argv Process Args
@@ -27,6 +28,11 @@ const handleArgs = (argv, win) => {
 
   // Handle BeatSaver Downloads
   if (job === 'song') runJob(downloadSong(args[0], window), window)
+
+  // Handle BeatSaver Downloads
+  if (job === 'playlist') runJob(downloadPlaylist(args.join('/'), window), window)
+
+  // Return if nothing else
   return undefined
 }
 
