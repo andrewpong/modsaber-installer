@@ -2,12 +2,13 @@ html.dark {
   --white: #e6e6e6;
   --light: #b3b3b3;
 
-  --black: #161616;
-  --dark: #303030;
+  --black: #222223;
+  --dark: #323233;
 
-  --mid: #666666;
+  --border: #858586;
+  --mid: #494950;
 
-  --blue: #5e9cff;
+  --blue: #4b88e9;
   --darkblue: #5280c9;
 }
 
@@ -42,7 +43,7 @@ html.dark input.input {
 
 html.dark input.input:hover,
 html.dark input.input:focus {
-  border-color: var(--light);
+  border-color: var(--border);
 }
 
 html.dark .control.has-icons-left .input:focus ~ .icon,
@@ -61,7 +62,7 @@ html.dark .select select:disabled {
 
 html.dark .select select:hover,
 html.dark .select select:focus {
-  border-color: var(--light);
+  border-color: var(--border);
 }
 
 html.dark .select:not(.is-multiple):not(.is-loading)::after {
@@ -69,7 +70,7 @@ html.dark .select:not(.is-multiple):not(.is-loading)::after {
 }
 
 html.dark .select:not(.is-multiple):not(.is-loading):hover::after {
-  border-color: var(--light);
+  border-color: var(--border);
 }
 
 html.dark .tabs ul,
@@ -96,7 +97,7 @@ html.dark .button:disabled {
 }
 
 html.dark .button:hover, .button:focus {
-  border-color: var(--light);
+  border-color: var(--border);
   color: var(--white);
 }
 
