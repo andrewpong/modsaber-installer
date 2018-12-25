@@ -117,7 +117,9 @@ html.dark .content h3,
 html.dark .content h4,
 html.dark .content h5,
 html.dark .content h6,
-html.dark .table th div {
+html.dark .table th div,
+.content table thead td,
+.content table thead th {
   color: var(--white);
 }
 
