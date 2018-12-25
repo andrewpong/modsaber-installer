@@ -7,6 +7,7 @@ const { USER_AGENT } = require('../constants.js')
  * @property {string} fileName
  * @property {string} playlistTitle
  * @property {string} customArchiveUrl
+ * @property {string} raw
  * @property {{ songName: string, key: string }[]} songs
  */
 
@@ -19,9 +20,10 @@ const fetchPlaylist = async url => {
   const { base: fileName } = path.parse(url)
 
   return {
-    fileName,
+    fileName: decodeURIComponent(fileName),
     playlistTitle: body.playlistTitle,
     customArchiveUrl: body.customArchiveUrl,
+    raw: JSON.stringify(body),
     songs: body.songs,
   }
 }
