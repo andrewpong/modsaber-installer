@@ -1,6 +1,5 @@
 const path = require('path')
-const { get } = require('snekfetch')
-const { USER_AGENT } = require('../constants.js')
+const { safeDownload } = require('./remote.js')
 
 /**
  * @typedef {Object} Playlist
@@ -13,18 +12,21 @@ const { USER_AGENT } = require('../constants.js')
 
 /**
  * @param {string} url Playlist URL
- * @returns {Promise.<Playlist>}
+ * @returns {Promise.<{ playlist: Playlist, error: boolean }>}
  */
 const fetchPlaylist = async url => {
-  const { body } = await get(url).set('User-Agent', USER_AGENT)
+  const { body, error } = await safeDownload(url)
   const { base: fileName } = path.parse(url)
 
   return {
-    fileName: decodeURIComponent(fileName),
-    playlistTitle: body.playlistTitle,
-    customArchiveUrl: body.customArchiveUrl,
-    raw: JSON.stringify(body),
-    songs: body.songs,
+    error,
+    playlist: {
+      fileName: decodeURIComponent(fileName),
+      playlistTitle: body.playlistTitle,
+      customArchiveUrl: body.customArchiveUrl,
+      raw: JSON.stringify(body),
+      songs: body.songs,
+    },
   }
 }
 
