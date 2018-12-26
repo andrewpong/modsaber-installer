@@ -2,6 +2,7 @@ const path = require('path')
 const { BrowserWindow } = require('electron')
 const Store = require('electron-store')
 const { JobError } = require('./job.js')
+const { beatSaberOpen } = require('../logic/process.js')
 const fse = require('../utils/file.js')
 const { promiseHandler } = require('../utils/helpers.js')
 const { downloadMod } = require('../remote/modsaber.js')
@@ -34,6 +35,10 @@ const installMods = async (mods, install, gameVersion, win) => {
   // Ensure some required folders exist
   await fse.ensureDir(path.join(install.path, 'UserData'))
   await fse.ensureDir(path.join(install.path, 'Playlists'))
+
+  // Ensure Beat Saber is not open
+  const isOpen = await beatSaberOpen()
+  if (isOpen) throw new InstallError('Please close Beat Saber before installing mods!')
 
   // Move incompatible plugins
   const moveAndWrite = async (version = 'Unknown') => {

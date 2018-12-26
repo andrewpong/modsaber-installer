@@ -4,6 +4,7 @@ const { BrowserWindow } = require('electron')
 const log = require('electron-log')
 const exec = promisify(require('child_process').exec)
 const { JobError } = require('./job.js')
+const { beatSaberOpen } = require('../logic/process.js')
 const fse = require('../utils/file.js')
 const { BEAT_SABER_EXE, IPA_EXE, BPM_EXE } = require('../constants.js')
 
@@ -25,6 +26,10 @@ const patchGame = async (install, win) => {
 
   // Validate install details
   if (install.platform === 'unknown' || !install.valid) throw new PatchError('Invalid install path!', 'Invalid install path!')
+
+  // Ensure Beat Saber is not open
+  const isOpen = await beatSaberOpen()
+  if (isOpen) throw new PatchError('Please close Beat Saber before patching!')
 
   // EXE Paths
   const exePath = path.join(install.path, BEAT_SABER_EXE)
