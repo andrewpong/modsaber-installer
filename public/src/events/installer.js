@@ -13,15 +13,17 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
 
   // Install mods
   const installJob = installMods(data.mods, data.install, data.gameVersion, window)
-  await runJob(installJob, window)
+  const installSuccess = await runJob(installJob, window)
+  if (!installSuccess) return dequeueJob(jobID)
 
   // Patch game
   const patchJob = patchGame(data.install, window)
-  await runJob(patchJob, window)
+  const patchSuccess = await runJob(patchJob, window)
+  if (!patchSuccess) return dequeueJob(jobID)
 
   // Release job queue
   sender.send('set-status', { text: 'Install complete!' })
-  await dequeueJob(jobID)
+  return dequeueJob(jobID)
 })
 
 ipcMain.on('patch-game', async ({ sender }, install) => {
