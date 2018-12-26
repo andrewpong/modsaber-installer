@@ -23,7 +23,7 @@ class JobError extends Error {
  * @template T
  * @param {Promise.<T>} job Job
  * @param {BrowserWindow} win Browser Window
- * @returns {Promise.<void>}
+ * @returns {Promise.<boolean>}
  */
 const runJob = async (job, win) => {
   // Window Details
@@ -33,6 +33,9 @@ const runJob = async (job, win) => {
   // Start job
   const jobID = await enqueueJob()
   window.setProgressBar(1, { mode: 'indeterminate' })
+
+  // Track errors
+  let error = false
 
   try {
     await job
@@ -51,6 +54,8 @@ const runJob = async (job, win) => {
         message: err.message,
       })
     }
+
+    error = true
   }
 
   // Reset progress bar
@@ -60,6 +65,7 @@ const runJob = async (job, win) => {
 
   // Dequeue job
   await dequeueJob(jobID)
+  return !error
 }
 
 module.exports = { JobError, runJob }
