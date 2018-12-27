@@ -88,17 +88,20 @@
       {
         "ext": "saber",
         "name": "Saber",
-        "description": "Beat Saber Custom Saber"
+        "description": "Custom Saber",
+        "icon": "build/icons/saber.ico"
       },
       {
         "ext": "avatar",
         "name": "Avatar",
-        "description": "Beat Saber Custom Avatar"
+        "description": "Custom Avatar",
+        "icon": "build/icons/avatar.ico"
       },
       {
         "ext": "plat",
         "name": "Platform",
-        "description": "Beat Saber Custom Platform"
+        "description": "Custom Platform",
+        "icon": "build/icons/platform.ico"
     }
     ]
   },
