@@ -149,6 +149,7 @@ const getLogFiles = async dir => {
     'dummy.txt',
     'songStatus.txt',
     'songStatusTemplate.txt',
+    'MapperFeedHistory.txt',
   ]
 
   const logFiles = (await fse.glob(path.join(dir, '**', '*.{txt,log}')))
@@ -193,6 +194,8 @@ const generate = async dir => {
     '0Harmony.dll',
     'Assembly-CSharp.dll',
     'Assembly-CSharp-firstpass.dll',
+    'Newtonsoft.Json.dll',
+    'System.Runtime.Serialization.dll',
   ]
 
   const [
