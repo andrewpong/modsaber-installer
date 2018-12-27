@@ -1,4 +1,5 @@
 const { BrowserWindow } = require('electron')
+const fse = require('../utils/file.js')
 const { runJob } = require('../jobs/job.js')
 const { downloadSong } = require('../jobs/beatsaver.js')
 const { downloadPlaylist } = require('../jobs/playlist.js')
@@ -30,4 +31,21 @@ const handleSchema = (schema, win) => {
   return undefined
 }
 
-module.exports = { handleSchema }
+/**
+ * @param {string} filePath File Path
+ * @param {BrowserWindow} win Browser Window
+ * @returns {void}
+ */
+const handleFiles = async (filePath, win) => {
+  /**
+   * @type {BrowserWindow}
+   */
+  const window = win || BrowserWindow.getAllWindows()[0]
+
+  // Ensure the file actually exists
+  const exists = await fse.exists(filePath)
+  if (!exists) return undefined
+  else return console.log(filePath)
+}
+
+module.exports = { handleSchema, handleFiles }

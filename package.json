@@ -83,7 +83,24 @@
       "schemes": [
         "modsaber"
       ]
+    },
+    "fileAssociations": [
+      {
+        "ext": "saber",
+        "name": "Saber",
+        "description": "Beat Saber Custom Saber"
+      },
+      {
+        "ext": "avatar",
+        "name": "Avatar",
+        "description": "Beat Saber Custom Avatar"
+      },
+      {
+        "ext": "plat",
+        "name": "Platform",
+        "description": "Beat Saber Custom Platform"
     }
+    ]
   },
   "repository": {
     "type": "git",
