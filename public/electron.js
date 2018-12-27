@@ -2,7 +2,7 @@ const path = require('path')
 const { app, BrowserWindow, dialog, Menu, shell } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
-const { handleArgs } = require('./src/events/schema.js')
+const { handleSchema } = require('./src/events/schema.js')
 const { enqueueJob, dequeueJob } = require('./src/logic/queue.js')
 const { BASE_URL, VERSION, AUTO_UPDATE_JOB } = require('./src/constants.js')
 
@@ -85,6 +85,26 @@ app.on('second-instance', (event, argv) => {
   if (window.isMinimized()) window.restore()
   return window.focus()
 })
+
+/**
+ * @param {string[]} argv Process Arguments
+ * @param {BrowserWindow} w Window
+ * @returns {void}
+ */
+const handleArgs = (argv, w) => {
+  /**
+   * @type {string}
+   */
+  const args = argv.filter((_, i) => !(i < (isDev ? 2 : 1)))
+
+  // Ignore if no args are passed
+  if (!args || args.length === 0) return undefined
+
+  // Handle Schema
+  if (args[0].startsWith('modsaber://')) return handleSchema(args[0], w)
+
+  return undefined
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()

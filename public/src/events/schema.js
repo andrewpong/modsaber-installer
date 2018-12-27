@@ -1,20 +1,14 @@
 const { BrowserWindow } = require('electron')
-const isDev = require('electron-is-dev')
 const { runJob } = require('../jobs/job.js')
 const { downloadSong } = require('../jobs/beatsaver.js')
 const { downloadPlaylist } = require('../jobs/playlist.js')
 
 /**
- * @param {string[]} argv Process Args
+ * @param {string} schema Process Args
  * @param {BrowserWindow} win Browser Window
  * @returns {void}
  */
-const handleArgs = (argv, win) => {
-  /**
-   * @type {string}
-   */
-  const schema = argv[isDev ? 2 : 1]
-
+const handleSchema = (schema, win) => {
   /**
    * @type {BrowserWindow}
    */
@@ -36,4 +30,4 @@ const handleArgs = (argv, win) => {
   return undefined
 }
 
-module.exports = { handleArgs }
+module.exports = { handleSchema }
