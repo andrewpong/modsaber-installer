@@ -2,7 +2,6 @@ const path = require('path')
 const { app, BrowserWindow, dialog, Menu, shell } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
-const npmPackage = require('../package.json')
 const { handleSchema, handleFiles } = require('./src/events/args.js')
 const { enqueueJob, dequeueJob } = require('./src/logic/queue.js')
 const { BASE_URL, VERSION, AUTO_UPDATE_JOB } = require('./src/constants.js')
@@ -106,7 +105,7 @@ const handleArgs = (argv, w) => {
 
   // Check if its a path
   const { ext } = path.parse(args[0])
-  const extensions = npmPackage.build.fileAssociations.map(x => `.${x.ext}`)
+  const extensions = ['.avatar', '.saber', '.plat']
   if (extensions.includes(ext)) return handleFiles(args[0], w)
 
   // Return if unhandled
