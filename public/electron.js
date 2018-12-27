@@ -2,7 +2,7 @@ const path = require('path')
 const { app, BrowserWindow, dialog, Menu, shell } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
-const { handleSchema } = require('./src/events/schema.js')
+const { handleSchema } = require('./src/events/args.js')
 const { enqueueJob, dequeueJob } = require('./src/logic/queue.js')
 const { BASE_URL, VERSION, AUTO_UPDATE_JOB } = require('./src/constants.js')
 
