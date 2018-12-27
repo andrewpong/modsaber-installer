@@ -3,6 +3,7 @@ const fse = require('../utils/file.js')
 const { runJob } = require('../jobs/job.js')
 const { downloadSong } = require('../jobs/beatsaver.js')
 const { downloadPlaylist } = require('../jobs/playlist.js')
+const { handleCustomFile } = require('../jobs/customFile.js')
 
 /**
  * @param {string} schema Process Args
@@ -45,7 +46,9 @@ const handleFiles = async (filePath, win) => {
   // Ensure the file actually exists
   const exists = await fse.exists(filePath)
   if (!exists) return undefined
-  else return console.log(filePath)
+
+  const job = handleCustomFile(filePath, window)
+  return runJob(job, window)
 }
 
 module.exports = { handleSchema, handleFiles }

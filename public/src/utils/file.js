@@ -35,6 +35,7 @@ module.exports = {
   stat,
   exists,
   isFile,
+  copyFile: promisify(fs.copyFile),
   ensureDir: promisify(mkdirp),
   readDir: promisify(fs.readdir),
   rename: promisify(fs.rename),
