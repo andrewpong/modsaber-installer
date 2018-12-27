@@ -70,7 +70,7 @@
       "target": [
         "nsis"
       ],
-      "icon": "build/icon.png",
+      "icon": "build/icons/icon.png",
       "publish": [
         {
           "provider": "github",
