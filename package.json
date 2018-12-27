@@ -1,6 +1,6 @@
 {
   "name": "modsaber-installer",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Beat Saber Mod Installer - Powered by Electron",
   "private": true,
   "main": "public/electron.js",
@@ -102,7 +102,7 @@
         "name": "Platform",
         "description": "Custom Platform",
         "icon": "build/icons/platform.ico"
-    }
+      }
     ]
   },
   "repository": {

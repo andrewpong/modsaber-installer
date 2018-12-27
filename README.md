@@ -27,6 +27,7 @@ Installs mods from [ModSaber](https://www.modsaber.org/) to Beat Saber!
 * Ensures `UserData` folder exists
 * Auto-detects current Steam version
 * `modsaber://` protocol handling
+* `.avatar`, `.saber` and `.plat` file associations
 * **_Dark theme!_**
 
 ### Disadvantages
