@@ -4,7 +4,7 @@ const { autoUpdater } = require('electron-updater')
 const isDev = require('electron-is-dev')
 const { handleSchema, handleFiles } = require('./src/events/args.js')
 const { enqueueJob, dequeueJob } = require('./src/logic/queue.js')
-const { BASE_URL, VERSION, AUTO_UPDATE_JOB } = require('./src/constants.js')
+const { BASE_URL, VERSION, AUTO_UPDATE_JOB, REGISTERED_EXTS } = require('./src/constants.js')
 
 // Event Handlers
 require('./src/events/path.js')
@@ -105,8 +105,7 @@ const handleArgs = (argv, w) => {
 
   // Check if its a path
   const { ext } = path.parse(args[0])
-  const extensions = ['.avatar', '.saber', '.plat']
-  if (extensions.includes(ext)) return handleFiles(args[0], w)
+  if (REGISTERED_EXTS.includes(ext)) return handleFiles(args[0], w)
 
   // Return if unhandled
   return undefined

@@ -15,6 +15,12 @@ module.exports = {
   BPM_EXE: 'Game.exe',
   STEAM_APP_ID: '620980',
 
+  REGISTERED_EXTS: [
+    '.avatar',
+    '.saber',
+    '.plat',
+  ],
+
   BLOCKED_EXTENSIONS: [
     '.jar',
     '.msi',
