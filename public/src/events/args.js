@@ -34,10 +34,11 @@ const handleSchema = (schema, win) => {
 
 /**
  * @param {string} filePath File Path
+ * @param {string} ext File Extension
  * @param {BrowserWindow} win Browser Window
  * @returns {void}
  */
-const handleFiles = async (filePath, win) => {
+const handleFiles = async (filePath, ext, win) => {
   /**
    * @type {BrowserWindow}
    */

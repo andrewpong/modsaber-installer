@@ -105,7 +105,7 @@ const handleArgs = (argv, w) => {
 
   // Check if its a path
   const { ext } = path.parse(args[0])
-  if (REGISTERED_EXTS.includes(ext)) return handleFiles(args[0], w)
+  if (REGISTERED_EXTS.includes(ext)) return handleFiles(args[0], ext, w)
 
   // Return if unhandled
   return undefined
