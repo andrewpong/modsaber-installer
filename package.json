@@ -102,6 +102,18 @@
         "name": "Platform",
         "description": "Custom Platform",
         "icon": "build/icons/platform.ico"
+      },
+      {
+        "ext": "bmap",
+        "name": "Beatmap",
+        "description": "Custom Song",
+        "icon": "build/icons/bmap.ico"
+      },
+      {
+        "ext": "bplist",
+        "name": "Playlist",
+        "description": "Beat Saber Playlist",
+        "icon": "build/icons/bplist.ico"
       }
     ]
   },

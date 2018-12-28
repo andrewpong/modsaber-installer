@@ -19,6 +19,8 @@ module.exports = {
     '.avatar',
     '.saber',
     '.plat',
+    '.bmap',
+    '.bplist',
   ],
 
   BLOCKED_EXTENSIONS: [
