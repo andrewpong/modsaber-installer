@@ -27,11 +27,14 @@ const handleCustomFile = async (filePath, win) => {
   // Parse file path
   const parsed = path.parse(filePath)
 
-  const dir = parsed.ext === '.avatar' ?
-    'CustomAvatars' :
-    parsed.ext === '.saber' ?
-      'CustomSabers' :
-      'CustomPlatforms'
+  const dirs = {
+    '.avatar': 'CustomAvatars',
+    '.saber': 'CustomSabers',
+    '.plat': 'CustomPlatforms',
+    '.bplist': 'Playlists',
+  }
+  const dir = dirs[parsed.ext]
+  if (dir === undefined) throw new CustomFileError(`File extension ${parsed.ext} not supported.`)
   const fullDir = path.join(install.path, dir)
 
   // Throw error if file is already installed
