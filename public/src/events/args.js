@@ -3,7 +3,7 @@ const fse = require('../utils/file.js')
 const { runJob } = require('../jobs/job.js')
 const { downloadSong } = require('../jobs/beatsaver.js')
 const { downloadPlaylist } = require('../jobs/playlist.js')
-const { handleCustomFile } = require('../jobs/customFile.js')
+const { handleCustomFile, handleBeatmap } = require('../jobs/customFile.js')
 
 /**
  * @param {string} schema Process Args
@@ -48,7 +48,10 @@ const handleFiles = async (filePath, ext, win) => {
   const exists = await fse.exists(filePath)
   if (!exists) return undefined
 
-  const job = handleCustomFile(filePath, window)
+  const job = ext === '.bmap' ?
+    handleBeatmap(filePath, window) :
+    handleCustomFile(filePath, window)
+
   return runJob(job, window)
 }
 
