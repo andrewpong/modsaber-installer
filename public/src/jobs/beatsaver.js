@@ -4,7 +4,8 @@ const log = require('electron-log')
 const fse = require('../utils/file.js')
 const { JobError } = require('./job.js')
 const { findPath } = require('../logic/pathFinder.js')
-const { extractZip, safeDownload } = require('../remote/remote.js')
+const { safeDownload } = require('../remote/remote.js')
+const { installSong } = require('../logic/songInstall.js')
 const { inputType, fromHash, fromID } = require('../remote/beatsaver.js')
 
 class BeatSaverError extends JobError {
@@ -47,29 +48,7 @@ const downloadSong = async (input, win) => {
   if (zip.error) throw new BeatSaverError('Song Download Failed!')
 
   try {
-    // Extract zip
-    sender.send('set-status', { text: 'Extracting song...' })
-    const files = await extractZip(
-      zip.body, path.join(customSongs, song.key),
-      {
-        filter: ['.json', '.ogg', '.wav', '.jpg', '.jpeg', '.png'],
-        filterType: 'whitelist',
-      }
-    )
-
-    // File Write Jobs
-    const jobs = files.map(async file => {
-      const { dir } = path.parse(file.path)
-
-      if (dir.includes('autosaves')) return undefined
-      await fse.ensureDir(dir)
-
-      return fse.writeFile(file.path, file.data)
-    })
-
-    // Flush all jobs and return
-    await Promise.all(jobs)
-    sender.send('set-status', { text: 'Song install complete!' })
+    await installSong(zip.body, song.key, install.path, window)
     return undefined
   } catch (err) {
     log.error(err)
