@@ -28,6 +28,9 @@ const handleSchema = (schema, win) => {
   // Handle BeatSaver Downloads
   if (job === 'playlist') runJob(downloadPlaylist(args.join('/'), window), window)
 
+  // Handle model downloads
+  if (['avatar', 'saber', 'platform'].includes(job)) runJob(handleCustomFile(args.join('/'), window, true), window)
+
   // Return if nothing else
   return undefined
 }

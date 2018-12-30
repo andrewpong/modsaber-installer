@@ -1,9 +1,11 @@
 const path = require('path')
+const { parse: parseURL } = require('url')
 const fileType = require('file-type')
 const { BrowserWindow } = require('electron')
 const fse = require('../utils/file.js')
-const { findPath } = require('../logic/pathFinder.js')
+const { safeDownload } = require('../remote/remote.js')
 const { JobError } = require('./job.js')
+const { findPath } = require('../logic/pathFinder.js')
 const { installSong } = require('../logic/songInstall.js')
 const { CUSTOM_FILE_DIRS } = require('../constants.js')
 
@@ -24,8 +26,10 @@ class BeatmapError extends JobError {
 /**
  * @param {string} filePath File Path
  * @param {BrowserWindow} win Browser Window
+ * @param {boolean} [remote] Whether this is a remote path
+ * @returns {Promise.<void>}
  */
-const handleCustomFile = async (filePath, win) => {
+const handleCustomFile = async (filePath, win, remote = false) => {
   // Window Details
   const window = win || BrowserWindow.getAllWindows()[0]
   const sender = window.webContents
@@ -46,10 +50,23 @@ const handleCustomFile = async (filePath, win) => {
   // Create the directory if it doesn't exist
   await fse.ensureDir(fullDir)
 
-  // Move file
-  const newPath = path.join(fullDir, parsed.base)
-  await fse.copyFile(filePath, newPath)
-  await fse.remove(filePath)
+  // Move / save file
+  const newPath = path.join(fullDir, decodeURIComponent(parsed.base))
+  if (remote) {
+    // Validate
+    const { hostname } = parseURL(filePath)
+    if (hostname !== 'modelsaber.assistant.moe') throw new CustomFileError('oh no')
+
+    // Download
+    const download = await safeDownload(filePath)
+    if (download.error) throw new CustomFileError('File download failed!\nCheck your internet and try again.')
+
+    // Save file
+    await fse.writeFile(newPath, download.body)
+  } else {
+    await fse.copyFile(filePath, newPath)
+    await fse.remove(filePath)
+  }
 
   // Set status
   sender.send('set-status', { text: `Installed ${parsed.base} successfully!` })
