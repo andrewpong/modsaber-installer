@@ -5,6 +5,7 @@ const fse = require('../utils/file.js')
 const { findPath } = require('../logic/pathFinder.js')
 const { JobError } = require('./job.js')
 const { installSong } = require('../logic/songInstall.js')
+const { CUSTOM_FILE_DIRS } = require('../constants.js')
 
 class CustomFileError extends JobError {
   constructor (message, status, title) {
@@ -35,14 +36,7 @@ const handleCustomFile = async (filePath, win) => {
 
   // Parse file path
   const parsed = path.parse(filePath)
-
-  const dirs = {
-    '.avatar': 'CustomAvatars',
-    '.saber': 'CustomSabers',
-    '.plat': 'CustomPlatforms',
-    '.bplist': 'Playlists',
-  }
-  const dir = dirs[parsed.ext]
+  const dir = CUSTOM_FILE_DIRS[parsed.ext]
   if (dir === undefined) throw new CustomFileError(`File extension ${parsed.ext} not supported.`)
   const fullDir = path.join(install.path, dir)
 

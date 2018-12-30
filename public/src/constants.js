@@ -23,6 +23,13 @@ module.exports = {
     '.bplist',
   ],
 
+  CUSTOM_FILE_DIRS: {
+    '.avatar': 'CustomAvatars',
+    '.saber': 'CustomSabers',
+    '.plat': 'CustomPlatforms',
+    '.bplist': 'Playlists',
+  },
+
   BLOCKED_EXTENSIONS: [
     '.jar',
     '.msi',
