@@ -1,7 +1,7 @@
 const fse = require('../utils/file.js')
 const { runJob } = require('../jobs/job.js')
 const { beatSaverBeatmap, fileBeatmap } = require('../jobs/beatmap.js')
-const { downloadPlaylist } = require('../jobs/playlist.js')
+const { remotePlaylist, localPlaylist } = require('../jobs/playlist.js')
 const { handleCustomFile } = require('../jobs/customFile.js')
 
 /**
@@ -19,7 +19,7 @@ const handleSchema = schema => {
   if (job === 'song') runJob(beatSaverBeatmap(args.join('/')))
 
   // Handle BeatSaver Downloads
-  if (job === 'playlist') runJob(downloadPlaylist(args.join('/')))
+  if (job === 'playlist') runJob(remotePlaylist(args.join('/')))
 
   // Handle model downloads
   if (['avatar', 'saber', 'platform'].includes(job)) runJob(handleCustomFile(args.join('/'), true))
@@ -40,7 +40,9 @@ const handleFiles = async (filePath, ext) => {
 
   const job = ext === '.bmap' ?
     fileBeatmap(filePath) :
-    handleCustomFile(filePath)
+    ext === '.bplist' ?
+      localPlaylist(filePath) :
+      handleCustomFile(filePath)
 
   return runJob(job)
 }
