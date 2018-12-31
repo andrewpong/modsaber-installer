@@ -5,6 +5,7 @@ const { generate: genDiagnostics } = require('../logic/diagnostics.js')
 const { findPath } = require('../logic/pathFinder.js')
 const { uploadPaste } = require('../remote/paste.js')
 const { getActiveWindow } = require('../utils/window.js')
+const { ERRORS } = require('../constants.js')
 
 class DiagnosticsError extends JobError {
   constructor (message, status, title) {
@@ -19,7 +20,7 @@ const runDiagnostics = async win => {
 
   // Find install path
   const install = await findPath()
-  if (install.platform === 'unknown') throw new DiagnosticsError('Could not find your Beat Saber directory.\nRun the mod manager once first!')
+  if (install.platform === 'unknown') throw new DiagnosticsError(ERRORS.INVALID_INSTALL_DIR)
 
   // Send starting message
   sender.send('set-status', { text: 'Running diagnostics...' })
@@ -27,7 +28,7 @@ const runDiagnostics = async win => {
   try {
     // Generate diagnostics report
     const diagnostics = await genDiagnostics(install.path)
-    if (diagnostics.length > 400000) throw new DiagnosticsError('Failed to upload diagnostics!\nReport is too big to upload.')
+    if (diagnostics.length > 400000) throw new DiagnosticsError(ERRORS.DIAGNOSTICS_TOO_LARGE)
 
     // Upload to hastebin
     const url = await uploadPaste(diagnostics, 'txt')
@@ -40,7 +41,7 @@ const runDiagnostics = async win => {
     sender.send('set-status', { text: 'Diagnostics uploaded, copied URL to clipboard!' })
   } catch (err) {
     log.error(err)
-    throw new DiagnosticsError('Failed to run diagnostics!\nError written to log file.')
+    throw new DiagnosticsError(ERRORS.DIAGNOSTICS_FAILURE)
   }
 }
 

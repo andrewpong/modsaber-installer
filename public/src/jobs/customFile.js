@@ -6,7 +6,7 @@ const { JobError } = require('./job.js')
 const { findPath } = require('../logic/pathFinder.js')
 const { calculateHash } = require('../utils/helpers.js')
 const { getActiveWindow } = require('../utils/window.js')
-const { CUSTOM_FILE_DIRS } = require('../constants.js')
+const { CUSTOM_FILE_DIRS, ERRORS } = require('../constants.js')
 
 class CustomFileError extends JobError {
   constructor (message, status, title) {
@@ -25,7 +25,7 @@ const handleCustomFile = async (input, remote = false) => {
 
   // Find install path
   const install = await findPath()
-  if (install.platform === 'unknown') throw new CustomFileError('Could not find your Beat Saber directory.\nRun the mod manager once first!')
+  if (install.platform === 'unknown') throw new CustomFileError(ERRORS.INVALID_INSTALL_DIR)
 
   // Parse file info
   const { base, ext } = path.parse(input)
@@ -38,7 +38,7 @@ const handleCustomFile = async (input, remote = false) => {
     // Validate file is trustworthy
     const { hostname } = parseURL(input)
     if (hostname !== 'modelsaber.assistant.moe') {
-      throw new CustomFileError('For security reasons we do not allow custom files from untrusted sources!')
+      throw new CustomFileError(ERRORS.CUSTOM_FILE_UNTRUSTED)
     }
   }
 
