@@ -19,11 +19,10 @@ class InstallError extends JobError {
  * @param {any[]} mods Mods to Install
  * @param {{ path: string, valid: boolean, platform: ('steam'|'oculus'|'unknown') }} install Install Details
  * @param {{ id: string, manifest: string, value: string }} gameVersion Game Version
- * @param {BrowserWindow} win Browser Window
  */
-const installMods = async (mods, install, gameVersion, win) => {
+const installMods = async (mods, install, gameVersion) => {
   // Window Details
-  const { sender } = getActiveWindow(win)
+  const { sender } = getActiveWindow()
 
   // Validate install details
   if (install.platform === 'unknown' || !install.valid) throw new InstallError('Invalid install path!', 'Invalid install path!')

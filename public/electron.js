@@ -68,7 +68,7 @@ app.on('ready', () => {
     }
 
     window.show()
-    handleArgs(process.argv, window)
+    handleArgs(process.argv)
   })
 
   window.on('focus', () => {
@@ -80,7 +80,7 @@ app.on('ready', () => {
 
 app.on('second-instance', (event, argv) => {
   if (!window) return undefined
-  handleArgs(argv, window)
+  handleArgs(argv)
 
   if (window.isMinimized()) window.restore()
   return window.focus()
@@ -88,10 +88,9 @@ app.on('second-instance', (event, argv) => {
 
 /**
  * @param {string[]} argv Process Arguments
- * @param {BrowserWindow} w Window
  * @returns {void}
  */
-const handleArgs = (argv, w) => {
+const handleArgs = argv => {
   /**
    * @type {string}
    */
@@ -101,11 +100,11 @@ const handleArgs = (argv, w) => {
   if (!args || args.length === 0) return undefined
 
   // Handle Schema
-  if (args[0].startsWith('modsaber://')) return handleSchema(args[0], w)
+  if (args[0].startsWith('modsaber://')) return handleSchema(args[0])
 
   // Check if its a path
   const { ext } = path.parse(args[0])
-  if (REGISTERED_EXTS.includes(ext)) return handleFiles(args[0], ext, w)
+  if (REGISTERED_EXTS.includes(ext)) return handleFiles(args[0], ext)
 
   // Return if unhandled
   return undefined

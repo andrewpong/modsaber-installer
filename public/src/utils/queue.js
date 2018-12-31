@@ -1,5 +1,6 @@
 const uuid = require('uuid/v4')
-const { BrowserWindow, ipcMain } = require('electron')
+const { ipcMain } = require('electron')
+const { getActiveWindow } = require('../utils/window.js')
 
 /**
  * @param {('enqueue'|'dequeue')} task Task Type
@@ -7,7 +8,7 @@ const { BrowserWindow, ipcMain } = require('electron')
  * @returns {Promise.<string>}
  */
 const manageJob = (task, id) => new Promise((resolve, reject) => {
-  const window = BrowserWindow.getAllWindows()[0]
+  const { window } = getActiveWindow()
   if (!window) return reject(new Error('Window not found'))
 
   const noonce = uuid()

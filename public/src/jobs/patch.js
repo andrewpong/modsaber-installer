@@ -17,11 +17,10 @@ class PatchError extends JobError {
 
 /**
  * @param {{ path: string, valid: boolean, platform: ('steam'|'oculus'|'unknown') }} install Install Details
- * @param {BrowserWindow} win Browser Window
  */
-const patchGame = async (install, win) => {
+const patchGame = async install => {
   // Window Details
-  const { sender } = getActiveWindow(win)
+  const { sender } = getActiveWindow()
 
   // Validate install details
   if (install.platform === 'unknown' || !install.valid) throw new PatchError('Invalid install path!', 'Invalid install path!')

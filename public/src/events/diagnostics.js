@@ -30,10 +30,7 @@ ipcMain.on('upload-log', async ({ sender }, logPath) => {
   }
 })
 
-ipcMain.on('run-diagnostics', async ({ sender }) => {
-  // Get Browser Window
-  const window = BrowserWindow.fromWebContents(sender)
-
+ipcMain.on('run-diagnostics', async () => {
   // Run diagnostics job
-  await runJob(runDiagnostics(window), window)
+  await runJob(runDiagnostics())
 })

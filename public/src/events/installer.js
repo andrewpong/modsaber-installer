@@ -1,24 +1,21 @@
-const { ipcMain, BrowserWindow } = require('electron')
+const { ipcMain } = require('electron')
 const { installMods } = require('../jobs/installer.js')
 const { patchGame } = require('../jobs/patch.js')
 const { enqueueJob, dequeueJob } = require('../logic/queue.js')
 const { runJob } = require('../jobs/job.js')
 
 ipcMain.on('install-mods', async ({ sender }, data) => {
-  // Get Browser Window
-  const window = BrowserWindow.fromWebContents(sender)
-
   // Wrap the whole thing in a job
   const jobID = await enqueueJob()
 
   // Install mods
-  const installJob = installMods(data.mods, data.install, data.gameVersion, window)
-  const installSuccess = await runJob(installJob, window)
+  const installJob = installMods(data.mods, data.install, data.gameVersion)
+  const installSuccess = await runJob(installJob)
   if (!installSuccess) return dequeueJob(jobID)
 
   // Patch game
-  const patchJob = patchGame(data.install, window)
-  const patchSuccess = await runJob(patchJob, window)
+  const patchJob = patchGame(data.install)
+  const patchSuccess = await runJob(patchJob)
   if (!patchSuccess) return dequeueJob(jobID)
 
   // Release job queue
@@ -26,11 +23,8 @@ ipcMain.on('install-mods', async ({ sender }, data) => {
   return dequeueJob(jobID)
 })
 
-ipcMain.on('patch-game', async ({ sender }, install) => {
-  // Get Browser Window
-  const window = BrowserWindow.fromWebContents(sender)
-
+ipcMain.on('patch-game', async (_, install) => {
   // Patch game
-  const patchJob = patchGame(install, window)
-  await runJob(patchJob, window)
+  const patchJob = patchGame(install)
+  await runJob(patchJob)
 })

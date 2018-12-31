@@ -23,12 +23,11 @@ class JobError extends Error {
 /**
  * @template T
  * @param {Promise.<T>} job Job
- * @param {BrowserWindow} win Browser Window
  * @returns {Promise.<boolean>}
  */
-const runJob = async (job, win) => {
+const runJob = async job => {
   // Window Details
-  const { sender } = getActiveWindow(win)
+  const { sender } = getActiveWindow()
 
   // Start job
   const jobID = await enqueueJob()
