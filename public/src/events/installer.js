@@ -1,7 +1,7 @@
 const { ipcMain } = require('electron')
 const { installMods } = require('../jobs/installer.js')
 const { patchGame } = require('../jobs/patch.js')
-const { enqueueJob, dequeueJob } = require('../logic/queue.js')
+const { enqueueJob, dequeueJob } = require('../utils/queue.js')
 const { runJob } = require('../jobs/job.js')
 
 ipcMain.on('install-mods', async ({ sender }, data) => {

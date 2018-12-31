@@ -1,7 +1,7 @@
 const path = require('path')
 const Store = require('electron-store')
 const { JobError } = require('./job.js')
-const { beatSaberOpen } = require('../logic/process.js')
+const { beatSaberOpen } = require('../utils/process.js')
 const fse = require('../utils/file.js')
 const { promiseHandler } = require('../utils/helpers.js')
 const { downloadMod } = require('../remote/modsaber.js')
