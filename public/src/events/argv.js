@@ -1,8 +1,8 @@
 const fse = require('../utils/file.js')
 const { runJob } = require('../jobs/job.js')
-const { downloadSong } = require('../jobs/beatsaver.js')
+const { beatSaverBeatmap, fileBeatmap } = require('../jobs/beatmap.js')
 const { downloadPlaylist } = require('../jobs/playlist.js')
-const { handleCustomFile, handleBeatmap } = require('../jobs/customFile.js')
+const { handleCustomFile } = require('../jobs/customFile.js')
 
 /**
  * @param {string} schema Process Args
@@ -16,7 +16,7 @@ const handleSchema = schema => {
   const [job, ...args] = schema.replace(/^modsaber:\/\//g, '').split('/')
 
   // Handle BeatSaver Downloads
-  if (job === 'song') runJob(downloadSong(args[0]))
+  if (job === 'song') runJob(beatSaverBeatmap(args.join('/')))
 
   // Handle BeatSaver Downloads
   if (job === 'playlist') runJob(downloadPlaylist(args.join('/')))
@@ -39,7 +39,7 @@ const handleFiles = async (filePath, ext) => {
   if (!exists) return undefined
 
   const job = ext === '.bmap' ?
-    handleBeatmap(filePath) :
+    fileBeatmap(filePath) :
     handleCustomFile(filePath)
 
   return runJob(job)
