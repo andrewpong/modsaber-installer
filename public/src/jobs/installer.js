@@ -1,11 +1,11 @@
 const path = require('path')
-const { BrowserWindow } = require('electron')
 const Store = require('electron-store')
 const { JobError } = require('./job.js')
 const { beatSaberOpen } = require('../logic/process.js')
 const fse = require('../utils/file.js')
 const { promiseHandler } = require('../utils/helpers.js')
 const { downloadMod } = require('../remote/modsaber.js')
+const { getActiveWindow } = require('../utils/window.js')
 const store = new Store()
 
 class InstallError extends JobError {
@@ -23,8 +23,7 @@ class InstallError extends JobError {
  */
 const installMods = async (mods, install, gameVersion, win) => {
   // Window Details
-  const window = win || BrowserWindow.getAllWindows()[0]
-  const sender = window.webContents
+  const { sender } = getActiveWindow(win)
 
   // Validate install details
   if (install.platform === 'unknown' || !install.valid) throw new InstallError('Invalid install path!', 'Invalid install path!')

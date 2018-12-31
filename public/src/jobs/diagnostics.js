@@ -1,9 +1,10 @@
-const { BrowserWindow, clipboard, shell } = require('electron')
+const { clipboard, shell } = require('electron')
 const log = require('electron-log')
 const { JobError } = require('./job.js')
 const { generate: genDiagnostics } = require('../logic/diagnostics.js')
 const { findPath } = require('../logic/pathFinder.js')
 const { uploadPaste } = require('../remote/paste.js')
+const { getActiveWindow } = require('../utils/window.js')
 
 class DiagnosticsError extends JobError {
   constructor (message, status, title) {
@@ -14,8 +15,7 @@ class DiagnosticsError extends JobError {
 
 const runDiagnostics = async win => {
   // Window Details
-  const window = win || BrowserWindow.getAllWindows()[0]
-  const sender = window.webContents
+  const { sender } = getActiveWindow(win)
 
   // Find install path
   const install = await findPath()

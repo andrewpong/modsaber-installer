@@ -1,4 +1,4 @@
-const { shell } = require('electron')
+const { BrowserWindow, shell } = require('electron')
 
 /**
  * @param {Electron.BrowserWindow} window Window
@@ -11,4 +11,15 @@ const getAttention = window => {
   return window.flashFrame(true)
 }
 
-module.exports = { getAttention }
+/**
+ * @param {BrowserWindow} [win] Browser Window
+ * @returns {{ window: BrowserWindow, sender: Electron.WebContents }}
+ */
+const getActiveWindow = win => {
+  const window = win || BrowserWindow.getAllWindows()[0]
+  const sender = window.webContents
+
+  return { window, sender }
+}
+
+module.exports = { getAttention, getActiveWindow }

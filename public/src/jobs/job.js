@@ -1,7 +1,8 @@
-const { BrowserWindow, dialog } = require('electron')
+const { dialog } = require('electron')
 const log = require('electron-log')
 const { getAttention } = require('../utils/window.js')
 const { enqueueJob, dequeueJob } = require('../logic/queue.js')
+const { getActiveWindow } = require('../utils/window.js')
 
 class JobError extends Error {
   /**
@@ -27,8 +28,7 @@ class JobError extends Error {
  */
 const runJob = async (job, win) => {
   // Window Details
-  const window = win || BrowserWindow.getAllWindows()[0]
-  const sender = window.webContents
+  const { sender } = getActiveWindow(win)
 
   // Start job
   const jobID = await enqueueJob()

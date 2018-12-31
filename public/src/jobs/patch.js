@@ -1,11 +1,11 @@
 const path = require('path')
 const { promisify } = require('util')
-const { BrowserWindow } = require('electron')
 const log = require('electron-log')
 const exec = promisify(require('child_process').exec)
 const { JobError } = require('./job.js')
 const { beatSaberOpen } = require('../logic/process.js')
 const fse = require('../utils/file.js')
+const { getActiveWindow } = require('../utils/window.js')
 const { BEAT_SABER_EXE, IPA_EXE, BPM_EXE } = require('../constants.js')
 
 class PatchError extends JobError {
@@ -21,8 +21,7 @@ class PatchError extends JobError {
  */
 const patchGame = async (install, win) => {
   // Window Details
-  const window = win || BrowserWindow.getAllWindows()[0]
-  const sender = window.webContents
+  const { sender } = getActiveWindow(win)
 
   // Validate install details
   if (install.platform === 'unknown' || !install.valid) throw new PatchError('Invalid install path!', 'Invalid install path!')

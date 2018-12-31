@@ -1,9 +1,9 @@
-const { BrowserWindow } = require('electron')
 const fse = require('../utils/file.js')
 const { runJob } = require('../jobs/job.js')
 const { downloadSong } = require('../jobs/beatsaver.js')
 const { downloadPlaylist } = require('../jobs/playlist.js')
 const { handleCustomFile, handleBeatmap } = require('../jobs/customFile.js')
+const { getActiveWindow } = require('../utils/window.js')
 
 /**
  * @param {string} schema Process Args
@@ -11,10 +11,8 @@ const { handleCustomFile, handleBeatmap } = require('../jobs/customFile.js')
  * @returns {void}
  */
 const handleSchema = (schema, win) => {
-  /**
-   * @type {BrowserWindow}
-   */
-  const window = win || BrowserWindow.getAllWindows()[0]
+  // Get active window
+  const { window } = getActiveWindow(win)
 
   // Ignore if schema url is not passed
   if (!schema || !schema.startsWith('modsaber://')) return undefined
@@ -42,10 +40,8 @@ const handleSchema = (schema, win) => {
  * @returns {void}
  */
 const handleFiles = async (filePath, ext, win) => {
-  /**
-   * @type {BrowserWindow}
-   */
-  const window = win || BrowserWindow.getAllWindows()[0]
+  // Get active window
+  const { window } = getActiveWindow(win)
 
   // Ensure the file actually exists
   const exists = await fse.exists(filePath)
