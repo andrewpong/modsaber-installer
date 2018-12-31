@@ -5,16 +5,16 @@ const { USER_AGENT } = require('../constants.js')
 
 /**
  * @param {string} url URL
- * @returns {Promise.<{ error: boolean, body: Buffer}>}
+ * @returns {Promise.<{ error: Error, body: Buffer }>}
  */
 const safeDownload = async url => {
   try {
     const resp = await get(url).set('User-Agent', USER_AGENT)
 
     if (resp.statusCode !== 200) throw new Error('Status not 200')
-    else return { error: false, body: resp.body }
+    else return { error: undefined, body: resp.body }
   } catch (err) {
-    return { error: true, body: null }
+    return { error: err, body: null }
   }
 }
 
