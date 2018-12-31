@@ -76,7 +76,10 @@ const downloadMod = async (mod, platform, installDir) => {
 
   // Download
   const resp = await safeDownload(files.url)
-  if (resp.error) throw new DownloadError('Network Failure', mod)
+  if (resp.error) {
+    log.error(resp.error)
+    throw new DownloadError('Network Failure', mod)
+  }
 
   // Calculate Hash
   const hash = await calculateHash(resp.body)
