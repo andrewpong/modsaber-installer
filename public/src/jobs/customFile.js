@@ -29,11 +29,12 @@ const handleCustomFile = async (input, remote = false) => {
 
   // Parse file info
   const { base, ext } = path.parse(input)
+  const fileName = decodeURIComponent(base)
 
   if (!remote) {
     // Validate file exists
     const fileExists = await fse.exists(input)
-    if (!fileExists) throw new CustomFileError(`Could not find file ${base}!`)
+    if (!fileExists) throw new CustomFileError(`Could not find file ${fileName}!`)
   } else {
     // Validate file is trustworthy
     const { hostname } = parseURL(input)
@@ -51,7 +52,7 @@ const handleCustomFile = async (input, remote = false) => {
 
   // Create the directory if it doesn't exist
   const installDir = path.join(install.path, dir)
-  const installPath = path.join(installDir, base)
+  const installPath = path.join(installDir, fileName)
   await fse.ensureDir(installDir)
 
   // Hash Compare
@@ -62,7 +63,7 @@ const handleCustomFile = async (input, remote = false) => {
       calculateHash(data),
     ])
 
-    if (currentHash === newHash) throw new CustomFileError(`${base} is already installed!`)
+    if (currentHash === newHash) throw new CustomFileError(`${fileName} is already installed!`)
   }
 
   // Write file
