@@ -1,4 +1,4 @@
-const { post } = require('snekfetch')
+const fetch = require('node-fetch')
 const { USER_AGENT, HASTE_URL } = require('../constants.js')
 
 /**
@@ -8,10 +8,13 @@ const { USER_AGENT, HASTE_URL } = require('../constants.js')
  * @returns {Promise.<string>}
  */
 const uploadPaste = async (body, ext) => {
-  const { body: { key } } = await post(`${HASTE_URL}/documents`)
-    .set('User-Agent', USER_AGENT)
-    .send(body)
+  const resp = await fetch(`${HASTE_URL}/documents`, {
+    method: 'post',
+    headers: { 'User-Agent': USER_AGENT },
+    body,
+  })
 
+  const { key } = await resp.json()
   return `${HASTE_URL}/${key}${ext !== undefined ? `.${ext}` : ''}`
 }
 

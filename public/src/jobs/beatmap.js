@@ -40,7 +40,7 @@ const beatSaverBeatmap = async input => {
 
   // Download song zip
   sender.send('set-status', { text: 'Downloading song zip...' })
-  const zip = await safeDownload(song.downloadUrl)
+  const zip = await safeDownload(song.downloadUrl, true)
   if (zip.error) {
     log.error(zip.error)
     throw new BeatmapError('Song Download Failed!')

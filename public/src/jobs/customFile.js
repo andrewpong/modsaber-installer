@@ -1,12 +1,12 @@
 const path = require('path')
 const { parse: parseURL } = require('url')
-const { get } = require('snekfetch')
+const fetch = require('node-fetch')
 const fse = require('../utils/file.js')
 const { JobError } = require('./job.js')
 const { findPath } = require('../logic/pathFinder.js')
 const { calculateHash } = require('../utils/helpers.js')
 const { getActiveWindow } = require('../utils/window.js')
-const { CUSTOM_FILE_DIRS, ERRORS } = require('../constants.js')
+const { USER_AGENT, CUSTOM_FILE_DIRS, ERRORS } = require('../constants.js')
 
 class CustomFileError extends JobError {
   constructor (message, status, title) {
@@ -78,7 +78,9 @@ const handleCustomFile = async (input, remote = false) => {
 const getData = async (input, remote) => {
   if (!remote) return fse.readFile(input)
 
-  const { body } = await get(input)
+  const resp = await fetch(input, { headers: { 'User-Agent': USER_AGENT } })
+  const body = await resp.json()
+
   return body
 }
 

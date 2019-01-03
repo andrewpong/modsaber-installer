@@ -1,5 +1,5 @@
 const log = require('electron-log')
-const { get } = require('snekfetch')
+const fetch = require('node-fetch')
 const { extractZip, safeDownload } = require('./remote.js')
 const { calculateHash } = require('../utils/helpers.js')
 const { API_URL, USER_AGENT, BLOCKED_EXTENSIONS } = require('../constants.js')
@@ -33,11 +33,14 @@ const { API_URL, USER_AGENT, BLOCKED_EXTENSIONS } = require('../constants.js')
 const fetchMods = async options => {
   const type = options || 'latest'
 
-  const { body: { lastPage } } = await get(`${API_URL}/mods/approved/${type}`).set('User-Agent', USER_AGENT)
+  const pageResp = await fetch(`${API_URL}/mods/approved/${type}`, { headers: { 'User-Agent': USER_AGENT } })
+  const { lastPage } = await pageResp.json()
   const pages = Array.from(new Array(lastPage + 1)).map((_, i) => i)
 
   const multi = await Promise.all(pages.map(async page => {
-    const { body: { mods } } = await get(`${API_URL}/mods/approved/${type}/${page}`).set('User-Agent', USER_AGENT)
+    const modResp = await fetch(`${API_URL}/mods/approved/${type}/${page}`, { headers: { 'User-Agent': USER_AGENT } })
+    const { mods } = await modResp.json()
+
     return mods
   }))
 
@@ -48,7 +51,9 @@ const fetchMods = async options => {
  * @returns {Promise.<{ id: string, value: string, manifest: string, selected: boolean }[]>}
  */
 const fetchGameVersions = async () => {
-  const { body } = await get(`${API_URL}/site/gameversions`).set('User-Agent', USER_AGENT)
+  const resp = await fetch(`${API_URL}/site/gameversions`, { headers: { 'User-Agent': USER_AGENT } })
+  const body = await resp.json()
+
   return body
 }
 
@@ -75,7 +80,7 @@ const downloadMod = async (mod, platform, installDir) => {
     mod.files.oculus
 
   // Download
-  const resp = await safeDownload(files.url)
+  const resp = await safeDownload(files.url, true)
   if (resp.error) {
     log.error(resp.error)
     throw new DownloadError('Network Failure', mod)
@@ -100,7 +105,9 @@ const downloadMod = async (mod, platform, installDir) => {
  * @returns {Promise.<Mod[]>}
  */
 const fetchByHash = async hash => {
-  const { body } = await get(`${API_URL}/mods/by-hash/${hash}`).set('User-Agent', USER_AGENT)
+  const resp = await fetch(`${API_URL}/mods/by-hash/${hash}`, { headers: { 'User-Agent': USER_AGENT } })
+  const body = await resp.json()
+
   return body
 }
 

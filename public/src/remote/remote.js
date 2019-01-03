@@ -1,18 +1,20 @@
 const path = require('path')
 const AdmZip = require('adm-zip')
-const { get } = require('snekfetch')
+const fetch = require('node-fetch')
 const { USER_AGENT } = require('../constants.js')
 
 /**
  * @param {string} url URL
+ * @param {boolean} [binary] JSON or Blob response
  * @returns {Promise.<{ error: Error, body: Buffer }>}
  */
-const safeDownload = async url => {
+const safeDownload = async (url, binary = false) => {
   try {
-    const resp = await get(url).set('User-Agent', USER_AGENT)
+    const resp = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
+    const body = binary ? await resp.blob() : await resp.json()
 
-    if (resp.statusCode !== 200) throw new Error('Status not 200')
-    else return { error: undefined, body: resp.body }
+    if (resp.status !== 200) throw new Error('Status not 200')
+    else return { error: undefined, body }
   } catch (err) {
     return { error: err, body: null }
   }
